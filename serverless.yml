@@ -1,0 +1,101 @@
+service:
+  name: threebox-verification-service
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+  - serverless-webpack
+  - serverless-kms-secrets
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: develop
+  region: us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - KMS:Decrypt
+      Resource: ${self:custom.kmsSecrets.keyArn}
+    - Effect: Allow
+      Action:
+      - s3:*
+      Resource: 'arn:aws:s3:::*'
+    - Effect: Allow
+      Action:
+      - ses:SendEmail
+      Resource: 'arn:aws:ses:*'
+    - Effect: Allow
+      Action:
+      - ec2:CreateNetworkInterface
+      - ec2:DescribeNetworkInterfaces
+      - ec2:DeleteNetworkInterface
+      Resource: 'arn:aws:ec2:*'
+
+  environment:
+      SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
+      IPFS_PATH: /ipfs
+      AWS_BUCKET_NAME: ${self:custom.awsBucketName.${self:provider.stage}}
+
+# Enable auto-packing of external modules
+custom:
+  awsBucketName:
+    develop: ipfs-dev.3box.io
+    master: ipfs.3box.io
+  serverless-kms-secrets:
+    secretsFile: kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml
+  kmsSecrets: ${file(kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
+  contentCompression: 1024
+  webpack:
+    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
+    includeModules: true   # Node modules configuration for packaging
+    packager: 'npm'   # Packager that will be used to package your external modules
+
+functions:
+  twitter:
+    handler: src/api_handler.twitter
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: twitter
+
+  email_send:
+    handler: src/api_handler.email_send
+    timeout: 30
+    vpc:
+      securityGroupIds:
+        - sg-27907b55
+      subnetIds:
+        - subnet-731c3129
+        - subnet-f09fe3bb
+    events:
+      - http:
+          method: post
+          cors: true
+          path: send-email-verification
+
+  email_verify:
+    handler: src/api_handler.email_verify
+    timeout: 30
+    vpc:
+      securityGroupIds:
+        - sg-27907b55
+      subnetIds:
+        - subnet-731c3129
+        - subnet-f09fe3bb
+    events:
+      - http:
+          method: post
+          cors: true
+          path: email-verify
+
+  diddoc:
+    handler: src/api_handler.diddoc
+    timeout: 30
+    events:
+      - http:
+          method: get
+          cors: true
+          path: .well-known/did.json

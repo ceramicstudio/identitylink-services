@@ -1,0 +1,49 @@
+{
+  "name": "3box-verifications",
+  "version": "1.5.0",
+  "description": "Verification service for 3Box",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "./node_modules/.bin/standard --verbose src/**",
+    "test": "jest --detectOpenHandles",
+    "coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3box/3box-verifications.git"
+  },
+  "author": "Cristobal Castillo <cristobal.castillo@consensys.net>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/3box/3box-verifications/issues"
+  },
+  "homepage": "https://github.com/3box/3box-verifications#readme",
+  "dependencies": {
+    "3id-resolver": "^1.0.1",
+    "analytics-node": "^3.4.0-beta.3",
+    "aws-sdk": "^2.783.0",
+    "did-jwt": "^4.6.2",
+    "ipfs-s3-dag-get": "^0.2.0",
+    "js-sha256": "^0.9.0",
+    "muport-did-resolver": "^1.0.2",
+    "node-fetch": "^2.3.0",
+    "redis": "^3.0.2",
+    "serverless-kms-secrets": "^1.0.4",
+    "serverless-webpack": "^5.3.4",
+    "twit": "^2.2.11",
+    "webpack": "^4.44.2",
+    "webpack-node-externals": "^2.5.2"
+  },
+  "devDependencies": {
+    "aws-sdk-mock": "^4.3.0",
+    "babel-core": "^6.25.0",
+    "@babel/core": "^7.2.2",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "jest": "^23.6.0",
+    "standard": "^14.0.0",
+    "serverless-offline": "^5.10.1"
+  }
+}

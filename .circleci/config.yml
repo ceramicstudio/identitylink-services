@@ -1,0 +1,52 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/3box-verifications
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - dependencies-cache-{{ checksum "package.json" }}
+
+      - run:
+          name: install-serverless-and dependencies
+          command: |
+            sudo npm install -g serverless@1.32.0 codecov
+            npm install
+
+      - run:
+          name: test
+          command: npm test && codecov
+
+      - run:
+          name: code-coverage
+          command: bash <(curl -s https://codecov.io/bash)
+
+      - run:
+          name: deploy-to-serverless
+          command: |
+            sls package
+            if [ "${CIRCLE_BRANCH}" != "develop" ] && [ "${CIRCLE_BRANCH}" != "master" ]; then
+              exit 0
+            fi
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              sls deploy --stage develop
+            fi
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              sls deploy --stage master
+            fi
+
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
