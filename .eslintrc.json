@@ -1,0 +1,25 @@
+{
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest": true,
+    "jasmine": true
+  },
+  "extends": ["standard", "prettier", "prettier/standard"],
+  "plugins": ["import", "prettier", "standard"],
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+
+  "rules": {
+    "prettier/prettier": "off",
+    "eqeqeq": "off",
+    "node/no-callback-literal": "off",
+    "prefer-const": "off",
+    "dot-notation": "off",
+    "camelcase": "off"
+  },
+  "globals": {
+    "done": true
+  }
+}

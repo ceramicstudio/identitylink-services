@@ -1,9 +1,9 @@
-name: Test
+name: Lint
 on:
   pull_request:
     types: [opened, synchronize]
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,5 +11,5 @@ jobs:
         with:
           node-version: '12.x'
       - run: npm install
-      - name: npm run test
-        run: npm run test
+      - name: npm run lint
+        run: npm run lint

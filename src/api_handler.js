@@ -2,11 +2,13 @@
 const AWS = require('aws-sdk')
 
 const TwitterHandler = require('./api/twitter')
+const GithubHandler = require('./api/github')
 const EmailSendHandler = require('./api/email_send')
 const EmailVerifyHandler = require('./api/email_verify')
 const DidDocumentHandler = require('./api/diddoc')
 
 const TwitterMgr = require('./lib/twitterMgr')
+const GithubMgr = require('./lib/githubMgr')
 const EmailMgr = require('./lib/emailMgr')
 const ClaimMgr = require('./lib/claimMgr')
 const Analytics = require('./lib/analytics')
@@ -14,6 +16,7 @@ const Analytics = require('./lib/analytics')
 let twitterMgr = new TwitterMgr()
 let claimMgr = new ClaimMgr()
 let emailMgr = new EmailMgr()
+let githubMgr = new GithubMgr()
 const analytics = new Analytics()
 
 const doHandler = (handler, event, context, callback) => {
@@ -64,10 +67,17 @@ const doHandler = (handler, event, context, callback) => {
 // Allow some env vars to overwrite KMS
 const envConfig = {}
 if (process.env.IPFS_PATH) envConfig['IPFS_PATH'] = process.env.IPFS_PATH
-if (process.env.AWS_BUCKET_NAME) envConfig['AWS_BUCKET_NAME'] = process.env.AWS_BUCKET_NAME
+if (process.env.AWS_BUCKET_NAME)
+  envConfig['AWS_BUCKET_NAME'] = process.env.AWS_BUCKET_NAME
 
 const preHandler = (handler, event, context, callback) => {
-  if (!twitterMgr.isSecretsSet() || !claimMgr.isSecretsSet() || !emailMgr.isSecretsSet() || !analytics.isSecretsSet()) {
+  if (
+    !twitterMgr.isSecretsSet() ||
+    !claimMgr.isSecretsSet() ||
+    !emailMgr.isSecretsSet() ||
+    !analytics.isSecretsSet() ||
+    !githubMgr.isSecretsSet()
+  ) {
     const kms = new AWS.KMS()
     kms
       .decrypt({ CiphertextBlob: Buffer.from(process.env.SECRETS, 'base64') })
@@ -76,10 +86,12 @@ const preHandler = (handler, event, context, callback) => {
         const decrypted = String(data.Plaintext)
         const config = Object.assign(JSON.parse(decrypted), envConfig)
         twitterMgr.setSecrets(config)
+        githubMgr.setSecrets(config)
         emailMgr.setSecrets(config)
         analytics.setSecrets(config)
         return claimMgr.setSecrets(config)
-      }).then(res => {
+      })
+      .then(res => {
         doHandler(handler, event, context, callback)
       })
   } else {
@@ -90,6 +102,11 @@ const preHandler = (handler, event, context, callback) => {
 let twitterHandler = new TwitterHandler(twitterMgr, claimMgr, analytics)
 module.exports.twitter = (event, context, callback) => {
   preHandler(twitterHandler, event, context, callback)
+}
+
+let githubHandler = new GithubHandler(githubMgr, claimMgr, analytics)
+module.exports.github = (event, context, callback) => {
+  preHandler(githubHandler, event, context, callback)
 }
 
 let emailSendHandler = new EmailSendHandler(emailMgr, analytics)

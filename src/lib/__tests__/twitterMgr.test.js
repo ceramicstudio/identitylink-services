@@ -26,7 +26,7 @@ describe('TwitterMgr', () => {
     })
 
     test('client authenticated', done => {
-        sut.client.get('application/rate_limit_status', (err, body, res) => {
+        sut.client.get('application/rate_limit_status', (_err, body, res) => {
             console.log(body)
             done()
         })

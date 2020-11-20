@@ -28,9 +28,11 @@ class EmailSendHandler {
     let verificationCode = ''
     try {
       if (!body.address) {
+        /* eslint-disable no-unused-vars */
         verificationCode = await this.emailMgr.sendVerification(body.email_address, body.did, null)
       } else {
         verificationCode = await this.emailMgr.sendVerification(body.email_address, body.did, body.address)
+        /* eslint-enable no-unused-vars */
       }
     } catch (e) {
       cb({ code: 500, message: 'error while trying to send the verification code' })

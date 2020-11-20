@@ -6,8 +6,8 @@ const apiHandler = require('../api_handler')
 
 jest.mock('ipfs-s3-dag-get', () => ({
   initIPFS: async () => {
-      return 'ipfs'
-    }
+    return 'ipfs'
+  }
 }))
 
 describe('apiHandler', () => {
@@ -17,9 +17,15 @@ describe('apiHandler', () => {
       TWITTER_CONSUMER_KEY: 'FAKE',
       TWITTER_CONSUMER_SECRET: 'FAKE',
       KEYPAIR_PRIVATE_KEY: '4baba8f4a',
-      KEYPAIR_PUBLIC_KEY: '04fff936f805ee2'
+      KEYPAIR_PUBLIC_KEY: '04fff936f805ee2',
+      GITHUB_USERNAME: 'TEST',
+      GITHUB_PERSONAL_ACCESS_TOKEN: 'FAKE'
     }
-    MockAWS.mock('KMS', 'decrypt', Promise.resolve({ Plaintext: JSON.stringify(secrets) }))
+    MockAWS.mock(
+      'KMS',
+      'decrypt',
+      Promise.resolve({ Plaintext: JSON.stringify(secrets) })
+    )
     process.env.SECRETS = secrets
     process.env.IPFS_PATH = '/ipfs'
     process.env.AWS_BUCKET_NAME = 'bucket'
@@ -27,6 +33,14 @@ describe('apiHandler', () => {
 
   test('twitter', done => {
     apiHandler.twitter({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('github', done => {
+    apiHandler.github({}, {}, (err, res) => {
       expect(err).toBeNull()
       expect(res).not.toBeNull()
       done()

@@ -2,8 +2,8 @@ const ClaimMgr = require('../claimMgr')
 
 jest.mock('ipfs-s3-dag-get', () => ({
   initIPFS: async () => {
-      return 'ipfs'
-    }
+    return 'ipfs'
+  }
 }))
 
 describe('ClaimMgr', () => {
@@ -11,12 +11,13 @@ describe('ClaimMgr', () => {
   let did = 'did:muport:fake'
   let handle = '3boxuser'
   let url = 'https://twitter.com/3boxdb/status/1069604129826369537'
-  let signerPrivate = 'fa09a3ff0d486be2eb69545c393e2cf47cb53feb44a3550199346bdfa6f53245'
+  let signerPrivate =
+    'fa09a3ff0d486be2eb69545c393e2cf47cb53feb44a3550199346bdfa6f53245'
   let jwtSubstring = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ'
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
-        sut = new ClaimMgr()
+    sut = new ClaimMgr()
   })
 
   test('empty constructor', () => {
@@ -35,7 +36,21 @@ describe('ClaimMgr', () => {
   })
 
   test('issueTwitter() happy path', done => {
-    sut.issueTwitter(handle, did, url)
+    sut
+      .issueTwitter(handle, did, url)
+      .then(resp => {
+        expect(resp).toContain(jwtSubstring)
+        done()
+      })
+      .catch(err => {
+        fail(err)
+        done()
+      })
+  })
+
+  test('issueGithub() happy path', done => {
+    sut
+      .issueGithub(handle, did, url)
       .then(resp => {
         expect(resp).toContain(jwtSubstring)
         done()
