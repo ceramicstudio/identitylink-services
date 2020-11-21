@@ -5,6 +5,7 @@ service:
 plugins:
   - serverless-webpack
   - serverless-kms-secrets
+  - serverless-dotenv-plugin
   - serverless-offline
 
 provider:
@@ -15,27 +16,27 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-      - KMS:Decrypt
+        - KMS:Decrypt
       Resource: ${self:custom.kmsSecrets.keyArn}
     - Effect: Allow
       Action:
-      - s3:*
+        - s3:*
       Resource: 'arn:aws:s3:::*'
     - Effect: Allow
       Action:
-      - ses:SendEmail
+        - ses:SendEmail
       Resource: 'arn:aws:ses:*'
     - Effect: Allow
       Action:
-      - ec2:CreateNetworkInterface
-      - ec2:DescribeNetworkInterfaces
-      - ec2:DeleteNetworkInterface
+        - ec2:CreateNetworkInterface
+        - ec2:DescribeNetworkInterfaces
+        - ec2:DeleteNetworkInterface
       Resource: 'arn:aws:ec2:*'
 
   environment:
-      SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
-      IPFS_PATH: /ipfs
-      AWS_BUCKET_NAME: ${self:custom.awsBucketName.${self:provider.stage}}
+    SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
+    IPFS_PATH: /ipfs
+    AWS_BUCKET_NAME: ${self:custom.awsBucketName.${self:provider.stage}}
 
 # Enable auto-packing of external modules
 custom:
@@ -47,9 +48,9 @@ custom:
   kmsSecrets: ${file(kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
   contentCompression: 1024
   webpack:
-    webpackConfig: 'webpack.config.js'   # Name of webpack configuration file
-    includeModules: true   # Node modules configuration for packaging
-    packager: 'npm'   # Packager that will be used to package your external modules
+    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
+    includeModules: true # Node modules configuration for packaging
+    packager: 'npm' # Packager that will be used to package your external modules
 
 functions:
   twitter:
@@ -61,35 +62,35 @@ functions:
           cors: true
           path: twitter
 
-  email_send:
-    handler: src/api_handler.email_send
-    timeout: 30
-    vpc:
-      securityGroupIds:
-        - sg-27907b55
-      subnetIds:
-        - subnet-731c3129
-        - subnet-f09fe3bb
-    events:
-      - http:
-          method: post
-          cors: true
-          path: send-email-verification
-
-  email_verify:
-    handler: src/api_handler.email_verify
-    timeout: 30
-    vpc:
-      securityGroupIds:
-        - sg-27907b55
-      subnetIds:
-        - subnet-731c3129
-        - subnet-f09fe3bb
-    events:
-      - http:
-          method: post
-          cors: true
-          path: email-verify
+  # email_send:
+  #   handler: src/api_handler.email_send
+  #   timeout: 30
+  #   vpc:
+  #     securityGroupIds:
+  #       - sg-27907b55
+  #     subnetIds:
+  #       - subnet-731c3129
+  #       - subnet-f09fe3bb
+  #   events:
+  #     - http:
+  #         method: post
+  #         cors: true
+  #         path: send-email-verification
+  #
+  # email_verify:
+  #   handler: src/api_handler.email_verify
+  #   timeout: 30
+  #   vpc:
+  #     securityGroupIds:
+  #       - sg-27907b55
+  #     subnetIds:
+  #       - subnet-731c3129
+  #       - subnet-f09fe3bb
+  #   events:
+  #     - http:
+  #         method: post
+  #         cors: true
+  #         path: email-verify
 
   diddoc:
     handler: src/api_handler.diddoc
@@ -99,3 +100,12 @@ functions:
           method: get
           cors: true
           path: .well-known/did.json
+
+  # request-github:
+  #   handler: src/api_handler.request_github
+  #   timeout: 30
+  #   events:
+  #     - http:
+  #         method: post
+  #         cors: true
+  #         path: request-github

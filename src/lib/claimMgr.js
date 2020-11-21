@@ -3,6 +3,7 @@ const didJWT = require('did-jwt')
 const { Resolver } = require('did-resolver')
 const get3IdResolver = require('3id-resolver').getResolver
 const getMuportResolver = require('muport-did-resolver').getResolver
+const getKeyResolver = require('@ceramicnetwork/key-did-resolver').getResolver
 
 class ClaimMgr {
   constructor() {
@@ -27,7 +28,8 @@ class ClaimMgr {
     this.ipfs = await initIPFS({ ipfsPath, bucket, shardBlockstore })
     this.resolver = new Resolver({
       ...get3IdResolver(this.ipfs),
-      ...getMuportResolver(this.ipfs)
+      ...getMuportResolver(this.ipfs),
+      ...getKeyResolver()
     })
   }
 
