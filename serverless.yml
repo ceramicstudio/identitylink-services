@@ -53,45 +53,6 @@ custom:
     packager: 'npm' # Packager that will be used to package your external modules
 
 functions:
-  twitter:
-    handler: src/api_handler.twitter
-    timeout: 30
-    events:
-      - http:
-          method: post
-          cors: true
-          path: twitter
-
-  # email_send:
-  #   handler: src/api_handler.email_send
-  #   timeout: 30
-  #   vpc:
-  #     securityGroupIds:
-  #       - sg-27907b55
-  #     subnetIds:
-  #       - subnet-731c3129
-  #       - subnet-f09fe3bb
-  #   events:
-  #     - http:
-  #         method: post
-  #         cors: true
-  #         path: send-email-verification
-  #
-  # email_verify:
-  #   handler: src/api_handler.email_verify
-  #   timeout: 30
-  #   vpc:
-  #     securityGroupIds:
-  #       - sg-27907b55
-  #     subnetIds:
-  #       - subnet-731c3129
-  #       - subnet-f09fe3bb
-  #   events:
-  #     - http:
-  #         method: post
-  #         cors: true
-  #         path: email-verify
-
   diddoc:
     handler: src/api_handler.diddoc
     timeout: 30
@@ -100,12 +61,27 @@ functions:
           method: get
           cors: true
           path: .well-known/did.json
-
-  # request-github:
-  #   handler: src/api_handler.request_github
-  #   timeout: 30
-  #   events:
-  #     - http:
-  #         method: post
-  #         cors: true
-  #         path: request-github
+  request-github:
+    handler: src/api_handler.request_github
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/request-github
+  confirm-github:
+    handler: src/api_handler.confirm_github
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/confirm-github
+#   twitter:
+#     handler: src/api_handler.twitter
+#     timeout: 30
+#     events:
+#       - http:
+#           method: post
+#           cors: true
+#           path: twitter

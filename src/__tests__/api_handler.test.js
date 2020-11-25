@@ -40,7 +40,7 @@ describe('apiHandler', () => {
   })
 
   test('github', done => {
-    apiHandler.github({}, {}, (err, res) => {
+    apiHandler.confirm_github({}, {}, (err, res) => {
       expect(err).toBeNull()
       expect(res).not.toBeNull()
       done()
@@ -49,22 +49,6 @@ describe('apiHandler', () => {
 
   test('diddoc', done => {
     apiHandler.diddoc({}, {}, (err, res) => {
-      expect(err).toBeNull()
-      expect(res).not.toBeNull()
-      done()
-    })
-  })
-
-  test('email_send', done => {
-    apiHandler.email_send({}, {}, (err, res) => {
-      expect(err).toBeNull()
-      expect(res).not.toBeNull()
-      done()
-    })
-  })
-
-  test('email_verify', done => {
-    apiHandler.email_verify({}, {}, (err, res) => {
       expect(err).toBeNull()
       expect(res).not.toBeNull()
       done()

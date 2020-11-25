@@ -1,9 +1,8 @@
+// import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
+import KeyResolver from '@ceramicnetwork/key-did-resolver'
+
 import { initIPFS } from 'ipfs-s3-dag-get'
 const didJWT = require('did-jwt')
-const { Resolver } = require('did-resolver')
-const get3IdResolver = require('3id-resolver').getResolver
-const getMuportResolver = require('muport-did-resolver').getResolver
-const getKeyResolver = require('@ceramicnetwork/key-did-resolver').getResolver
 
 class ClaimMgr {
   constructor() {
@@ -26,11 +25,12 @@ class ClaimMgr {
     const bucket = secrets.AWS_BUCKET_NAME
     const shardBlockstore = true
     this.ipfs = await initIPFS({ ipfsPath, bucket, shardBlockstore })
-    this.resolver = new Resolver({
-      ...get3IdResolver(this.ipfs),
-      ...getMuportResolver(this.ipfs),
-      ...getKeyResolver()
-    })
+    this.resolver = {
+      registry: {
+        ...KeyResolver.getResolver()
+        // ...ThreeIdResolver.getResolver(),
+      }
+    }
   }
 
   async issueTwitter(did, handle, url) {
