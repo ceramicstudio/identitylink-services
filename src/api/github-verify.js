@@ -15,39 +15,48 @@ class GithubVerifyHandler {
       return
     }
 
-    let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
-
-    if (
-      !domains.test(event.headers.origin) &&
-      !domains.test(event.headers.Origin)
-    ) {
-      cb({ code: 401, message: 'unauthorized' })
-      this.analytics.trackVerifyGithub(body.did, 401)
-      return
-    }
+    // TODO: Uncomment for production (if still necessary)
+    // let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
+    // if (
+    //   !domains.test(event.headers.origin) &&
+    //   !domains.test(event.headers.Origin)
+    // ) {
+    //   cb({ code: 401, message: 'unauthorized' })
+    //   this.analytics.trackVerifyGithub(body.did, 401)
+    //   return
+    // }
 
     if (!body.jws) {
       cb({ code: 400, message: 'no jws' })
-      this.analytics.trackVerifyGithub(body.did, 400)
+      this.analytics.trackVerifyGithub(body.jws, 400)
       return
     }
 
-    // TODO:  Get the username, did, and timestamp from storage?
+    let did = ''
+    let challengeCode = ''
+
+    try {
+      const unwrappped = await this.claimMgr.verifyJWS(body.jws)
+      challengeCode = unwrappped.payload.challengeCode
+      did = unwrappped.did
+    } catch (e) {
+      cb({ code: 500, message: 'error while trying to verify the JWS' })
+      this.analytics.trackVerifyGithub(body.jws, 500)
+      return
+    }
+
     let verification_url = ''
     try {
-      verification_url = await this.githubMgr.findDidInGists(
-        body.github_handle,
-        body.did
-      )
+      verification_url = await this.githubMgr.findDidInGists(did, challengeCode)
     } catch (e) {
-      cb({ code: 500, message: 'error while trying to verify the did' })
-      this.analytics.trackVerifyGithub(body.did, 500)
+      cb({ code: 500, message: 'error while trying to find a Gist' + e })
+      this.analytics.trackVerifyGithub(did, 500)
       return
     }
 
     if (verification_url == '') {
       cb({ code: 400, message: 'no valid proof available' })
-      this.analytics.trackVerifyGithub(body.did, 400)
+      // this.analytics.trackVerifyGithub(body.did, 400)
       return
     }
 
@@ -65,7 +74,7 @@ class GithubVerifyHandler {
     }
 
     cb(null, { verification: verification_claim })
-    this.analytics.trackVerifyGithub(body.did, 200)
+    // this.analytics.trackVerifyGithub(body.did, 200)
   }
 }
 module.exports = GithubVerifyHandler

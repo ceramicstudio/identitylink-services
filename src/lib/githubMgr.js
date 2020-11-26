@@ -45,15 +45,24 @@ class GithubMgr {
     return challengeCode
   }
 
-  async findDidInGists(handle, did) {
-    if (!handle) throw new Error('no github handle provided')
-    if (!did) throw new Error('no did provided')
+  async findDidInGists(did, challengeCode) {
+    const details = await this.store.read(did)
+    const { username, timestamp, challengeCode: _challengeCode } = details
+
+    if (challengeCode !== _challengeCode)
+      throw new Error('Challenge Code is incorrect')
+
+    const startTime = new Date(timestamp)
+    if (new Date() - startTime > 30 * 60 * 1000)
+      throw new Error(
+        'The challenge must have been generated within the last 30 minutes'
+      )
 
     const thirtyMinutesAgo = new Date(
       new Date().setMinutes(new Date().getMinutes() - 30)
     )
     const result = await this.client('GET /users/:username/gists', {
-      username: handle,
+      username,
       since: thirtyMinutesAgo.toISOString()
     })
     let gistUrl = ''

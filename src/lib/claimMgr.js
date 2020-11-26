@@ -1,4 +1,5 @@
 // import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
+import { DID } from 'dids'
 import KeyResolver from '@ceramicnetwork/key-did-resolver'
 
 const didJWT = require('did-jwt')
@@ -111,6 +112,15 @@ class ClaimMgr {
   async verifyToken(token) {
     if (!token) throw new Error('no token')
     return didJWT.verifyJWT(token, { resolver: this.resolver })
+  }
+
+  async verifyJWS(jws) {
+    if (!jws) throw new Error('no jws')
+    const did = new DID({
+      resolver: KeyResolver.getResolver()
+    })
+    const { kid, payload } = await did.verifyJWS(jws)
+    return { kid, payload, did: kid.split('#')[0] }
   }
 }
 

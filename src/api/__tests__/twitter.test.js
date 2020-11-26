@@ -2,16 +2,12 @@ const TwitterHandler = require('../twitter')
 
 describe('TwitterHandler', () => {
   let sut
-  let twitterMgrMock = {
-    findDidInTweets: jest.fn()
-  }
-  let claimMgrMock = {
-    issueTwitter: jest.fn()
-  }
-  // let analyticsMock = { trackVerifyTwitter: jest.fn() }
+  let twitterMgrMock = { findDidInTweets: jest.fn() }
+  let claimMgrMock = { issueTwitter: jest.fn() }
+  let analyticsMock = { trackVerifyTwitter: jest.fn() }
 
   beforeAll(() => {
-    sut = new TwitterHandler(twitterMgrMock, claimMgrMock)
+    sut = new TwitterHandler(twitterMgrMock, claimMgrMock, analyticsMock)
   })
 
   test('empty constructor', () => {
