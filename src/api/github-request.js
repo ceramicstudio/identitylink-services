@@ -1,6 +1,6 @@
 class GithubRequestHandler {
   constructor(githubMgr, claimMgr, analytics) {
-    this.name = 'GithubHandler'
+    this.name = 'GithubRequestHandler'
     this.githubMgr = githubMgr
     this.claimMgr = claimMgr
     this.analytics = analytics
@@ -22,22 +22,24 @@ class GithubRequestHandler {
       !domains.test(event.headers.Origin)
     ) {
       cb({ code: 401, message: 'unauthorized' })
-      this.analytics.trackVerifyGithub(body.did, 401)
+      this.analytics.trackRequestGithub(body.did, 401)
       return
     }
 
     if (!body.did) {
       cb({ code: 403, message: 'no did' })
-      this.analytics.trackVerifyGithub(body.did, 403)
+      this.analytics.trackRequestGithub(body.did, 403)
       return
     }
-    if (!body.github_handle) {
+    if (!body.username) {
       cb({ code: 400, message: 'no github handle' })
-      this.analytics.trackVerifyGithub(body.did, 400)
+      this.analytics.trackRequestGithub(body.did, 400)
       return
     }
 
-    let verification_url = ''
+    let challenge = ''
+    let status = ''
+
     try {
       verification_url = await this.githubMgr.findDidInGists(
         body.github_handle,
@@ -45,13 +47,7 @@ class GithubRequestHandler {
       )
     } catch (e) {
       cb({ code: 500, message: 'error while trying to verify the did' })
-      this.analytics.trackVerifyGithub(body.did, 500)
-      return
-    }
-
-    if (verification_url == '') {
-      cb({ code: 400, message: 'no valid proof available' })
-      this.analytics.trackVerifyGithub(body.did, 400)
+      this.analytics.trackRequestGithub(body.did, 500)
       return
     }
 
@@ -64,12 +60,12 @@ class GithubRequestHandler {
       )
     } catch (e) {
       cb({ code: 500, message: 'could not issue a verification claim' })
-      this.analytics.trackVerifyGithub(body.did, 500)
+      this.analytics.trackRequestGithub(body.did, 500)
       return
     }
 
     cb(null, { verification: verification_claim })
-    this.analytics.trackVerifyGithub(body.did, 200)
+    this.analytics.trackRequestGithub(body.did, 200)
   }
 }
 module.exports = GithubRequestHandler

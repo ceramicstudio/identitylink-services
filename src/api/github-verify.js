@@ -1,6 +1,6 @@
 class GithubVerifyHandler {
   constructor(githubMgr, claimMgr, analytics) {
-    this.name = 'GithubHandler'
+    this.name = 'GithubVerifyHandler'
     this.githubMgr = githubMgr
     this.claimMgr = claimMgr
     this.analytics = analytics
@@ -26,17 +26,13 @@ class GithubVerifyHandler {
       return
     }
 
-    if (!body.did) {
-      cb({ code: 403, message: 'no did' })
-      this.analytics.trackVerifyGithub(body.did, 403)
-      return
-    }
-    if (!body.github_handle) {
-      cb({ code: 400, message: 'no github handle' })
+    if (!body.jws) {
+      cb({ code: 400, message: 'no jws' })
       this.analytics.trackVerifyGithub(body.did, 400)
       return
     }
 
+    // TODO:  Get the username, did, and timestamp from storage?
     let verification_url = ''
     try {
       verification_url = await this.githubMgr.findDidInGists(

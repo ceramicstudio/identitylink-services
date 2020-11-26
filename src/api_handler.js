@@ -98,6 +98,8 @@ const preHandler = (handler, event, context, callback) => {
     const config = { ...secretsFromEnv, ...envConfig }
     githubMgr.setSecrets(config)
     claimMgr.setSecrets(config)
+    // TODO: add twitter keys
+    // twitterMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
   } else {
     doHandler(handler, event, context, callback)
