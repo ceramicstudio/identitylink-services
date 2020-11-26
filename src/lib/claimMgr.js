@@ -10,17 +10,12 @@ class ClaimMgr {
   }
 
   isSecretsSet() {
-    return (
-      this.signerPrivate !== null &&
-      this.signerPublic !== null
-    )
+    return this.signerPrivate !== null && this.signerPublic !== null
   }
 
   async setSecrets(secrets) {
     this.signerPrivate = secrets.KEYPAIR_PRIVATE_KEY
     this.signerPublic = secrets.KEYPAIR_PUBLIC_KEY
-    const bucket = secrets.AWS_BUCKET_NAME
-    const shardBlockstore = true
     this.resolver = {
       registry: {
         ...KeyResolver.getResolver()

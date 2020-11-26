@@ -15,9 +15,8 @@ class GithubRequestHandler {
       return
     }
 
-    let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
-
     // TODO: Uncomment for production (if still necessary)
+    // let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
     // if (
     //   !domains.test(event.headers.origin) &&
     //   !domains.test(event.headers.Origin)
