@@ -8,6 +8,7 @@ describe('TwitterHandler', () => {
   let claimMgrMock = {
     issueTwitter: jest.fn()
   }
+  // let analyticsMock = { trackVerifyTwitter: jest.fn() }
 
   beforeAll(() => {
     sut = new TwitterHandler(twitterMgrMock, claimMgrMock)
@@ -37,7 +38,10 @@ describe('TwitterHandler', () => {
 
   test('no did', done => {
     sut.handle(
-      { headers: { origin: 'https://subdomain.3box.io' }, body: JSON.stringify({ other: 'other' }) },
+      {
+        headers: { origin: 'https://subdomain.3box.io' },
+        body: JSON.stringify({ other: 'other' })
+      },
       {},
       (err, res) => {
         expect(err).not.toBeNull()
@@ -52,7 +56,8 @@ describe('TwitterHandler', () => {
     sut.handle(
       {
         headers: { origin: 'https://3box.io' },
-        body: JSON.stringify({ did: 'did:https:test' }) },
+        body: JSON.stringify({ did: 'did:https:test' })
+      },
       {},
       (err, res) => {
         expect(err).not.toBeNull()

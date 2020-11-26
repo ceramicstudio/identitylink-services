@@ -1,5 +1,5 @@
 class GithubRequestHandler {
-  constructor(githubMgr, claimMgr, analytics) {
+  constructor(githubMgr, claimMgr, store, analytics) {
     this.name = 'GithubRequestHandler'
     this.githubMgr = githubMgr
     this.claimMgr = claimMgr
@@ -17,14 +17,15 @@ class GithubRequestHandler {
 
     let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
 
-    if (
-      !domains.test(event.headers.origin) &&
-      !domains.test(event.headers.Origin)
-    ) {
-      cb({ code: 401, message: 'unauthorized' })
-      this.analytics.trackRequestGithub(body.did, 401)
-      return
-    }
+    // TODO: Uncomment for production (if still necessary)
+    // if (
+    //   !domains.test(event.headers.origin) &&
+    //   !domains.test(event.headers.Origin)
+    // ) {
+    //   cb({ code: 401, message: 'unauthorized' })
+    //   this.analytics.trackRequestGithub(body.did, 401)
+    //   return
+    // }
 
     if (!body.did) {
       cb({ code: 403, message: 'no did' })
@@ -41,31 +42,16 @@ class GithubRequestHandler {
     let status = ''
 
     try {
-      verification_url = await this.githubMgr.findDidInGists(
-        body.github_handle,
-        body.did
-      )
+      await this.githubMgr.saveRequest(body.username, body.did)
     } catch (e) {
-      cb({ code: 500, message: 'error while trying to verify the did' })
+      cb({ code: 500, message: 'error while trying save to Redis' })
       this.analytics.trackRequestGithub(body.did, 500)
-      return
     }
+    // TODO: Return challenge code
 
-    let verification_claim = ''
-    try {
-      verification_claim = await this.claimMgr.issueGithub(
-        body.did,
-        body.github_handle,
-        verification_url
-      )
-    } catch (e) {
-      cb({ code: 500, message: 'could not issue a verification claim' })
-      this.analytics.trackRequestGithub(body.did, 500)
-      return
-    }
-
-    cb(null, { verification: verification_claim })
-    this.analytics.trackRequestGithub(body.did, 200)
+    // cb(null, { verification: verification_claim })
+    cb(null)
+    // this.analytics.trackRequestGithub(body.did, 200)
   }
 }
 module.exports = GithubRequestHandler

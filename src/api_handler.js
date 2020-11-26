@@ -83,8 +83,8 @@ const preHandler = (handler, event, context, callback) => {
     //     const config = Object.assign(JSON.parse(decrypted), envConfig)
     //     twitterMgr.setSecrets(config)
     //     githubMgr.setSecrets(config)
-    //     analytics.setSecrets(config)
     //     return claimMgr.setSecrets(config)
+    //     analytics.setSecrets(config)
     //   })
     //   .then(res => {
     //     doHandler(handler, event, context, callback)
@@ -93,9 +93,13 @@ const preHandler = (handler, event, context, callback) => {
       GITHUB_USERNAME: process.env.GITHUB_USERNAME,
       GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
       KEYPAIR_PRIVATE_KEY: process.env.KEYPAIR_PRIVATE_KEY,
-      KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY
+      KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY,
+      REDIS_URL: process.env.REDIS_URL,
+      REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY
     }
     const config = { ...secretsFromEnv, ...envConfig }
+    analytics.setSecrets(config)
     githubMgr.setSecrets(config)
     claimMgr.setSecrets(config)
     // TODO: add twitter keys

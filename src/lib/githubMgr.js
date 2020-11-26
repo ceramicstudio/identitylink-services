@@ -1,11 +1,14 @@
 import { request } from '@octokit/request'
 const fetch = require('node-fetch')
 
+const { RedisStore } = require('./store')
+
 class GithubMgr {
   constructor() {
     this.username = null
     this.personal_access_token = null
     this.client = null
+    this.store = null
   }
 
   isSecretsSet() {
@@ -22,6 +25,22 @@ class GithubMgr {
           authorization: `token ${secrets.GITHUB_PERSONAL_ACCESS_TOKEN}`
         }
       })
+    const TTL = 12345
+    this.store = new RedisStore(
+      { url: secrets.REDIS_URL, password: secrets.REDIS_PASSWORD },
+      TTL
+    )
+  }
+
+  async saveRequest(username, did) {
+    const data = {
+      did,
+      username,
+      timestamp: Date.now()
+    }
+    await this.store.write(did, data)
+    const val = await this.store.read(did)
+    console.log(val)
   }
 
   async findDidInGists(handle, did) {
