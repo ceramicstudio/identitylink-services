@@ -1,12 +1,12 @@
 class TwitterHandler {
-  constructor (twitterMgr, claimMgr, analytics) {
+  constructor(twitterMgr, claimMgr, analytics) {
     this.name = 'TwitterHandler'
     this.twitterMgr = twitterMgr
     this.claimMgr = claimMgr
     this.analytics = analytics
   }
 
-  async handle (event, context, cb) {
+  async handle(event, context, cb) {
     let body
     try {
       body = JSON.parse(event.body)
@@ -17,7 +17,10 @@ class TwitterHandler {
 
     let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
 
-    if (!domains.test(event.headers.origin) && !domains.test(event.headers.Origin)) {
+    if (
+      !domains.test(event.headers.origin) &&
+      !domains.test(event.headers.Origin)
+    ) {
       cb({ code: 401, message: 'unauthorized' })
       this.analytics.trackVerifyTwitter(body.did, 401)
       return
@@ -36,7 +39,10 @@ class TwitterHandler {
 
     let verification_url = ''
     try {
-      verification_url = await this.twitterMgr.findDidInTweets(body.twitter_handle, body.did)
+      verification_url = await this.twitterMgr.findDidInTweets(
+        body.twitter_handle,
+        body.did
+      )
     } catch (e) {
       cb({ code: 500, message: 'error while trying to verify the did' })
       this.analytics.trackVerifyTwitter(body.did, 500)
@@ -51,7 +57,11 @@ class TwitterHandler {
 
     let verification_claim = ''
     try {
-      verification_claim = await this.claimMgr.issueTwitter(body.did, body.twitter_handle, verification_url)
+      verification_claim = await this.claimMgr.issueTwitter(
+        body.did,
+        body.twitter_handle,
+        verification_url
+      )
     } catch (e) {
       cb({ code: 500, message: 'could not issue a verification claim' })
       this.analytics.trackVerifyTwitter(body.did, 500)
