@@ -40,7 +40,7 @@ describe('apiHandler', () => {
   })
 
   test('github', done => {
-    apiHandler.confirm_github({}, {}, (err, res) => {
+    apiHandler.verify_github({}, {}, (err, res) => {
       expect(err).toBeNull()
       expect(res).not.toBeNull()
       done()

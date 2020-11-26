@@ -1,4 +1,4 @@
-class GithubHandler {
+class GithubVerifyHandler {
   constructor(githubMgr, claimMgr, analytics) {
     this.name = 'GithubHandler'
     this.githubMgr = githubMgr
@@ -72,4 +72,4 @@ class GithubHandler {
     this.analytics.trackVerifyGithub(body.did, 200)
   }
 }
-module.exports = GithubHandler
+module.exports = GithubVerifyHandler

@@ -2,7 +2,8 @@
 // const AWS = require('aws-sdk')
 
 const TwitterHandler = require('./api/twitter')
-const GithubHandler = require('./api/github')
+const GithubRequestHandler = require('./api/github-request')
+const GithubVerifyHandler = require('./api/github-verify')
 const DidDocumentHandler = require('./api/diddoc')
 
 const TwitterMgr = require('./lib/twitterMgr')
@@ -108,13 +109,22 @@ module.exports.diddoc = (event, context, callback) => {
   preHandler(didDocumentHandler, event, context, callback)
 }
 
-// module.exports.confirm_github = (event, context, callback) => {
-//   console.log('Not implemented yet');
-// }
+let githubRequestHandler = new GithubRequestHandler(
+  githubMgr,
+  claimMgr,
+  analytics
+)
+module.exports.request_github = (event, context, callback) => {
+  preHandler(githubRequestHandler, event, context, callback)
+}
 
-let githubHandler = new GithubHandler(githubMgr, claimMgr, analytics)
-module.exports.confirm_github = (event, context, callback) => {
-  preHandler(githubHandler, event, context, callback)
+let githubVerifyHandler = new GithubVerifyHandler(
+  githubMgr,
+  claimMgr,
+  analytics
+)
+module.exports.verify_github = (event, context, callback) => {
+  preHandler(githubVerifyHandler, event, context, callback)
 }
 
 let twitterHandler = new TwitterHandler(twitterMgr, claimMgr, analytics)

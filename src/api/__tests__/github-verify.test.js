@@ -1,4 +1,4 @@
-const GithubHandler = require('../github')
+const GithubVerifyHandler = require('../github-verify')
 
 describe('TwitterHandler', () => {
   let sut
@@ -7,7 +7,7 @@ describe('TwitterHandler', () => {
   let analyticsMock = { trackVerifyGithub: jest.fn() }
 
   beforeAll(() => {
-    sut = new GithubHandler(githubMgrMock, claimMgrMock, analyticsMock)
+    sut = new GithubVerifyHandler(githubMgrMock, claimMgrMock, analyticsMock)
   })
 
   test('empty constructor', () => {

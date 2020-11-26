@@ -69,8 +69,8 @@ functions:
           method: post
           cors: true
           path: /api/v0/request-github
-  confirm-github:
-    handler: src/api_handler.confirm_github
+  verify-github:
+    handler: src/api_handler.verify_github
     timeout: 30
     events:
       - http:
