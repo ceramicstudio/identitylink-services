@@ -38,19 +38,16 @@ class GithubRequestHandler {
       return
     }
 
-    let challenge = ''
-    let status = ''
+    let challengeCode = ''
 
     try {
-      await this.githubMgr.saveRequest(body.username, body.did)
+      challengeCode = await this.githubMgr.saveRequest(body.username, body.did)
     } catch (e) {
       cb({ code: 500, message: 'error while trying save to Redis' })
-      this.analytics.trackRequestGithub(body.did, 500)
+      // this.analytics.trackRequestGithub(body.did, 500)
     }
-    // TODO: Return challenge code
 
-    // cb(null, { verification: verification_claim })
-    cb(null)
+    cb(null, { challengeCode })
     // this.analytics.trackRequestGithub(body.did, 200)
   }
 }

@@ -40,7 +40,7 @@ class GithubMgr {
     }
     await this.store.write(did, data)
     const val = await this.store.read(did)
-    console.log(val)
+    return "some random challenge"
   }
 
   async findDidInGists(handle, did) {
