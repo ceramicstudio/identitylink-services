@@ -50,7 +50,7 @@ describe('GithubVerifyHandler', () => {
   })
 
   test('no verification url', done => {
-    githubMgrMock.findDidInGists.mockReturnValue('')
+    githubMgrMock.findDidInGists.mockReturnValue({verification_url: ''})
     claimMgrMock.verifyJWS.mockReturnValue({
       payload: { challengeCode: '123' },
       did: 'did:123'
@@ -72,20 +72,20 @@ describe('GithubVerifyHandler', () => {
   })
 
   test('happy path', done => {
-    //   githubMgrMock.findDidInGists.mockReturnValue('http://some.valid.url')
-    //   claimMgrMock.issueGithub.mockReturnValue('somejwttoken')
-    //
-    //   sut.handle(
-    //     {
-    //       headers: { origin: 'https://subdomain.3box.io' },
-    //       body: JSON.stringify({ did: 'did:https:test', github_handle: 'test' })
-    //     },
-    //     {},
-    //     (err, res) => {
-    //       expect(err).toBeNull()
-    //       expect(res).toEqual({ verification: 'somejwttoken' })
+      githubMgrMock.findDidInGists.mockReturnValue({verification_url: 'http://some.valid.url', username:'dude' })
+      claimMgrMock.issueGithub.mockReturnValue('somejwttoken')
+
+      sut.handle(
+        {
+          headers: { origin: 'https://subdomain.3box.io' },
+          body: JSON.stringify({ jws: 'abc123' })
+        },
+        {},
+        (err, res) => {
+          expect(err).toBeNull()
+          expect(res).toEqual({ attestation: 'somejwttoken' })
     done()
-    //     }
-    //   )
+        }
+      )
   })
 })

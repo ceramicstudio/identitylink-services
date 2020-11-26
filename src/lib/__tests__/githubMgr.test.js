@@ -156,7 +156,7 @@ describe('GithubMgr', () => {
     sut
       .findDidInGists(DID, CHALLENGE_CODE)
       .then(resp => {
-        expect(resp).toEqual(GIST)
+        expect(resp.verification_url).toEqual(GIST)
         done()
       })
       .catch(err => {

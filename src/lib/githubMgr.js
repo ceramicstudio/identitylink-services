@@ -43,6 +43,7 @@ class GithubMgr {
       challengeCode
     }
     await this.store.write(did, data)
+    await this.store.quit()
     return challengeCode
   }
 
@@ -51,7 +52,9 @@ class GithubMgr {
     if (!challengeCode) throw new Error('no challengeCode provided')
 
     const details = await this.store.read(did)
+    await this.store.quit()
     const { username, timestamp, challengeCode: _challengeCode } = details
+
     if (challengeCode !== _challengeCode)
       throw new Error('Challenge Code is incorrect')
 
@@ -79,7 +82,7 @@ class GithubMgr {
     if (text.includes(did)) gistUrl = rawUrl
 
     // Return the raw URL of the gist containing the did
-    return gistUrl
+    return { verification_url: gistUrl, username }
   }
 }
 

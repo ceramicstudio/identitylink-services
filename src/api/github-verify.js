@@ -22,7 +22,7 @@ class GithubVerifyHandler {
     //   !domains.test(event.headers.Origin)
     // ) {
     //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackVerifyGithub(body.did, 401)
+    //   this.analytics.trackVerifyGithub(did, 401)
     //   return
     // }
 
@@ -46,8 +46,12 @@ class GithubVerifyHandler {
     }
 
     let verification_url = ''
+    let username = ''
     try {
-      verification_url = await this.githubMgr.findDidInGists(did, challengeCode)
+      ({ verification_url, username } = await this.githubMgr.findDidInGists(
+        did,
+        challengeCode
+      ))
     } catch (e) {
       cb({ code: 500, message: 'error while trying to find a Gist' + e })
       this.analytics.trackVerifyGithub(did, 500)
@@ -56,8 +60,7 @@ class GithubVerifyHandler {
 
     if (verification_url == '') {
       cb({ code: 400, message: 'no valid gist found' })
-      console.log('no gist')
-      // this.analytics.trackVerifyGithub(body.did, 400)
+      this.analytics.trackVerifyGithub(did, 400)
       return
     }
 
@@ -69,13 +72,13 @@ class GithubVerifyHandler {
         verification_url
       )
     } catch (e) {
-      cb({ code: 500, message: 'could not issue a verification claim' })
-      this.analytics.trackVerifyGithub(body.did, 500)
+      cb({ code: 500, message: 'could not issue a verification claim' + e })
+      this.analytics.trackVerifyGithub(did, 500)
       return
     }
 
     cb(null, { attestation })
-    // this.analytics.trackVerifyGithub(body.did, 200)
+    this.analytics.trackVerifyGithub(did, 200)
   }
 }
 module.exports = GithubVerifyHandler
