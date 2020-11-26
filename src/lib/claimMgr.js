@@ -50,16 +50,23 @@ class ClaimMgr {
       })
   }
 
-  async issueGithub(did, handle, url) {
+  async issueGithub(did, username, verification_url) {
     const signer = didJWT.SimpleSigner(this.signerPrivate)
     return didJWT
       .createJWT(
         {
           sub: did,
-          iat: Math.floor(Date.now() / 1000),
-          claim: {
-            github_handle: handle,
-            github_proof: url
+          nbf: Math.floor(Date.now() / 1000),
+          vc: {
+            '@context': ['https://www.w3.org/2018/credentials/v1'],
+            type: ['VerifiableCredential'],
+            credentialSubject: {
+              account: {
+                type: 'Github',
+                username,
+                url: verification_url
+              }
+            }
           }
         },
         {

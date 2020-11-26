@@ -61,11 +61,11 @@ class GithubVerifyHandler {
       return
     }
 
-    let verification_claim = ''
+    let attestation = ''
     try {
-      verification_claim = await this.claimMgr.issueGithub(
-        body.did,
-        body.github_handle,
+      attestation = await this.claimMgr.issueGithub(
+        did,
+        username,
         verification_url
       )
     } catch (e) {
@@ -74,7 +74,7 @@ class GithubVerifyHandler {
       return
     }
 
-    cb(null, { verification: verification_claim })
+    cb(null, { attestation })
     // this.analytics.trackVerifyGithub(body.did, 200)
   }
 }
