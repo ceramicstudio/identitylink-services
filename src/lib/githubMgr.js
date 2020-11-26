@@ -9,7 +9,7 @@ class GithubMgr {
     this.username = null
     this.personal_access_token = null
     this.client = null
-    this.store = null
+    this.store = {}
   }
 
   isSecretsSet() {
@@ -27,10 +27,11 @@ class GithubMgr {
         }
       })
     const TTL = 12345
-    this.store = new RedisStore(
-      { url: secrets.REDIS_URL, password: secrets.REDIS_PASSWORD },
-      TTL
-    )
+    if (secrets.REDIS_URL)
+      this.store = new RedisStore(
+        { url: secrets.REDIS_URL, password: secrets.REDIS_PASSWORD },
+        TTL
+      )
   }
 
   async saveRequest(username, did) {
@@ -46,9 +47,11 @@ class GithubMgr {
   }
 
   async findDidInGists(did, challengeCode) {
+    if (!did) throw new Error('no did provided')
+    if (!challengeCode) throw new Error('no challengeCode provided')
+
     const details = await this.store.read(did)
     const { username, timestamp, challengeCode: _challengeCode } = details
-
     if (challengeCode !== _challengeCode)
       throw new Error('Challenge Code is incorrect')
 
@@ -67,8 +70,8 @@ class GithubMgr {
     })
     let gistUrl = ''
     const gists = result.data
-    if (!gists.length) return gistUrl
 
+    if (!gists.length) return gistUrl
     const fileName = Object.keys(gists[0].files)[0]
     const rawUrl = gists[0].files[fileName].raw_url
     const res = await fetch(rawUrl)

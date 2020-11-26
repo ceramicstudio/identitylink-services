@@ -55,7 +55,8 @@ class GithubVerifyHandler {
     }
 
     if (verification_url == '') {
-      cb({ code: 400, message: 'no valid proof available' })
+      cb({ code: 400, message: 'no valid gist found' })
+      console.log('no gist')
       // this.analytics.trackVerifyGithub(body.did, 400)
       return
     }

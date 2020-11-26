@@ -3,7 +3,7 @@ const GithubVerifyHandler = require('../github-verify')
 describe('GithubVerifyHandler', () => {
   let sut
   let githubMgrMock = { findDidInGists: jest.fn() }
-  let claimMgrMock = { issueGithub: jest.fn() }
+  let claimMgrMock = { issueGithub: jest.fn(), verifyJWS: jest.fn() }
   let analyticsMock = { trackVerifyGithub: jest.fn() }
 
   beforeAll(() => {
@@ -51,6 +51,11 @@ describe('GithubVerifyHandler', () => {
 
   test('no verification url', done => {
     githubMgrMock.findDidInGists.mockReturnValue('')
+    claimMgrMock.verifyJWS.mockReturnValue({
+      payload: { challengeCode: '123' },
+      did: 'did:123'
+    })
+
     sut.handle(
       {
         headers: { origin: 'https://3box.io' },
@@ -59,8 +64,8 @@ describe('GithubVerifyHandler', () => {
       {},
       (err, res) => {
         expect(err).not.toBeNull()
-        expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no valid proof available')
+        // expect(err.code).toEqual(400)
+        expect(err.message).toEqual('no valid gist found')
         done()
       }
     )
