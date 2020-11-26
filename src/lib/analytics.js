@@ -51,6 +51,13 @@ class Analytics {
     data.properties = { did_hash: hash(did), status }
     this._track(data)
   }
+
+  trackRequestGithub(did, status) {
+    let data = {}
+    data.event = 'request_service_github'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
 }
 
 module.exports = Analytics

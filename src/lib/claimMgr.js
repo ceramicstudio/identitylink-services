@@ -1,7 +1,6 @@
 // import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
 import KeyResolver from '@ceramicnetwork/key-did-resolver'
 
-import { initIPFS } from 'ipfs-s3-dag-get'
 const didJWT = require('did-jwt')
 
 class ClaimMgr {
@@ -11,20 +10,12 @@ class ClaimMgr {
   }
 
   isSecretsSet() {
-    return (
-      this.ipfs !== null &&
-      this.signerPrivate !== null &&
-      this.signerPublic !== null
-    )
+    return this.signerPrivate !== null && this.signerPublic !== null
   }
 
   async setSecrets(secrets) {
     this.signerPrivate = secrets.KEYPAIR_PRIVATE_KEY
     this.signerPublic = secrets.KEYPAIR_PUBLIC_KEY
-    const ipfsPath = secrets.IPFS_PATH
-    const bucket = secrets.AWS_BUCKET_NAME
-    const shardBlockstore = true
-    this.ipfs = await initIPFS({ ipfsPath, bucket, shardBlockstore })
     this.resolver = {
       registry: {
         ...KeyResolver.getResolver()

@@ -2,7 +2,8 @@
 // const AWS = require('aws-sdk')
 
 const TwitterHandler = require('./api/twitter')
-const GithubHandler = require('./api/github')
+const GithubRequestHandler = require('./api/github-request')
+const GithubVerifyHandler = require('./api/github-verify')
 const DidDocumentHandler = require('./api/diddoc')
 
 const TwitterMgr = require('./lib/twitterMgr')
@@ -82,8 +83,8 @@ const preHandler = (handler, event, context, callback) => {
     //     const config = Object.assign(JSON.parse(decrypted), envConfig)
     //     twitterMgr.setSecrets(config)
     //     githubMgr.setSecrets(config)
-    //     analytics.setSecrets(config)
     //     return claimMgr.setSecrets(config)
+    //     analytics.setSecrets(config)
     //   })
     //   .then(res => {
     //     doHandler(handler, event, context, callback)
@@ -92,11 +93,17 @@ const preHandler = (handler, event, context, callback) => {
       GITHUB_USERNAME: process.env.GITHUB_USERNAME,
       GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
       KEYPAIR_PRIVATE_KEY: process.env.KEYPAIR_PRIVATE_KEY,
-      KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY
+      KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY,
+      REDIS_URL: process.env.REDIS_URL,
+      REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY
     }
     const config = { ...secretsFromEnv, ...envConfig }
+    analytics.setSecrets(config)
     githubMgr.setSecrets(config)
     claimMgr.setSecrets(config)
+    // TODO: add twitter keys
+    // twitterMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
   } else {
     doHandler(handler, event, context, callback)
@@ -108,13 +115,22 @@ module.exports.diddoc = (event, context, callback) => {
   preHandler(didDocumentHandler, event, context, callback)
 }
 
-// module.exports.confirm_github = (event, context, callback) => {
-//   console.log('Not implemented yet');
-// }
+let githubRequestHandler = new GithubRequestHandler(
+  githubMgr,
+  claimMgr,
+  analytics
+)
+module.exports.request_github = (event, context, callback) => {
+  preHandler(githubRequestHandler, event, context, callback)
+}
 
-let githubHandler = new GithubHandler(githubMgr, claimMgr, analytics)
-module.exports.confirm_github = (event, context, callback) => {
-  preHandler(githubHandler, event, context, callback)
+let githubVerifyHandler = new GithubVerifyHandler(
+  githubMgr,
+  claimMgr,
+  analytics
+)
+module.exports.verify_github = (event, context, callback) => {
+  preHandler(githubVerifyHandler, event, context, callback)
 }
 
 let twitterHandler = new TwitterHandler(twitterMgr, claimMgr, analytics)
