@@ -1,11 +1,5 @@
 const ClaimMgr = require('../claimMgr')
 
-jest.mock('ipfs-s3-dag-get', () => ({
-  initIPFS: async () => {
-    return 'ipfs'
-  }
-}))
-
 describe('ClaimMgr', () => {
   let sut
   let did = 'did:muport:fake'
@@ -28,7 +22,6 @@ describe('ClaimMgr', () => {
     expect(sut.isSecretsSet()).toEqual(false)
     sut.setSecrets({
       KEYPAIR_PRIVATE_KEY: signerPrivate,
-      IPFS_PATH: '/ipfs',
       AWS_BUCKET_NAME: 'bucket'
     })
     expect(sut.isSecretsSet()).toEqual(true)

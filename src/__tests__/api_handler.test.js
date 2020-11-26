@@ -4,12 +4,6 @@ MockAWS.setSDKInstance(AWS)
 
 const apiHandler = require('../api_handler')
 
-jest.mock('ipfs-s3-dag-get', () => ({
-  initIPFS: async () => {
-    return 'ipfs'
-  }
-}))
-
 describe('apiHandler', () => {
   beforeAll(() => {
     // this keypair is a test one, not a secret really
