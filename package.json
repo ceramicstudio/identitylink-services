@@ -1,5 +1,5 @@
 {
-  "name": "3box-verifications",
+  "name": "3box-verifications-v2",
   "version": "1.5.0",
   "description": "Verification service for 3Box",
   "main": "src/index.js",
@@ -10,23 +10,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/3box/3box-verifications.git"
+    "url": "git+https://github.com/pi0neerpat/3box-verifications-v2.git"
   },
-  "author": "Cristobal Castillo <cristobal.castillo@consensys.net>",
+  "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/3box/3box-verifications/issues"
-  },
-  "homepage": "https://github.com/3box/3box-verifications#readme",
+  "homepage": "https://github.com/pi0neerpat/3box-verifications-v2",
   "dependencies": {
-    "@ceramicnetwork/3id-did-resolver": "^0.4.11",
+    "@ceramicnetwork/3id-did-resolver": "^0.4.9",
     "@ceramicnetwork/key-did-resolver": "^0.2.0",
     "@octokit/request": "^5.4.10",
+    "@stablelib/random": "^1.0.0",
     "analytics-node": "^3.4.0-beta.3",
     "aws-sdk": "^2.783.0",
     "did-jwt": "^4.6.2",
-    "dids": "^1.0.0",
+    "dids": "^1.1.0",
     "js-sha256": "^0.9.0",
+    "key-did-provider-ed25519": "1.0.0",
     "node-fetch": "^2.6.1",
     "redis": "^3.0.2",
     "serverless-kms-secrets": "^1.0.4",

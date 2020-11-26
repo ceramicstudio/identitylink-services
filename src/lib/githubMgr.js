@@ -1,4 +1,5 @@
 import { request } from '@octokit/request'
+import { randomString } from '@stablelib/random'
 const fetch = require('node-fetch')
 
 const { RedisStore } = require('./store')
@@ -33,14 +34,15 @@ class GithubMgr {
   }
 
   async saveRequest(username, did) {
+    const challengeCode = randomString(32)
     const data = {
       did,
       username,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      challengeCode
     }
     await this.store.write(did, data)
-    const val = await this.store.read(did)
-    return "some random challenge"
+    return challengeCode
   }
 
   async findDidInGists(handle, did) {

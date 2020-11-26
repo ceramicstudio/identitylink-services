@@ -45,6 +45,7 @@ class GithubRequestHandler {
     } catch (e) {
       cb({ code: 500, message: 'error while trying save to Redis' })
       // this.analytics.trackRequestGithub(body.did, 500)
+      return
     }
 
     cb(null, { challengeCode })
