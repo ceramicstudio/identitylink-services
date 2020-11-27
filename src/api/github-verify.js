@@ -45,20 +45,22 @@ class GithubVerifyHandler {
       return
     }
 
-    let verification_url = ''
+    let verification_url
     let username = ''
     try {
-      ({ verification_url, username } = await this.githubMgr.findDidInGists(
+      const gistDetails = await this.githubMgr.findDidInGists(
         did,
         challengeCode
-      ))
+      )
+      verification_url = gistDetails.verification_url
+      username = gistDetails.username
     } catch (e) {
-      cb({ code: 500, message: 'error while trying to find a Gist' + e })
+      cb({ code: 500, message: 'error while trying to find a Gist. ' + e })
       this.analytics.trackVerifyGithub(did, 500)
       return
     }
 
-    if (verification_url == '') {
+    if (!verification_url) {
       cb({ code: 400, message: 'no valid gist found' })
       this.analytics.trackVerifyGithub(did, 400)
       return

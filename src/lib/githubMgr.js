@@ -90,7 +90,6 @@ class GithubMgr {
     const res = await fetch(rawUrl)
     const text = await res.text()
     if (text.includes(did)) gistUrl = rawUrl
-
     // Return the raw URL of the gist containing the did
     return { verification_url: gistUrl, username }
   }

@@ -51,6 +51,9 @@ class ClaimMgr {
   }
 
   async issueGithub(did, username, verification_url) {
+    if (!username) throw new Error('No username provided')
+    if (!did) throw new Error('No did provided')
+    if (!verification_url) throw new Error('No verification url provided')
     const signer = didJWT.SimpleSigner(this.signerPrivate)
     return didJWT
       .createJWT(
