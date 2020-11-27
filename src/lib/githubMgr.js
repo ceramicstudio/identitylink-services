@@ -43,7 +43,7 @@ class GithubMgr {
       challengeCode
     }
     await this.store.write(did, data)
-    await this.store.quit()
+    // await this.store.quit()
     return challengeCode
   }
 
@@ -51,12 +51,22 @@ class GithubMgr {
     if (!did) throw new Error('no did provided')
     if (!challengeCode) throw new Error('no challengeCode provided')
 
-    const details = await this.store.read(did)
-    await this.store.quit()
+    let details
+    try {
+      details = await this.store.read(did)
+    } catch (e) {
+      throw new Error(
+        `Error fetching from the database for user ${did}. Error: ${e}`
+      )
+    }
+    if (!details)
+      throw new Error(`Error fetching from the database for user ${did}.`)
+
+    // await this.store.quit()
     const { username, timestamp, challengeCode: _challengeCode } = details
 
     if (challengeCode !== _challengeCode)
-      throw new Error('Challenge Code is incorrect')
+      throw new Error(`Challenge Code is incorrect`)
 
     const startTime = new Date(timestamp)
     if (new Date() - startTime > 30 * 60 * 1000)

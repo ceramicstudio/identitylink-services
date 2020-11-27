@@ -36,6 +36,7 @@ describe('GithubMgr', () => {
 
   test('saveRequest() happy case', done => {
     sut.store.write = jest.fn()
+    sut.store.quit = jest.fn()
     sut
       .saveRequest(GITHUB_USERNAME, DID)
       .then(resp => {
@@ -72,6 +73,7 @@ describe('GithubMgr', () => {
   })
 
   test('findDidInGists() did not found', done => {
+    sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: GITHUB_USERNAME,
       timestamp: Date.now(),
@@ -94,6 +96,7 @@ describe('GithubMgr', () => {
   })
 
   test('findDidInGists() incorrect challenge code', done => {
+    sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: GITHUB_USERNAME,
       timestamp: Date.now(),
@@ -115,6 +118,7 @@ describe('GithubMgr', () => {
   })
 
   test('findDidInGists() Challenge created over 30min ago', done => {
+    sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: GITHUB_USERNAME,
       timestamp: Date.now() - 31 * 60 * 1000,
@@ -134,6 +138,7 @@ describe('GithubMgr', () => {
   })
 
   test('findDidInGists() happy case', done => {
+    sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: GITHUB_USERNAME,
       timestamp: Date.now(),
