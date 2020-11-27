@@ -22,7 +22,7 @@ class GithubRequestHandler {
     //   !domains.test(event.headers.Origin)
     // ) {
     //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackRequestGithub(body.did, 401)
+    //   this.analytics.trackRequestGithub(did, 401)
     //   return
     // }
 

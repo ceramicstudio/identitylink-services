@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "0d0738bd-b3da-4926-b186-cc60fc4f0638",
+		"name": "3box-verifications-v2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "request-github",
+			"protocolProfileBehavior": {
+				"disableCookies": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"did\": \"did:key:z6Mkskj61VaKhGQbxNP88N1WXtTLTAG2a1Uc56X7KKFmhv4m\",\n    \"username\": \"pat\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v0/request-github",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"request-github"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/.well-known/did.json",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/.well-known/did.json",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						".well-known",
+						"did.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "confirm-github",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"jws\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v0/confirm-github",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v0",
+						"confirm-github"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

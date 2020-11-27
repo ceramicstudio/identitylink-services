@@ -9,7 +9,7 @@ class GithubMgr {
     this.username = null
     this.personal_access_token = null
     this.client = null
-    this.store = null
+    this.store = {}
   }
 
   isSecretsSet() {
@@ -27,10 +27,11 @@ class GithubMgr {
         }
       })
     const TTL = 12345
-    this.store = new RedisStore(
-      { url: secrets.REDIS_URL, password: secrets.REDIS_PASSWORD },
-      TTL
-    )
+    if (secrets.REDIS_URL)
+      this.store = new RedisStore(
+        { url: secrets.REDIS_URL, password: secrets.REDIS_PASSWORD },
+        TTL
+      )
   }
 
   async saveRequest(username, did) {
@@ -42,32 +43,55 @@ class GithubMgr {
       challengeCode
     }
     await this.store.write(did, data)
+    // await this.store.quit()
     return challengeCode
   }
 
-  async findDidInGists(handle, did) {
-    if (!handle) throw new Error('no github handle provided')
+  async findDidInGists(did, challengeCode) {
     if (!did) throw new Error('no did provided')
+    if (!challengeCode) throw new Error('no challengeCode provided')
+
+    let details
+    try {
+      details = await this.store.read(did)
+    } catch (e) {
+      throw new Error(
+        `Error fetching from the database for user ${did}. Error: ${e}`
+      )
+    }
+    if (!details)
+      throw new Error(`Error fetching from the database for user ${did}.`)
+
+    // await this.store.quit()
+    const { username, timestamp, challengeCode: _challengeCode } = details
+
+    if (challengeCode !== _challengeCode)
+      throw new Error(`Challenge Code is incorrect`)
+
+    const startTime = new Date(timestamp)
+    if (new Date() - startTime > 30 * 60 * 1000)
+      throw new Error(
+        'The challenge must have been generated within the last 30 minutes'
+      )
 
     const thirtyMinutesAgo = new Date(
       new Date().setMinutes(new Date().getMinutes() - 30)
     )
     const result = await this.client('GET /users/:username/gists', {
-      username: handle,
+      username,
       since: thirtyMinutesAgo.toISOString()
     })
     let gistUrl = ''
     const gists = result.data
-    if (!gists.length) return gistUrl
 
+    if (!gists.length) return gistUrl
     const fileName = Object.keys(gists[0].files)[0]
     const rawUrl = gists[0].files[fileName].raw_url
     const res = await fetch(rawUrl)
     const text = await res.text()
     if (text.includes(did)) gistUrl = rawUrl
-
     // Return the raw URL of the gist containing the did
-    return gistUrl
+    return { verification_url: gistUrl, username }
   }
 }
 

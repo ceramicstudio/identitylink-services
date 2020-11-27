@@ -1,14 +1,15 @@
 const GithubMgr = require('../githubMgr')
 
-describe('TwitterMgr', () => {
+describe('GithubMgr', () => {
   let sut
-  let fakeDid = 'did:3:Qmasdfasdf'
-  let handle = 'pi0neerpat'
-  let gistUrl =
-    'https://gist.githubusercontent.com/pi0neerpat/3fa6abf46b077376425e1a4baf9ef63f/raw/562aa87d3e8a166240f18f9522c3a05850535634/gistfile1.txt'
+  const DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
+  const GITHUB_USERNAME = 'pi0neerpat'
+  const CHALLENGE_CODE = '123'
+  const GIST =
+    'https://gist.githubusercontent.com/pi0neerpat/271bf248f70895705bd580af39e12247/raw/569fae2ce5f1b4a7605e98a3f246a67fc8291878/gistfile1.txt'
 
   beforeAll(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
     sut = new GithubMgr()
   })
 
@@ -19,8 +20,8 @@ describe('TwitterMgr', () => {
   test('setSecrets', () => {
     expect(sut.isSecretsSet()).toEqual(false)
     sut.setSecrets({
-      GITHUB_USERNAME: 'pi0neerpat'
-      // Uncomment to test your real token
+      GITHUB_USERNAME
+      // Uncomment to test with your real token
       // GITHUB_PERSONAL_ACCESS_TOKEN: 'FAKE'
     })
     expect(sut.isSecretsSet()).toEqual(true)
@@ -33,49 +34,13 @@ describe('TwitterMgr', () => {
     })
   })
 
-  test('findDidInGists() no handle', done => {
+  test('saveRequest() happy case', done => {
+    sut.store.write = jest.fn()
+    sut.store.quit = jest.fn()
     sut
-      .findDidInGists()
+      .saveRequest(GITHUB_USERNAME, DID)
       .then(resp => {
-        fail("shouldn't return")
-      })
-      .catch(err => {
-        expect(err.message).toEqual('no github handle provided')
-        done()
-      })
-  })
-
-  test('findDidInGists() no did', done => {
-    sut
-      .findDidInGists(handle)
-      .then(resp => {
-        fail("shouldn't return")
-      })
-      .catch(err => {
-        expect(err.message).toEqual('no did provided')
-        done()
-      })
-  })
-
-  test('findDidInGists() did found', done => {
-    sut.client = jest.fn(() => {
-      return Promise.resolve({
-        data: [
-          {
-            files: {
-              'textGist1.txt': {
-                raw_url: gistUrl
-              }
-            }
-          }
-        ]
-      })
-    })
-
-    sut
-      .findDidInGists(handle, fakeDid)
-      .then(resp => {
-        expect(resp).toEqual(gistUrl)
+        expect(/[a-zA-Z0-9]{32}/.test(resp)).toBe(true)
         done()
       })
       .catch(err => {
@@ -84,15 +49,119 @@ describe('TwitterMgr', () => {
       })
   })
 
+  test('findDidInGists() no did', done => {
+    sut
+      .findDidInGists(null, CHALLENGE_CODE)
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('no did provided')
+        done()
+      })
+  })
+  test('findDidInGists() no challengeCode', done => {
+    sut
+      .findDidInGists(DID, null)
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('no challengeCode provided')
+        done()
+      })
+  })
+
   test('findDidInGists() did not found', done => {
+    sut.store.quit = jest.fn()
+    sut.store.read = jest.fn(() => ({
+      username: GITHUB_USERNAME,
+      timestamp: Date.now(),
+      challengeCode: CHALLENGE_CODE
+    }))
     sut.client = jest.fn(() => {
       return Promise.resolve({ data: [] })
     })
 
     sut
-      .findDidInGists(handle, fakeDid)
+      .findDidInGists(DID, CHALLENGE_CODE)
       .then(resp => {
         expect(resp).toEqual('')
+        done()
+      })
+      .catch(err => {
+        fail(err)
+        done()
+      })
+  })
+
+  test('findDidInGists() incorrect challenge code', done => {
+    sut.store.quit = jest.fn()
+    sut.store.read = jest.fn(() => ({
+      username: GITHUB_USERNAME,
+      timestamp: Date.now(),
+      challengeCode: CHALLENGE_CODE
+    }))
+    sut.client = jest.fn(() => {
+      return Promise.resolve({ data: [] })
+    })
+
+    sut
+      .findDidInGists(DID, 'incorrect challenge code')
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('Challenge Code is incorrect')
+        done()
+      })
+  })
+
+  test('findDidInGists() Challenge created over 30min ago', done => {
+    sut.store.quit = jest.fn()
+    sut.store.read = jest.fn(() => ({
+      username: GITHUB_USERNAME,
+      timestamp: Date.now() - 31 * 60 * 1000,
+      challengeCode: CHALLENGE_CODE
+    }))
+    sut
+      .findDidInGists(DID, CHALLENGE_CODE)
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual(
+          'The challenge must have been generated within the last 30 minutes'
+        )
+        done()
+      })
+  })
+
+  test('findDidInGists() happy case', done => {
+    sut.store.quit = jest.fn()
+    sut.store.read = jest.fn(() => ({
+      username: GITHUB_USERNAME,
+      timestamp: Date.now(),
+      challengeCode: CHALLENGE_CODE
+    }))
+    sut.client = jest.fn(() => {
+      return Promise.resolve({
+        data: [
+          {
+            files: {
+              'textGist1.txt': {
+                raw_url: GIST
+              }
+            }
+          }
+        ]
+      })
+    })
+
+    sut
+      .findDidInGists(DID, CHALLENGE_CODE)
+      .then(resp => {
+        expect(resp.verification_url).toEqual(GIST)
         done()
       })
       .catch(err => {

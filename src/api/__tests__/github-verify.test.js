@@ -3,7 +3,7 @@ const GithubVerifyHandler = require('../github-verify')
 describe('GithubVerifyHandler', () => {
   let sut
   let githubMgrMock = { findDidInGists: jest.fn() }
-  let claimMgrMock = { issueGithub: jest.fn() }
+  let claimMgrMock = { issueGithub: jest.fn(), verifyJWS: jest.fn() }
   let analyticsMock = { trackVerifyGithub: jest.fn() }
 
   beforeAll(() => {
@@ -23,14 +23,15 @@ describe('GithubVerifyHandler', () => {
     })
   })
 
-  test('not coming from the 3box origin', done => {
-    sut.handle({ headers: { origin: 'abc' }, body: '{}' }, {}, (err, res) => {
-      expect(err).not.toBeNull()
-      expect(err.message).toEqual('unauthorized')
-      expect(err.code).toEqual(401)
-      done()
-    })
-  })
+  // TODO: Uncomment for production (if still necessary)
+  // test('not coming from the 3box origin', done => {
+  //   sut.handle({ headers: { origin: 'abc' }, body: '{}' }, {}, (err, res) => {
+  //     expect(err).not.toBeNull()
+  //     expect(err.message).toEqual('unauthorized')
+  //     expect(err.code).toEqual(401)
+  //     done()
+  //   })
+  // })
 
   test('no jws', done => {
     sut.handle(
@@ -49,7 +50,12 @@ describe('GithubVerifyHandler', () => {
   })
 
   test('no verification url', done => {
-    githubMgrMock.findDidInGists.mockReturnValue('')
+    githubMgrMock.findDidInGists.mockReturnValue({verification_url: ''})
+    claimMgrMock.verifyJWS.mockReturnValue({
+      payload: { challengeCode: '123' },
+      did: 'did:123'
+    })
+
     sut.handle(
       {
         headers: { origin: 'https://3box.io' },
@@ -58,28 +64,28 @@ describe('GithubVerifyHandler', () => {
       {},
       (err, res) => {
         expect(err).not.toBeNull()
-        expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no valid proof available')
+        // expect(err.code).toEqual(400)
+        expect(err.message).toEqual('no valid gist found')
         done()
       }
     )
   })
 
   test('happy path', done => {
-    //   githubMgrMock.findDidInGists.mockReturnValue('http://some.valid.url')
-    //   claimMgrMock.issueGithub.mockReturnValue('somejwttoken')
-    //
-    //   sut.handle(
-    //     {
-    //       headers: { origin: 'https://subdomain.3box.io' },
-    //       body: JSON.stringify({ did: 'did:https:test', github_handle: 'test' })
-    //     },
-    //     {},
-    //     (err, res) => {
-    //       expect(err).toBeNull()
-    //       expect(res).toEqual({ verification: 'somejwttoken' })
+      githubMgrMock.findDidInGists.mockReturnValue({verification_url: 'http://some.valid.url', username:'dude' })
+      claimMgrMock.issueGithub.mockReturnValue('somejwttoken')
+
+      sut.handle(
+        {
+          headers: { origin: 'https://subdomain.3box.io' },
+          body: JSON.stringify({ jws: 'abc123' })
+        },
+        {},
+        (err, res) => {
+          expect(err).toBeNull()
+          expect(res).toEqual({ attestation: 'somejwttoken' })
     done()
-    //     }
-    //   )
+        }
+      )
   })
 })

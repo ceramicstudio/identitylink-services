@@ -3,14 +3,16 @@ const ClaimMgr = require('../claimMgr')
 describe('ClaimMgr', () => {
   let sut
   let did = 'did:muport:fake'
-  let handle = '3boxuser'
+  let username = '3boxuser'
   let url = 'https://twitter.com/3boxdb/status/1069604129826369537'
-  let signerPrivate =
-    'fa09a3ff0d486be2eb69545c393e2cf47cb53feb44a3550199346bdfa6f53245'
+  let KEYPAIR_PRIVATE_KEY = 'ouuA7WMw9jpP6qbT4JQ3X1iU5ckLJMdo'
+  const KEYPAIR_PUBLIC_KEY =
+    '0242659bd61e2bf06485b05be840dbdff8ca2402cad39620a557d4d4815a6b9011'
+
   let jwtSubstring = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ'
 
   beforeAll(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
     sut = new ClaimMgr()
   })
 
@@ -21,7 +23,8 @@ describe('ClaimMgr', () => {
   test('setSecrets', () => {
     expect(sut.isSecretsSet()).toEqual(false)
     sut.setSecrets({
-      KEYPAIR_PRIVATE_KEY: signerPrivate,
+      KEYPAIR_PRIVATE_KEY,
+      KEYPAIR_PUBLIC_KEY,
       AWS_BUCKET_NAME: 'bucket'
     })
     expect(sut.isSecretsSet()).toEqual(true)
@@ -30,7 +33,7 @@ describe('ClaimMgr', () => {
 
   test('issueTwitter() happy path', done => {
     sut
-      .issueTwitter(handle, did, url)
+      .issueTwitter(username, did, url)
       .then(resp => {
         expect(resp).toContain(jwtSubstring)
         done()
@@ -41,9 +44,43 @@ describe('ClaimMgr', () => {
       })
   })
 
+  test('issueGithub() no did', async done => {
+    sut
+      .issueGithub(null, username, url)
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('No did provided')
+        done()
+      })
+  })
+  test('issueGithub() no username', async done => {
+    sut
+      .issueGithub(did, null, url)
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('No username provided')
+        done()
+      })
+  })
+  test('issueGithub() no verification_url', async done => {
+    sut
+      .issueGithub(did, username, null)
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('No verification url provided')
+        done()
+      })
+  })
+
   test('issueGithub() happy path', done => {
     sut
-      .issueGithub(handle, did, url)
+      .issueGithub(username, did, url)
       .then(resp => {
         expect(resp).toContain(jwtSubstring)
         done()

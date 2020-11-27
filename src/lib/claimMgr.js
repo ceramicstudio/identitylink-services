@@ -1,4 +1,5 @@
 // import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
+import { DID } from 'dids'
 import KeyResolver from '@ceramicnetwork/key-did-resolver'
 
 const didJWT = require('did-jwt')
@@ -37,7 +38,7 @@ class ClaimMgr {
           }
         },
         {
-          issuer: 'did:https:verifications.3box.io',
+          issuer: 'did:web:verifications.3box.io',
           signer
         }
       )
@@ -49,20 +50,30 @@ class ClaimMgr {
       })
   }
 
-  async issueGithub(did, handle, url) {
+  async issueGithub(did, username, verification_url) {
+    if (!username) throw new Error('No username provided')
+    if (!did) throw new Error('No did provided')
+    if (!verification_url) throw new Error('No verification url provided')
     const signer = didJWT.SimpleSigner(this.signerPrivate)
     return didJWT
       .createJWT(
         {
           sub: did,
-          iat: Math.floor(Date.now() / 1000),
-          claim: {
-            github_handle: handle,
-            github_proof: url
+          nbf: Math.floor(Date.now() / 1000),
+          vc: {
+            '@context': ['https://www.w3.org/2018/credentials/v1'],
+            type: ['VerifiableCredential'],
+            credentialSubject: {
+              account: {
+                type: 'Github',
+                username,
+                url: verification_url
+              }
+            }
           }
         },
         {
-          issuer: 'did:https:verifications.3box.io',
+          issuer: 'did:web:verifications.3box.io',
           signer
         }
       )
@@ -111,6 +122,15 @@ class ClaimMgr {
   async verifyToken(token) {
     if (!token) throw new Error('no token')
     return didJWT.verifyJWT(token, { resolver: this.resolver })
+  }
+
+  async verifyJWS(jws) {
+    if (!jws) throw new Error('no jws')
+    const did = new DID({
+      resolver: KeyResolver.getResolver()
+    })
+    const { kid, payload } = await did.verifyJWS(jws)
+    return { kid, payload, did: kid.split('#')[0] }
   }
 }
 
