@@ -38,7 +38,7 @@ class ClaimMgr {
           }
         },
         {
-          issuer: 'did:https:verifications.3box.io',
+          issuer: 'did:web:verifications.3box.io',
           signer
         }
       )
@@ -70,7 +70,7 @@ class ClaimMgr {
           }
         },
         {
-          issuer: 'did:https:verifications.3box.io',
+          issuer: 'did:web:verifications.3box.io',
           signer
         }
       )
