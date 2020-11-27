@@ -60,7 +60,7 @@ class GithubVerifyHandler {
       return
     }
 
-    if (!verification_url) {
+    if (!verification_url || verification_url == '') {
       cb({ code: 400, message: 'no valid gist found' })
       this.analytics.trackVerifyGithub(did, 400)
       return

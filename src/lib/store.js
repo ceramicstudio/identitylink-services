@@ -1,3 +1,4 @@
+const { promisify } = require('util')
 const redis = require('redis')
 const HOUR12 = 43200
 
@@ -5,7 +6,7 @@ const HOUR12 = 43200
  *  RedisStore Representation. Wrapped redis client. Read, write, and invalidate objects.
  */
 class RedisStore {
-  constructor (redisOpts = {}, ttl) {
+  constructor(redisOpts = {}, ttl) {
     this.redis = redis.createClient(redisOpts)
     this.redis.on('error', function (err) {
       console.log('Error ' + err)
@@ -13,24 +14,25 @@ class RedisStore {
     this.ttl = ttl || HOUR12
   }
 
-  read (key) {
-    return new Promise((resolve, reject) => {
-      this.redis.get(key, (err, val) => {
-        if (err) console.log(err)
-        resolve(err ? null : JSON.parse(val))
-      })
+  read(key) {
+    const getAsync = promisify(this.redis.get).bind(this.redis)
+    return getAsync(key)
+      .then(val => JSON.parse(val))
+      .catch(console.error)
+  }
+
+  write(key, obj) {
+    const setAsync = promisify(this.redis.set).bind(this.redis)
+    return setAsync(key, JSON.stringify(obj), 'EX', this.ttl).catch(e => {
+      console.log(e)
     })
   }
 
-  write (key, obj) {
-    this.redis.set(key, JSON.stringify(obj), 'EX', this.ttl)
-  }
-
-  invalidate (key) {
+  invalidate(key) {
     this.redis.del(key)
   }
 
-  quit () {
+  quit() {
     this.redis.quit()
   }
 }
@@ -41,15 +43,15 @@ class RedisStore {
  */
 
 class NullStore {
-  read (key) {
+  read(key) {
     return Promise.resolve(null)
   }
 
-  write (key, obj) {}
+  write(key, obj) {}
 
-  invalidate (key) {}
+  invalidate(key) {}
 
-  quit () {}
+  quit() {}
 }
 
 module.exports = { RedisStore, NullStore }

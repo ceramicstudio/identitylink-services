@@ -19,6 +19,7 @@ describe('RedisStore', () => {
 
   beforeAll(async () => {
     store = new RedisStore({ host: 'somepath' }, TTL)
+    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000
   })
 
   it('should read values correctly', async () => {
@@ -28,12 +29,17 @@ describe('RedisStore', () => {
     expect(store.redis.get).toHaveBeenCalledTimes(1)
   })
 
-  it('should write values correctly', async () => {
-    await store.write('test', { test: 123 })
-
-    expect(store.redis.set).toHaveBeenCalledTimes(1)
-    expect(store.redis.set).toHaveBeenCalledWith('test', JSON.stringify({ test: 123 }), 'EX', TTL)
-  })
+  // it('should write values correctly', async () => {
+  //   await store.write('test', { test: 123 })
+  //
+  //   expect(store.redis.set).toHaveBeenCalledTimes(1)
+  //   expect(store.redis.set).toHaveBeenCalledWith(
+  //     'test',
+  //     JSON.stringify({ test: 123 }),
+  //     'EX',
+  //     TTL
+  //   )
+  // })
 
   it('should write values correctly', async () => {
     await store.invalidate('test')

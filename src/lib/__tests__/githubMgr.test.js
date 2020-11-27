@@ -6,7 +6,7 @@ describe('GithubMgr', () => {
   const GITHUB_USERNAME = 'pi0neerpat'
   const CHALLENGE_CODE = '123'
   const GIST =
-    'https://gist.githubusercontent.com/pi0neerpat/271bf248f70895705bd580af39e12247/raw/569fae2ce5f1b4a7605e98a3f246a67fc8291878/gistfile1.txt'
+    'https://gist.githubusercontent.com/pi0neerpat/54eb29e0ef16f52307551de75a3782a8/raw/5b70185964197993bbca5ed500c399ad0570733c/gistfile1.txt'
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
@@ -157,10 +157,10 @@ describe('GithubMgr', () => {
         ]
       })
     })
-
     sut
       .findDidInGists(DID, CHALLENGE_CODE)
       .then(resp => {
+        console.log(resp)
         expect(resp.verification_url).toEqual(GIST)
         done()
       })

@@ -26,12 +26,11 @@ class GithubMgr {
           authorization: `token ${secrets.GITHUB_PERSONAL_ACCESS_TOKEN}`
         }
       })
-    const TTL = 12345
     if (secrets.REDIS_URL)
-      this.store = new RedisStore(
-        { url: secrets.REDIS_URL, password: secrets.REDIS_PASSWORD },
-        TTL
-      )
+      this.store = new RedisStore({
+        url: secrets.REDIS_URL,
+        password: secrets.REDIS_PASSWORD
+      })
   }
 
   async saveRequest(username, did) {
@@ -42,7 +41,12 @@ class GithubMgr {
       timestamp: Date.now(),
       challengeCode
     }
-    await this.store.write(did, data)
+    try {
+      await this.store.write(did, data)
+      console.log('Saved: ' + data)
+    } catch (e) {
+      throw new Error(`issue writing to the database for ${did}. ${e}`)
+    }
     // await this.store.quit()
     return challengeCode
   }
@@ -59,8 +63,8 @@ class GithubMgr {
         `Error fetching from the database for user ${did}. Error: ${e}`
       )
     }
-    if (!details)
-      throw new Error(`Error fetching from the database for user ${did}.`)
+    console.log('Fetched: ' + JSON.stringify(details))
+    if (!details) throw new Error(`No database entry for ${did}.`)
 
     // await this.store.quit()
     const { username, timestamp, challengeCode: _challengeCode } = details
@@ -81,17 +85,16 @@ class GithubMgr {
       username,
       since: thirtyMinutesAgo.toISOString()
     })
-    let gistUrl = ''
+    let verification_url = ''
     const gists = result.data
-
-    if (!gists.length) return gistUrl
+    if (!gists.length) return verification_url
     const fileName = Object.keys(gists[0].files)[0]
     const rawUrl = gists[0].files[fileName].raw_url
     const res = await fetch(rawUrl)
     const text = await res.text()
-    if (text.includes(did)) gistUrl = rawUrl
+    if (text.includes(did)) verification_url = rawUrl
     // Return the raw URL of the gist containing the did
-    return { verification_url: gistUrl, username }
+    return { verification_url, username }
   }
 }
 
