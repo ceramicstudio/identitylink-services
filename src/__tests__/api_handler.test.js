@@ -25,24 +25,40 @@ describe('apiHandler', () => {
     process.env.AWS_BUCKET_NAME = 'bucket'
   })
 
-  test('twitter', done => {
-    apiHandler.twitter({}, {}, (err, res) => {
-      expect(err).toBeNull()
-      expect(res).not.toBeNull()
-      done()
-    })
-  })
-
-  test('github', done => {
-    apiHandler.verify_github({}, {}, (err, res) => {
-      expect(err).toBeNull()
-      expect(res).not.toBeNull()
-      done()
-    })
-  })
-
   test('diddoc', done => {
     apiHandler.diddoc({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('request twitter', done => {
+    apiHandler.request_twitter({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('verify twitter', done => {
+    apiHandler.verify_twitter({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('request github', done => {
+    apiHandler.request_github({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('verify github', done => {
+    apiHandler.verify_github({}, {}, (err, res) => {
       expect(err).toBeNull()
       expect(res).not.toBeNull()
       done()
