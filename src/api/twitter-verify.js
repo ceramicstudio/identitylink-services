@@ -1,7 +1,7 @@
-class GithubVerifyHandler {
-  constructor(githubMgr, claimMgr, analytics) {
-    this.name = 'GithubVerifyHandler'
-    this.githubMgr = githubMgr
+class TwitterVerifyHandler {
+  constructor(twitterMgr, claimMgr, analytics) {
+    this.name = 'TwitterVerifyHandler'
+    this.twitterMgr = twitterMgr
     this.claimMgr = claimMgr
     this.analytics = analytics
   }
@@ -22,13 +22,13 @@ class GithubVerifyHandler {
     //   !domains.test(event.headers.Origin)
     // ) {
     //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackVerifyGithub(did, 401)
+    //   this.analytics.trackVerifyTwitter(body.did, 401)
     //   return
     // }
 
     if (!body.jws) {
-      cb({ code: 400, message: 'no jws' })
-      this.analytics.trackVerifyGithub(body.jws, 400)
+      cb({ code: 403, message: 'no jws' })
+      this.analytics.trackVerifyTwitter(body.jws, 403)
       return
     }
 
@@ -41,42 +41,40 @@ class GithubVerifyHandler {
       did = unwrappped.did
     } catch (e) {
       cb({ code: 500, message: 'error while trying to verify the JWS' })
-      this.analytics.trackVerifyGithub(body.jws, 500)
+      this.analytics.trackVerifyTwitter(body.jws, 500)
       return
     }
-
     let verification_url
     let username = ''
     try {
-      const gistDetails = await this.githubMgr.findDidInGists(
+      const tweetDetails = await this.twitterMgr.findDidInTweets(
         did,
         challengeCode
       )
-      verification_url = gistDetails.verification_url
-      username = gistDetails.username
+      verification_url = tweetDetails.verification_url
+      username = tweetDetails.username
     } catch (e) {
-      cb({ code: 500, message: 'error while trying to find a Gist. ' + e })
-      this.analytics.trackVerifyGithub(did, 500)
+      cb({ code: 500, message: 'error while trying to find a Tweet. ' + e })
+      this.analytics.trackVerifyTwitter(did, 500)
       return
     }
 
     if (!verification_url || verification_url == '') {
-      cb({ code: 400, message: 'no valid gist found' })
+      cb({ code: 400, message: 'no valid tweet found' })
       this.analytics.trackVerifyGithub(did, 400)
       return
     }
-
     let attestation = ''
     try {
       attestation = await this.claimMgr.issue({
         did,
         username,
         verification_url,
-        type: 'Github'
+        type: 'Twitter'
       })
     } catch (e) {
       cb({ code: 500, message: 'could not issue a verification claim' + e })
-      this.analytics.trackVerifyGithub(did, 500)
+      this.analytics.trackVerifyTwitter(did, 500)
       return
     }
 
@@ -84,4 +82,4 @@ class GithubVerifyHandler {
     this.analytics.trackVerifyGithub(did, 200)
   }
 }
-module.exports = GithubVerifyHandler
+module.exports = TwitterVerifyHandler

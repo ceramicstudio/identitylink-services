@@ -25,34 +25,10 @@ class ClaimMgr {
     }
   }
 
-  async issueTwitter(did, handle, url) {
-    const signer = didJWT.SimpleSigner(this.signerPrivate)
-    return didJWT
-      .createJWT(
-        {
-          sub: did,
-          iat: Math.floor(Date.now() / 1000),
-          claim: {
-            twitter_handle: handle,
-            twitter_proof: url
-          }
-        },
-        {
-          issuer: 'did:web:verifications.3box.io',
-          signer
-        }
-      )
-      .then(jwt => {
-        return jwt
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  async issueGithub(did, username, verification_url) {
+  async issue({ verification_url, username, did, type }) {
     if (!username) throw new Error('No username provided')
     if (!did) throw new Error('No did provided')
+    if (!type) throw new Error('No type provided')
     if (!verification_url) throw new Error('No verification url provided')
     const signer = didJWT.SimpleSigner(this.signerPrivate)
     return didJWT
@@ -65,7 +41,7 @@ class ClaimMgr {
             type: ['VerifiableCredential'],
             credentialSubject: {
               account: {
-                type: 'Github',
+                type: type,
                 username,
                 url: verification_url
               }
@@ -74,30 +50,6 @@ class ClaimMgr {
         },
         {
           issuer: 'did:web:verifications.3box.io',
-          signer
-        }
-      )
-      .then(jwt => {
-        return jwt
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  async issueEmail(did, email) {
-    const signer = didJWT.SimpleSigner(this.signerPrivate)
-    return didJWT
-      .createJWT(
-        {
-          sub: did,
-          iat: Math.floor(Date.now() / 1000),
-          claim: {
-            email_address: email
-          }
-        },
-        {
-          issuer: 'did:https:verifications.3box.io',
           signer
         }
       )

@@ -5,7 +5,7 @@ describe('TwitterMgr', () => {
   let USERNAME = 'oedtest'
   const CHALLENGE_CODE = '123'
   const FAKE_DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
-  let statusUrl = 'https://twitter.com/oedtest/status/1078648593987395584'
+  let FAKE_TWEET = 'https://twitter.com/oedtest/status/1078648593987395584'
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
@@ -157,7 +157,7 @@ describe('TwitterMgr', () => {
       .findDidInTweets(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
         expect(resp).toEqual({
-          verification_url: statusUrl,
+          verification_url: FAKE_TWEET,
           username: USERNAME
         })
         done()

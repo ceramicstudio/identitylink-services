@@ -4,7 +4,7 @@ describe('ClaimMgr', () => {
   let sut
   let did = 'did:muport:fake'
   let username = '3boxuser'
-  let url = 'https://twitter.com/3boxdb/status/1069604129826369537'
+  let FAKE_TWEET = 'https://twitter.com/3boxdb/status/1069604129826369537'
   let KEYPAIR_PRIVATE_KEY = 'ouuA7WMw9jpP6qbT4JQ3X1iU5ckLJMdo'
   const KEYPAIR_PUBLIC_KEY =
     '0242659bd61e2bf06485b05be840dbdff8ca2402cad39620a557d4d4815a6b9011'
@@ -31,9 +31,9 @@ describe('ClaimMgr', () => {
     expect(sut.signerPrivate).not.toBeUndefined()
   })
 
-  test('issueTwitter() happy path', done => {
+  test('issue() happy path', done => {
     sut
-      .issueTwitter(username, did, url)
+      .issue({ username, did, verification_url: FAKE_TWEET, type: 'Github' })
       .then(resp => {
         expect(resp).toContain(jwtSubstring)
         done()
@@ -44,9 +44,14 @@ describe('ClaimMgr', () => {
       })
   })
 
-  test('issueGithub() no did', async done => {
+  test('issue() no did', async done => {
     sut
-      .issueGithub(null, username, url)
+      .issue({
+        did: null,
+        username,
+        verification_url: FAKE_TWEET,
+        type: 'Github'
+      })
       .then(resp => {
         fail("shouldn't return")
       })
@@ -55,9 +60,14 @@ describe('ClaimMgr', () => {
         done()
       })
   })
-  test('issueGithub() no username', async done => {
+  test('issue() no username', async done => {
     sut
-      .issueGithub(did, null, url)
+      .issue({
+        did,
+        username: null,
+        verification_url: FAKE_TWEET,
+        type: 'Github'
+      })
       .then(resp => {
         fail("shouldn't return")
       })
@@ -66,9 +76,9 @@ describe('ClaimMgr', () => {
         done()
       })
   })
-  test('issueGithub() no verification_url', async done => {
+  test('issue() no verification_url', async done => {
     sut
-      .issueGithub(did, username, null)
+      .issue({ did, username, verification_url: null, type: 'Github' })
       .then(resp => {
         fail("shouldn't return")
       })
@@ -77,10 +87,21 @@ describe('ClaimMgr', () => {
         done()
       })
   })
-
-  test('issueGithub() happy path', done => {
+  test('issue() no verification_url', async done => {
     sut
-      .issueGithub(username, did, url)
+      .issue({ did, username, verification_url: FAKE_TWEET, type: null })
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('No type provided')
+        done()
+      })
+  })
+
+  test('issue() happy path', done => {
+    sut
+      .issue({ username, did, verification_url: FAKE_TWEET, type: 'Github' })
       .then(resp => {
         expect(resp).toContain(jwtSubstring)
         done()

@@ -1,13 +1,13 @@
-const GithubVerifyHandler = require('../github-verify')
+const TwitterVerifyHandler = require('../twitter-verify')
 
-describe('GithubVerifyHandler', () => {
+describe('TwitterVerifyHandler', () => {
   let sut
-  let githubMgrMock = { findDidInGists: jest.fn() }
+  let twitterMgrMock = { findDidInTweets: jest.fn() }
   let claimMgrMock = { issue: jest.fn(), verifyJWS: jest.fn() }
-  let analyticsMock = { trackVerifyGithub: jest.fn() }
+  let analyticsMock = { trackVerifyTwitter: jest.fn() }
 
   beforeAll(() => {
-    sut = new GithubVerifyHandler(githubMgrMock, claimMgrMock, analyticsMock)
+    sut = new TwitterVerifyHandler(twitterMgrMock, claimMgrMock, analyticsMock)
   })
 
   test('empty constructor', () => {
@@ -23,7 +23,6 @@ describe('GithubVerifyHandler', () => {
     })
   })
 
-  // TODO: Uncomment for production (if still necessary)
   // test('not coming from the 3box origin', done => {
   //   sut.handle({ headers: { origin: 'abc' }, body: '{}' }, {}, (err, res) => {
   //     expect(err).not.toBeNull()
@@ -36,13 +35,13 @@ describe('GithubVerifyHandler', () => {
   test('no jws', done => {
     sut.handle(
       {
-        headers: { origin: 'https://3box.io' },
-        body: JSON.stringify({ did: 'did:https:test' })
+        headers: { origin: 'https://subdomain.3box.io' },
+        body: JSON.stringify({ other: 'other' })
       },
       {},
       (err, res) => {
         expect(err).not.toBeNull()
-        expect(err.code).toEqual(400)
+        expect(err.code).toEqual(403)
         expect(err.message).toEqual('no jws')
         done()
       }
@@ -50,7 +49,7 @@ describe('GithubVerifyHandler', () => {
   })
 
   test('no verification url', done => {
-    githubMgrMock.findDidInGists.mockReturnValue({ verification_url: '' })
+    twitterMgrMock.findDidInTweets.mockReturnValue({ verification_url: '' })
     claimMgrMock.verifyJWS.mockReturnValue({
       payload: { challengeCode: '123' },
       did: 'did:123'
@@ -65,14 +64,14 @@ describe('GithubVerifyHandler', () => {
       (err, res) => {
         expect(err).not.toBeNull()
         // expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no valid gist found')
+        expect(err.message).toEqual('no valid tweet found')
         done()
       }
     )
   })
 
   test('happy path', done => {
-    githubMgrMock.findDidInGists.mockReturnValue({
+    twitterMgrMock.findDidInTweets.mockReturnValue({
       verification_url: 'http://some.valid.url',
       username: 'dude'
     })
