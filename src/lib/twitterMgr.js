@@ -51,7 +51,7 @@ class TwitterMgr {
     }
     try {
       await this.store.write(did, data)
-      console.log('Saved: ' + data)
+      // console.log('Saved: ' + data)
     } catch (e) {
       throw new Error(`issue writing to the database for ${did}. ${e}`)
     }

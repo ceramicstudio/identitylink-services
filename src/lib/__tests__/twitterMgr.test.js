@@ -26,11 +26,8 @@ describe('TwitterMgr', () => {
     expect(sut.consumer_key).not.toBeUndefined()
   })
 
-  test('client authenticated', done => {
-    sut.client.get('application/rate_limit_status', (_err, body, res) => {
-      console.log(body)
-      done()
-    })
+  test.skip('client authenticated', done => {
+    // todo
   })
 
   test('saveRequest() happy case', done => {

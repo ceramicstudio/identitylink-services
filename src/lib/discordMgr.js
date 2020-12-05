@@ -37,8 +37,10 @@ class DiscordMgr {
     try {
       user = this.client.users.cache.get(username)
     } catch (e) {
-      throw new Error(`couldn't find user ${username}. ${e}`)
+      throw new Error(`issue gettting user ${username}. ${e}`)
     }
+    if (!user) throw new Error('user not found')
+
     let channelId
     try {
       user.send(DISCORD_INITIAL_PROMPT_TEXT).then(message => {
@@ -67,7 +69,7 @@ class DiscordMgr {
     }
     try {
       await this.store.write(did, data)
-      console.log('Saved: ' + data)
+      // console.log('Saved: ' + data)
     } catch (e) {
       throw new Error(`issue writing to the database for ${did}. ${e}`)
     }
@@ -112,19 +114,19 @@ class DiscordMgr {
       }
     })
 
-    return this.client
-      .get('statuses/user_timeline', params)
-      .catch(err => {
-        console.log('caught error', err.stack)
-      })
-      .then(res => {
-        let verification_url = ''
-        res.data.forEach(tweet => {
-          if (tweet.full_text.includes(did))
-            verification_url = `https://twitter.com/${username}/status/${tweet.id_str}`
-        })
-        return { verification_url, username }
-      })
+    // return this.client
+    //   .get('statuses/user_timeline', params)
+    //   .catch(err => {
+    //     console.log('caught error', err.stack)
+    //   })
+    //   .then(res => {
+    //     let verification_url = ''
+    //     res.data.forEach(tweet => {
+    //       if (tweet.full_text.includes(did))
+    //         verification_url = `https://twitter.com/${username}/status/${tweet.id_str}`
+    //     })
+    //     return { verification_url, username }
+    //   })
   }
 }
 
