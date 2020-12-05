@@ -91,4 +91,4 @@ functions:
       - http:
           method: post
           cors: true
-          path: /api/v0/verify-twitter
+          path: /api/v0/confirm-twitter

@@ -97,7 +97,11 @@ const preHandler = (handler, event, context, callback) => {
       KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY,
       REDIS_URL: process.env.REDIS_URL,
       REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY
+      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
+      TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
+      TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
+      TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN,
+      TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET
     }
     const config = { ...secretsFromEnv, ...envConfig }
     analytics.setSecrets(config)

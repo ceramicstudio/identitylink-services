@@ -1,5 +1,6 @@
 import { randomString } from '@stablelib/random'
 const Twit = require('twit')
+const { RedisStore } = require('./store')
 
 class TwitterMgr {
   constructor() {
@@ -24,7 +25,7 @@ class TwitterMgr {
     this.consumer_key = secrets.TWITTER_CONSUMER_KEY
     this.consumer_secret = secrets.TWITTER_CONSUMER_SECRET
     this.access_token = secrets.TWITTER_ACCESS_TOKEN
-    this.access_token_secret = secrets.ACCESS_TOKEN_SECRET
+    this.access_token_secret = secrets.TWITTER_ACCESS_TOKEN_SECRET
 
     this.client = new Twit({
       consumer_key: this.consumer_key,
@@ -49,9 +50,6 @@ class TwitterMgr {
       challengeCode
     }
     try {
-      console.log(did)
-      console.log(data)
-      console.log(this.store)
       await this.store.write(did, data)
       console.log('Saved: ' + data)
     } catch (e) {
