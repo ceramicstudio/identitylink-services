@@ -1,7 +1,7 @@
-class GithubRequestHandler {
-  constructor(githubMgr, claimMgr, store, analytics) {
-    this.name = 'GithubRequestHandler'
-    this.githubMgr = githubMgr
+class TwitterRequestHandler {
+  constructor(twitterMgr, claimMgr, analytics) {
+    this.name = 'TwitterRequestHandler'
+    this.twitterMgr = twitterMgr
     this.claimMgr = claimMgr
     this.analytics = analytics
   }
@@ -22,32 +22,32 @@ class GithubRequestHandler {
     //   !domains.test(event.headers.Origin)
     // ) {
     //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackRequestGithub(did, 401)
+    //   this.analytics.trackVerifyTwitter(body.did, 401)
     //   return
     // }
 
     if (!body.did) {
       cb({ code: 403, message: 'no did' })
-      this.analytics.trackRequestGithub(body.did, 403)
+      this.analytics.trackVerifyTwitter(body.did, 403)
       return
     }
     if (!body.username) {
-      cb({ code: 400, message: 'no github handle' })
-      this.analytics.trackRequestGithub(body.did, 400)
+      cb({ code: 400, message: 'no twitter handle' })
+      this.analytics.trackVerifyTwitter(body.did, 400)
       return
     }
 
     let challengeCode = ''
     try {
-      challengeCode = await this.githubMgr.saveRequest(body.username, body.did)
+      challengeCode = await this.twitterMgr.saveRequest(body.username, body.did)
     } catch (e) {
       cb({ code: 500, message: 'error while trying save to Redis' })
-      // this.analytics.trackRequestGithub(body.did, 500)
+      this.analytics.trackVerifyTwitter(body.did, 500)
       return
     }
 
     cb(null, { challengeCode })
-    // this.analytics.trackRequestGithub(body.did, 200)
+    // this.analytics.trackRequestTwitter(body.did, 200)
   }
 }
-module.exports = GithubRequestHandler
+module.exports = TwitterRequestHandler

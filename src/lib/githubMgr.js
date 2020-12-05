@@ -87,7 +87,7 @@ class GithubMgr {
     })
     let verification_url = ''
     const gists = result.data
-    if (!gists.length) return verification_url
+    if (!gists.length) return { verification_url, username }
     const fileName = Object.keys(gists[0].files)[0]
     const rawUrl = gists[0].files[fileName].raw_url
     const res = await fetch(rawUrl)

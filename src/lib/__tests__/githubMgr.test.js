@@ -86,7 +86,10 @@ describe('GithubMgr', () => {
     sut
       .findDidInGists(DID, CHALLENGE_CODE)
       .then(resp => {
-        expect(resp).toEqual('')
+        expect(resp).toEqual({
+          verification_url: '',
+          username: GITHUB_USERNAME
+        })
         done()
       })
       .catch(err => {
@@ -160,7 +163,7 @@ describe('GithubMgr', () => {
     sut
       .findDidInGists(DID, CHALLENGE_CODE)
       .then(resp => {
-        console.log(resp)
+        // console.log(resp)
         expect(resp.verification_url).toEqual(GIST)
         done()
       })

@@ -76,11 +76,19 @@ functions:
           method: post
           cors: true
           path: /api/v0/confirm-github
-#   twitter:
-#     handler: src/api_handler.twitter
-#     timeout: 30
-#     events:
-#       - http:
-#           method: post
-#           cors: true
-#           path: twitter
+  request-twitter:
+    handler: src/api_handler.request_twitter
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/request-twitter
+  verify-twitter:
+    handler: src/api_handler.verify_twitter
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/confirm-twitter

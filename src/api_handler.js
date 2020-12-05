@@ -1,7 +1,8 @@
 // eslint-disable-next-line import/prefer-default-export
 // const AWS = require('aws-sdk')
 
-const TwitterHandler = require('./api/twitter')
+const TwitterRequestHandler = require('./api/twitter-request')
+const TwitterVerifyHandler = require('./api/twitter-verify')
 const GithubRequestHandler = require('./api/github-request')
 const GithubVerifyHandler = require('./api/github-verify')
 const DidDocumentHandler = require('./api/diddoc')
@@ -69,7 +70,7 @@ if (process.env.AWS_BUCKET_NAME)
 
 const preHandler = (handler, event, context, callback) => {
   if (
-    // !twitterMgr.isSecretsSet() ||
+    !twitterMgr.isSecretsSet() ||
     !claimMgr.isSecretsSet() ||
     !githubMgr.isSecretsSet()
   ) {
@@ -96,14 +97,17 @@ const preHandler = (handler, event, context, callback) => {
       KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY,
       REDIS_URL: process.env.REDIS_URL,
       REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY
+      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
+      TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
+      TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
+      TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN,
+      TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET
     }
     const config = { ...secretsFromEnv, ...envConfig }
     analytics.setSecrets(config)
     githubMgr.setSecrets(config)
     claimMgr.setSecrets(config)
-    // TODO: add twitter keys
-    // twitterMgr.setSecrets(config)
+    twitterMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
   } else {
     doHandler(handler, event, context, callback)
@@ -120,6 +124,10 @@ let githubRequestHandler = new GithubRequestHandler(
   claimMgr,
   analytics
 )
+
+/// /////////////////////
+// GITHUB
+/// ////////////////////
 module.exports.request_github = (event, context, callback) => {
   preHandler(githubRequestHandler, event, context, callback)
 }
@@ -133,7 +141,27 @@ module.exports.verify_github = (event, context, callback) => {
   preHandler(githubVerifyHandler, event, context, callback)
 }
 
-let twitterHandler = new TwitterHandler(twitterMgr, claimMgr, analytics)
-module.exports.twitter = (event, context, callback) => {
-  preHandler(twitterHandler, event, context, callback)
+/// /////////////////////
+// Twitter
+/// ////////////////////
+let twitterRequestHandler = new TwitterRequestHandler(
+  twitterMgr,
+  claimMgr,
+  analytics
+)
+module.exports.request_twitter = (event, context, callback) => {
+  preHandler(twitterRequestHandler, event, context, callback)
 }
+
+let twitterVerifyHandler = new TwitterVerifyHandler(
+  twitterMgr,
+  claimMgr,
+  analytics
+)
+module.exports.verify_twitter = (event, context, callback) => {
+  preHandler(twitterVerifyHandler, event, context, callback)
+}
+
+/// /////////////////////
+// Discord
+/// ////////////////////

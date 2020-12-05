@@ -1,13 +1,13 @@
-const GithubRequestHandler = require('../github-request')
+const TwitterRequestHandler = require('../twitter-request')
 
-describe('GithubRequestHandler', () => {
+describe('TwitterRequestHandler', () => {
   let sut
   let githubMgrMock = { findDidInGists: jest.fn() }
   let claimMgrMock = { issueGithub: jest.fn() }
   let analyticsMock = { trackRequestGithub: jest.fn() }
 
   beforeAll(() => {
-    sut = new GithubRequestHandler(githubMgrMock, claimMgrMock, analyticsMock)
+    sut = new TwitterRequestHandler(githubMgrMock, claimMgrMock, analyticsMock)
   })
 
   test('empty constructor', () => {
@@ -49,7 +49,7 @@ describe('GithubRequestHandler', () => {
     )
   })
 
-  test('no github handle', done => {
+  test('no twitter handle', done => {
     sut.handle(
       {
         headers: { origin: 'https://3box.io' },
@@ -59,7 +59,7 @@ describe('GithubRequestHandler', () => {
       (err, res) => {
         expect(err).not.toBeNull()
         expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no github handle')
+        expect(err.message).toEqual('no twitter handle')
         done()
       }
     )
