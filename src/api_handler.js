@@ -7,14 +7,16 @@ const GithubRequestHandler = require('./api/github-request')
 const GithubVerifyHandler = require('./api/github-verify')
 const DidDocumentHandler = require('./api/diddoc')
 
-const TwitterMgr = require('./lib/twitterMgr')
 const GithubMgr = require('./lib/githubMgr')
+const TwitterMgr = require('./lib/twitterMgr')
+const DiscordMgr = require('./lib/discordMgr')
 const ClaimMgr = require('./lib/claimMgr')
 const Analytics = require('./lib/analytics')
 
-let twitterMgr = new TwitterMgr()
-let claimMgr = new ClaimMgr()
 let githubMgr = new GithubMgr()
+let twitterMgr = new TwitterMgr()
+let discordMgr = new DiscordMgr()
+let claimMgr = new ClaimMgr()
 const analytics = new Analytics()
 
 const doHandler = (handler, event, context, callback) => {
@@ -101,7 +103,8 @@ const preHandler = (handler, event, context, callback) => {
       TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
       TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
       TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN,
-      TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET
+      TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+      DISCORD_TOKEN: process.env.DISCORD_TOKEN
     }
     const config = { ...secretsFromEnv, ...envConfig }
     analytics.setSecrets(config)
@@ -165,3 +168,20 @@ module.exports.verify_twitter = (event, context, callback) => {
 /// /////////////////////
 // Discord
 /// ////////////////////
+// let discordRequestHandler = new DiscordRequestHandler(
+//   discordMgr,
+//   claimMgr,
+//   analytics
+// )
+// module.exports.request_discord = (event, context, callback) => {
+//   preHandler(discordRequestHandler, event, context, callback)
+// }
+//
+// let discordVerifyHandler = new DiscordVerifyHandler(
+//   discordMgr,
+//   claimMgr,
+//   analytics
+// )
+// module.exports.verify_discord = (event, context, callback) => {
+//   preHandler(discordVerifyHandler, event, context, callback)
+// }
