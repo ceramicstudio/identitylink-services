@@ -1,5 +1,5 @@
 import { randomString } from '@stablelib/random'
-import Discord from 'discord.js'
+const Discord = require('discord.js')
 const { RedisStore } = require('./store')
 
 const DISCORD_INITIAL_PROMPT_TEXT = `Hi there! Let's get your verified.\n\nPlease paste your \`did\` here (eg. "did:key:z6MkoT...nWqd")`

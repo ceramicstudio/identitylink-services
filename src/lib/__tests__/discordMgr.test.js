@@ -5,24 +5,24 @@ describe('DiscordMgr', () => {
   let USERNAME = 'oedtest'
   const CHALLENGE_CODE = '123'
   const FAKE_DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
+  const DISCORD_TOKEN = 'abc123'
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
     sut = new DiscordMgr()
   })
 
-  test.skip('empty constructor', () => {
+  test('empty constructor', () => {
     expect(sut).not.toBeUndefined()
   })
 
-  test.skip('setSecrets', () => {
+  test('setSecrets', () => {
     expect(sut.isSecretsSet()).toEqual(false)
     sut.setSecrets({
-      TWITTER_CONSUMER_KEY: 'FAKE',
-      TWITTER_CONSUMER_SECRET: 'FAKE'
+      DISCORD_TOKEN
     })
     expect(sut.isSecretsSet()).toEqual(true)
-    expect(sut.consumer_key).not.toBeUndefined()
+    expect(sut.token).not.toBeUndefined()
   })
 
   test.skip('client authenticated', done => {
