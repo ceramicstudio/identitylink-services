@@ -49,6 +49,9 @@ class TwitterMgr {
       challengeCode
     }
     try {
+      console.log(did)
+      console.log(data)
+      console.log(this.store)
       await this.store.write(did, data)
       console.log('Saved: ' + data)
     } catch (e) {

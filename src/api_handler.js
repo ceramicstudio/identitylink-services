@@ -70,7 +70,7 @@ if (process.env.AWS_BUCKET_NAME)
 
 const preHandler = (handler, event, context, callback) => {
   if (
-    // !twitterMgr.isSecretsSet() ||
+    !twitterMgr.isSecretsSet() ||
     !claimMgr.isSecretsSet() ||
     !githubMgr.isSecretsSet()
   ) {
@@ -103,8 +103,7 @@ const preHandler = (handler, event, context, callback) => {
     analytics.setSecrets(config)
     githubMgr.setSecrets(config)
     claimMgr.setSecrets(config)
-    // TODO: add twitter keys
-    // twitterMgr.setSecrets(config)
+    twitterMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
   } else {
     doHandler(handler, event, context, callback)
