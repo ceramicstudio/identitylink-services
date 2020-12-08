@@ -55,7 +55,7 @@ class TwitterMgr {
     } catch (e) {
       throw new Error(`issue writing to the database for ${did}. ${e}`)
     }
-    await this.store.quit()
+    // await this.store.quit()
     return challengeCode
   }
 
@@ -74,7 +74,7 @@ class TwitterMgr {
     // console.log('Fetched: ' + JSON.stringify(details))
     if (!details) throw new Error(`No database entry for ${did}.`)
 
-    await this.store.quit()
+    // await this.store.quit()
     const { username, timestamp, challengeCode: _challengeCode } = details
 
     if (challengeCode !== _challengeCode)
