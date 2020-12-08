@@ -13,4 +13,6 @@ curl https://r27sfer037.execute-api.us-west-2.amazonaws.com/develop/api/v0/confi
 
 curl http://localhost:3000/api/v0/confirm-discord -d '{ "jws": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa3Y1bWc5S2hZRlc0d3ZyUDhQVlRmcVpLTDY2RXlVVnhtb3NGV2t5cWFwR0drI3o2TWt2NW1nOUtoWUZXNHd2clA4UFZUZnFaS0w2NkV5VVZ4bW9zRldreXFhcEdHayJ9.eyJjaGFsbGVuZ2VDb2RlIjoiVjZKQzc1NHJsYnRoZlZSMnpMckpOWDhwWXdldWQ3M3oifQ.WBLYfZX0T69z6DHg3J-aEh0opToNh8CfI5FxSiZfQA1e5GWPy9TQL1-uNsTOqL5vFz6fc2_gRBVpxp8NTay0CA" }'
 
+curl https://r27sfer037.execute-api.us-west-2.amazonaws.com/develop/api/v0/confirm-discord -d '{ "jws": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa3RCaFRWRTQ3WHdjNWNnZndiazdVWENtUERHVjVnN3J4aDE4RURXYUZtTE05I3o2TWt0QmhUVkU0N1h3YzVjZ2Z3Yms3VVhDbVBER1Y1ZzdyeGgxOEVEV2FGbUxNOSJ9.eyJjaGFsbGVuZ2VDb2RlIjoiVnl1aW1NT2ZZM3Y2dUF0dmFuTUk3TmZWRDNCM0JMcWQifQ.HERaJofGxWRX41kGj8NoA4UbiIBItMlzABGeI3KXS71d8FPcTeSw_yoYICvy2YBa4LSfm2npQoYQRE_lffnLCg" }'
+
 ```

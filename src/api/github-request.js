@@ -36,11 +36,6 @@ class GithubRequestHandler {
       this.analytics.trackRequestGithub(body.did, 400)
       return
     }
-    if (!body.userId) {
-      cb({ code: 400, message: 'no user ID' })
-      this.analytics.trackRequestGithub(body.did, 400)
-      return
-    }
 
     let challengeCode = ''
     try {
