@@ -71,8 +71,8 @@ describe('API', () => {
     })
   })
 
-  test('/api/v0/request-twitter', async done => {
-    const res = await fetch(`${API_ENDPOINT}/api/v0/request-twitter`, {
+  test('/api/v0/request-discord', async done => {
+    const res = await fetch(`${API_ENDPOINT}/api/v0/request-discord`, {
       method: 'POST',
       body: JSON.stringify({
         username: USERNAME,
@@ -87,13 +87,13 @@ describe('API', () => {
     done()
   })
 
-  test('/api/v0/confirm-twitter', async done => {
+  test('/api/v0/confirm-discord', async done => {
     const jws = await signDid(did, { challengeCode })
 
     // Await 1s for the challengeCode to update in the db
     await new Promise(res => setTimeout(res, 1000))
 
-    const res = await fetch(`${API_ENDPOINT}/api/v0/confirm-twitter`, {
+    const res = await fetch(`${API_ENDPOINT}/api/v0/confirm-discord`, {
       method: 'POST',
       body: JSON.stringify({
         jws

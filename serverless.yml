@@ -92,3 +92,19 @@ functions:
           method: post
           cors: true
           path: /api/v0/confirm-twitter
+  request-discord:
+    handler: src/api_handler.request_discord
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/request-discord
+  verify-discord:
+    handler: src/api_handler.verify_discord
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/confirm-discord

@@ -32,10 +32,13 @@ class DiscordMgr {
     await this.client.on('ready', async () => {
       console.log('Discord client initilized')
     })
-    this.client.login(this.token)
+    await this.client.login(this.token)
     let user
+    console.log(username)
+    console.log(this.client.guilds.cache.get('785626426778714112'))
     try {
-      user = this.client.users.cache.get(username)
+      user = await this.client.users.cache.get(username)
+      console.log({ user: await this.client.users.cache.get(username) })
     } catch (e) {
       throw new Error(`issue gettting user ${username}. ${e}`)
     }

@@ -2,7 +2,7 @@ const DiscordMgr = require('../discordMgr')
 
 describe('DiscordMgr', () => {
   let sut
-  let USERNAME = 'oedtest'
+  let USERNAME = '381135787330109441'
   const CHALLENGE_CODE = '123'
   const FAKE_DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
   const DISCORD_TOKEN = 'abc123'
@@ -51,16 +51,16 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('startDirectMessage() happy case', done => {
+  test('startDirectMessage() happy case', done => {
     sut.client.login = jest.fn(() => null)
     sut.client.users.cache.get = jest.fn(() => null)
     sut
       .startDirectMessage(USERNAME)
       .then(resp => {
-        expect
+        expect(resp).toEqual(42)
       })
       .catch(err => {
-        expect(err.message).toEqual('no username provided')
+        fail(err)
         done()
       })
   })
