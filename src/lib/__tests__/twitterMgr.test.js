@@ -26,10 +26,6 @@ describe('TwitterMgr', () => {
     expect(sut.consumer_key).not.toBeUndefined()
   })
 
-  test.skip('client authenticated', done => {
-    // todo
-  })
-
   test('saveRequest() happy case', done => {
     sut.store.write = jest.fn()
     sut.store.quit = jest.fn()

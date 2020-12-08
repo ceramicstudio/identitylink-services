@@ -51,7 +51,8 @@ class ClaimMgr {
           }
         },
         {
-          issuer: 'did:web:verifications.3box.io',
+          issuer:
+            'did:web:r27sfer037.execute-api.us-west-2.amazonaws.com/develop',
           signer
         }
       )
