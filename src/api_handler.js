@@ -76,7 +76,8 @@ const preHandler = (handler, event, context, callback) => {
   if (
     !twitterMgr.isSecretsSet() ||
     !claimMgr.isSecretsSet() ||
-    !githubMgr.isSecretsSet()
+    !githubMgr.isSecretsSet() ||
+    !discordMgr.isSecretsSet()
   ) {
     // TODO: Uncomment for 3Box team deployment
     // const kms = new AWS.KMS()
@@ -110,9 +111,10 @@ const preHandler = (handler, event, context, callback) => {
     }
     const config = { ...secretsFromEnv, ...envConfig }
     analytics.setSecrets(config)
-    githubMgr.setSecrets(config)
     claimMgr.setSecrets(config)
+    githubMgr.setSecrets(config)
     twitterMgr.setSecrets(config)
+    discordMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
   } else {
     doHandler(handler, event, context, callback)

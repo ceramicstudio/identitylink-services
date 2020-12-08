@@ -29,7 +29,7 @@ describe('GithubMgr', () => {
 
   test('client authenticated', done => {
     sut.client('GET /users/octocat/orgs').then(res => {
-      console.log(`Rate limit: ${res.headers['x-ratelimit-limit']}`)
+      // console.log(`Rate limit: ${res.headers['x-ratelimit-limit']}`)
       done()
     })
   })

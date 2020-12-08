@@ -44,35 +44,30 @@ class DiscordVerifyHandler {
       this.analytics.trackVerifyDiscord(body.jws, 500)
       return
     }
-    let verification_url
+    let userId
     let username = ''
     try {
-      const directMessageDetails = await this.discordMgr.findDidInDirectMessages(
+      const directMessageDetails = await this.discordMgr.confirmRequest(
         did,
         challengeCode
       )
-      verification_url = directMessageDetails.verification_url
+      userId = directMessageDetails.userId
       username = directMessageDetails.username
     } catch (e) {
       cb({
         code: 500,
-        message: 'error while trying to find a DirectMessage. ' + e
+        message: 'error while trying verify discord. ' + e
       })
       this.analytics.trackVerifyDiscord(did, 500)
       return
     }
 
-    if (!verification_url || verification_url == '') {
-      cb({ code: 400, message: 'no valid directMessage found' })
-      this.analytics.trackVerifyDiscord(did, 400)
-      return
-    }
     let attestation = ''
     try {
       attestation = await this.claimMgr.issue({
         did,
         username,
-        verification_url,
+        id: userId,
         type: 'Discord'
       })
     } catch (e) {

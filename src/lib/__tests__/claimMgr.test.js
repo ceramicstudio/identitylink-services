@@ -83,7 +83,18 @@ describe('ClaimMgr', () => {
         fail("shouldn't return")
       })
       .catch(err => {
-        expect(err.message).toEqual('No verification url provided')
+        expect(err.message).toEqual('No verification url or user ID provided')
+        done()
+      })
+  })
+  test('issue() no userId', async done => {
+    sut
+      .issue({ did, username, userId: null, type: 'Discord' })
+      .then(resp => {
+        fail("shouldn't return")
+      })
+      .catch(err => {
+        expect(err.message).toEqual('No verification url or user ID provided')
         done()
       })
   })

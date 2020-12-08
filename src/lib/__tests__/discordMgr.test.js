@@ -5,7 +5,6 @@ describe('DiscordMgr', () => {
   let USERNAME = '381135787330109441'
   const CHALLENGE_CODE = '123'
   const FAKE_DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
-  const DISCORD_TOKEN = 'abc123'
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
@@ -18,55 +17,9 @@ describe('DiscordMgr', () => {
 
   test('setSecrets', () => {
     expect(sut.isSecretsSet()).toEqual(false)
-    sut.setSecrets({
-      DISCORD_TOKEN
-    })
+    sut.setSecrets({ REDIS_URL: '123', REDIS_PASSWORD: 'abc' })
     expect(sut.isSecretsSet()).toEqual(true)
-    expect(sut.token).not.toBeUndefined()
-  })
-
-  test('startDirectMessage() no username', done => {
-    sut
-      .startDirectMessage(null)
-      .then(resp => {
-        fail("shouldn't return")
-      })
-      .catch(err => {
-        expect(err.message).toEqual('no username provided')
-        done()
-      })
-  })
-
-  test('startDirectMessage() user not found', done => {
-    sut.client.login = jest.fn(() => null)
-    sut.client.users.cache.get = jest.fn(() => null)
-    sut
-      .startDirectMessage(USERNAME)
-      .then(resp => {
-        fail("shouldn't return")
-      })
-      .catch(err => {
-        expect(err.message).toEqual('user not found')
-        done()
-      })
-  })
-
-  test('startDirectMessage() happy case', done => {
-    sut.client.login = jest.fn(() => null)
-    sut.client.users.cache.get = jest.fn(() => null)
-    sut
-      .startDirectMessage(USERNAME)
-      .then(resp => {
-        expect(resp).toEqual(42)
-      })
-      .catch(err => {
-        fail(err)
-        done()
-      })
-  })
-
-  test.skip('client authenticated', done => {
-    // todo
+    expect(sut.store).not.toBeUndefined()
   })
 
   test('saveRequest() happy case', done => {
@@ -84,9 +37,9 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test('findDidInDirectMessages() no did', done => {
+  test('confirmRequest() no did', done => {
     sut
-      .findDidInDirectMessages(null, CHALLENGE_CODE)
+      .confirmRequest(null, CHALLENGE_CODE)
       .then(resp => {
         fail("shouldn't return")
       })
@@ -95,9 +48,9 @@ describe('DiscordMgr', () => {
         done()
       })
   })
-  test('findDidInDirectMessages() no challengeCode', done => {
+  test('confirmRequest() no challengeCode', done => {
     sut
-      .findDidInDirectMessages(FAKE_DID, null)
+      .confirmRequest(FAKE_DID, null)
       .then(resp => {
         fail("shouldn't return")
       })
@@ -107,7 +60,7 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('findDidInDirectMessages() did not found', done => {
+  test.skip('confirmRequest() did not found', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: USERNAME,
@@ -118,7 +71,7 @@ describe('DiscordMgr', () => {
       return Promise.resolve({ data: [] })
     })
     sut
-      .findDidInDirectMessages(FAKE_DID, CHALLENGE_CODE)
+      .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
         expect(resp).toEqual({
           verification_url: '',
@@ -132,7 +85,7 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('findDidInGists() incorrect challenge code', done => {
+  test.skip('confirmRequest() incorrect challenge code', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: USERNAME,
@@ -144,7 +97,7 @@ describe('DiscordMgr', () => {
     })
 
     sut
-      .findDidInDirectMessages(FAKE_DID, 'incorrect challenge code')
+      .confirmRequest(FAKE_DID, 'incorrect challenge code')
       .then(resp => {
         fail("shouldn't return")
       })
@@ -154,7 +107,7 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('findDidInDirectMessages() Challenge created over 30min ago', done => {
+  test.skip('confirmRequest() Challenge created over 30min ago', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: USERNAME,
@@ -162,7 +115,7 @@ describe('DiscordMgr', () => {
       challengeCode: CHALLENGE_CODE
     }))
     sut
-      .findDidInDirectMessages(FAKE_DID, CHALLENGE_CODE)
+      .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
         fail("shouldn't return")
       })
@@ -174,7 +127,7 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('findDidInDirectMessages() did found', done => {
+  test.skip('confirmRequest() did found', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: USERNAME,
@@ -190,7 +143,7 @@ describe('DiscordMgr', () => {
     })
 
     sut
-      .findDidInDirectMessages(FAKE_DID, CHALLENGE_CODE)
+      .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
         expect(resp).toEqual({
           verification_url: FAKE_TWEET,

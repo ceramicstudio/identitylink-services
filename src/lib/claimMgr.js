@@ -25,11 +25,12 @@ class ClaimMgr {
     }
   }
 
-  async issue({ verification_url, username, did, type }) {
+  async issue({ verification_url, username, did, type, userId }) {
     if (!username) throw new Error('No username provided')
     if (!did) throw new Error('No did provided')
     if (!type) throw new Error('No type provided')
-    if (!verification_url) throw new Error('No verification url provided')
+    if (!(verification_url || userId))
+      throw new Error('No verification url or user ID provided')
     const signer = didJWT.SimpleSigner(this.signerPrivate)
     return didJWT
       .createJWT(
@@ -43,7 +44,8 @@ class ClaimMgr {
               account: {
                 type: type,
                 username,
-                url: verification_url
+                ...(verification_url && { url: verification_url }),
+                ...(userId && { id: userId })
               }
             }
           }
