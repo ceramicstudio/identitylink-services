@@ -67,7 +67,7 @@ class DiscordVerifyHandler {
       attestation = await this.claimMgr.issue({
         did,
         username,
-        id: userId,
+        userId,
         type: 'Discord'
       })
     } catch (e) {

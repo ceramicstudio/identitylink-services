@@ -44,7 +44,11 @@ class DiscordRequestHandler {
 
     let challengeCode = ''
     try {
-      challengeCode = await this.discordMgr.saveRequest(body.username, body.did)
+      challengeCode = await this.discordMgr.saveRequest(
+        body.username,
+        body.did,
+        body.userId
+      )
     } catch (e) {
       cb({ code: 500, message: 'error while trying save to Redis' })
       this.analytics.trackRequestDiscord(body.did, 500)
