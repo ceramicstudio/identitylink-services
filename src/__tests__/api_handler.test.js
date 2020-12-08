@@ -33,6 +33,22 @@ describe('apiHandler', () => {
     })
   })
 
+  test('request github', done => {
+    apiHandler.request_github({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('verify github', done => {
+    apiHandler.verify_github({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
   test('request twitter', done => {
     apiHandler.request_twitter({}, {}, (err, res) => {
       expect(err).toBeNull()
@@ -49,16 +65,16 @@ describe('apiHandler', () => {
     })
   })
 
-  test('request github', done => {
-    apiHandler.request_github({}, {}, (err, res) => {
+  test('request discord', done => {
+    apiHandler.request_discord({}, {}, (err, res) => {
       expect(err).toBeNull()
       expect(res).not.toBeNull()
       done()
     })
   })
 
-  test('verify github', done => {
-    apiHandler.verify_github({}, {}, (err, res) => {
+  test('verify discord', done => {
+    apiHandler.verify_discord({}, {}, (err, res) => {
       expect(err).toBeNull()
       expect(res).not.toBeNull()
       done()

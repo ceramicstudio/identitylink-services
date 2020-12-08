@@ -1,13 +1,13 @@
-const TwitterRequestHandler = require('../twitter-request')
+const DiscordRequestHandler = require('../discord-request')
 
-describe('TwitterRequestHandler', () => {
+describe('DiscordRequestHandler', () => {
   let sut
-  let discordMgrMock = { findDidInTweets: jest.fn() }
-  let claimMgrMock = { issueTwitter: jest.fn() }
-  let analyticsMock = { trackRequestTwitter: jest.fn() }
+  let discordMgrMock = { confirmRequest: jest.fn() }
+  let claimMgrMock = { issueDiscord: jest.fn() }
+  let analyticsMock = { trackRequestDiscord: jest.fn() }
 
   beforeAll(() => {
-    sut = new TwitterRequestHandler(discordMgrMock, claimMgrMock, analyticsMock)
+    sut = new DiscordRequestHandler(discordMgrMock, claimMgrMock, analyticsMock)
   })
 
   test('empty constructor', () => {
@@ -49,7 +49,7 @@ describe('TwitterRequestHandler', () => {
     )
   })
 
-  test('no twitter handle', done => {
+  test('no discord handle', done => {
     sut.handle(
       {
         headers: { origin: 'https://3box.io' },
@@ -59,15 +59,31 @@ describe('TwitterRequestHandler', () => {
       (err, res) => {
         expect(err).not.toBeNull()
         expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no twitter handle')
+        expect(err.message).toEqual('no discord handle')
+        done()
+      }
+    )
+  })
+
+  test('no userId handle', done => {
+    sut.handle(
+      {
+        headers: { origin: 'https://3box.io' },
+        body: JSON.stringify({ did: 'did:https:test', username: 'testUser' })
+      },
+      {},
+      (err, res) => {
+        expect(err).not.toBeNull()
+        expect(err.code).toEqual(400)
+        expect(err.message).toEqual('no user ID')
         done()
       }
     )
   })
 
   test('happy path', done => {
-    // discordMgrMock.findDidInTweets.mockReturnValue('http://some.valid.url')
-    // claimMgrMock.issueTwitter.mockReturnValue('somejwttoken')
+    // githubMgrMock.findDidInGists.mockReturnValue('http://some.valid.url')
+    // claimMgrMock.issueGithub.mockReturnValue('somejwttoken')
     //
     // sut.handle(
     //   {

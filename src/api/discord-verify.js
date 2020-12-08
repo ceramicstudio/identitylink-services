@@ -1,7 +1,7 @@
-class TwitterVerifyHandler {
-  constructor(twitterMgr, claimMgr, analytics) {
-    this.name = 'TwitterVerifyHandler'
-    this.twitterMgr = twitterMgr
+class DiscordVerifyHandler {
+  constructor(discordMgr, claimMgr, analytics) {
+    this.name = 'DiscordVerifyHandler'
+    this.discordMgr = discordMgr
     this.claimMgr = claimMgr
     this.analytics = analytics
   }
@@ -22,13 +22,13 @@ class TwitterVerifyHandler {
     //   !domains.test(event.headers.Origin)
     // ) {
     //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackVerifyTwitter(body.did, 401)
+    //   this.analytics.trackVerifyDiscord(body.did, 401)
     //   return
     // }
 
     if (!body.jws) {
       cb({ code: 403, message: 'no jws' })
-      this.analytics.trackVerifyTwitter(body.jws, 403)
+      this.analytics.trackVerifyDiscord(body.jws, 403)
       return
     }
 
@@ -41,45 +41,43 @@ class TwitterVerifyHandler {
       did = unwrappped.did
     } catch (e) {
       cb({ code: 500, message: 'error while trying to verify the JWS' })
-      this.analytics.trackVerifyTwitter(body.jws, 500)
+      this.analytics.trackVerifyDiscord(body.jws, 500)
       return
     }
-    let verification_url
+    let userId
     let username = ''
     try {
-      const tweetDetails = await this.twitterMgr.findDidInTweets(
+      const directMessageDetails = await this.discordMgr.confirmRequest(
         did,
         challengeCode
       )
-      verification_url = tweetDetails.verification_url
-      username = tweetDetails.username
+      userId = directMessageDetails.userId
+      username = directMessageDetails.username
     } catch (e) {
-      cb({ code: 500, message: 'error while trying to find a Tweet. ' + e })
-      this.analytics.trackVerifyTwitter(did, 500)
+      cb({
+        code: 500,
+        message: 'error while trying verify discord. ' + e
+      })
+      this.analytics.trackVerifyDiscord(did, 500)
       return
     }
 
-    if (!verification_url || verification_url == '') {
-      cb({ code: 400, message: 'no valid tweet found' })
-      this.analytics.trackVerifyTwitter(did, 400)
-      return
-    }
     let attestation = ''
     try {
       attestation = await this.claimMgr.issue({
         did,
         username,
-        verification_url,
-        type: 'Twitter'
+        userId,
+        type: 'Discord'
       })
     } catch (e) {
       cb({ code: 500, message: 'could not issue a verification claim' + e })
-      this.analytics.trackVerifyTwitter(did, 500)
+      this.analytics.trackVerifyDiscord(did, 500)
       return
     }
 
     cb(null, { attestation })
-    this.analytics.trackVerifyTwitter(did, 200)
+    this.analytics.trackVerifyDiscord(did, 200)
   }
 }
-module.exports = TwitterVerifyHandler
+module.exports = DiscordVerifyHandler

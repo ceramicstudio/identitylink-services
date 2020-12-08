@@ -1,16 +1,14 @@
-const GithubMgr = require('../githubMgr')
+const DiscordMgr = require('../discordMgr')
 
-describe('GithubMgr', () => {
+describe('DiscordMgr', () => {
   let sut
-  const DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
-  const GITHUB_USERNAME = 'pi0neerpat'
+  let USERNAME = '381135787330109441'
   const CHALLENGE_CODE = '123'
-  const GIST =
-    'https://gist.githubusercontent.com/pi0neerpat/54eb29e0ef16f52307551de75a3782a8/raw/5b70185964197993bbca5ed500c399ad0570733c/gistfile1.txt'
+  const FAKE_DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
 
   beforeAll(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 3000
-    sut = new GithubMgr()
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
+    sut = new DiscordMgr()
   })
 
   test('empty constructor', () => {
@@ -19,26 +17,16 @@ describe('GithubMgr', () => {
 
   test('setSecrets', () => {
     expect(sut.isSecretsSet()).toEqual(false)
-    sut.setSecrets({
-      GITHUB_USERNAME
-      // Uncomment to test with your real token
-      // GITHUB_PERSONAL_ACCESS_TOKEN: 'FAKE'
-    })
+    sut.setSecrets({ REDIS_URL: '123', REDIS_PASSWORD: 'abc' })
     expect(sut.isSecretsSet()).toEqual(true)
-  })
-
-  test('client authenticated', done => {
-    sut.client('GET /users/octocat/orgs').then(res => {
-      // console.log(`Rate limit: ${res.headers['x-ratelimit-limit']}`)
-      done()
-    })
+    expect(sut.store).not.toBeUndefined()
   })
 
   test('saveRequest() happy case', done => {
     sut.store.write = jest.fn()
     sut.store.quit = jest.fn()
     sut
-      .saveRequest(GITHUB_USERNAME, DID)
+      .saveRequest(USERNAME, FAKE_DID)
       .then(resp => {
         expect(/[a-zA-Z0-9]{32}/.test(resp)).toBe(true)
         done()
@@ -49,9 +37,9 @@ describe('GithubMgr', () => {
       })
   })
 
-  test('findDidInGists() no did', done => {
+  test('confirmRequest() no did', done => {
     sut
-      .findDidInGists(null, CHALLENGE_CODE)
+      .confirmRequest(null, CHALLENGE_CODE)
       .then(resp => {
         fail("shouldn't return")
       })
@@ -60,9 +48,9 @@ describe('GithubMgr', () => {
         done()
       })
   })
-  test('findDidInGists() no challengeCode', done => {
+  test('confirmRequest() no challengeCode', done => {
     sut
-      .findDidInGists(DID, null)
+      .confirmRequest(FAKE_DID, null)
       .then(resp => {
         fail("shouldn't return")
       })
@@ -72,23 +60,22 @@ describe('GithubMgr', () => {
       })
   })
 
-  test('findDidInGists() did not found', done => {
+  test.skip('confirmRequest() did not found', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
-      username: GITHUB_USERNAME,
+      username: USERNAME,
       timestamp: Date.now(),
       challengeCode: CHALLENGE_CODE
     }))
-    sut.client = jest.fn(() => {
+    sut.client.get = jest.fn(() => {
       return Promise.resolve({ data: [] })
     })
-
     sut
-      .findDidInGists(DID, CHALLENGE_CODE)
+      .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
         expect(resp).toEqual({
           verification_url: '',
-          username: GITHUB_USERNAME
+          username: USERNAME
         })
         done()
       })
@@ -98,10 +85,10 @@ describe('GithubMgr', () => {
       })
   })
 
-  test('findDidInGists() incorrect challenge code', done => {
+  test.skip('confirmRequest() incorrect challenge code', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
-      username: GITHUB_USERNAME,
+      username: USERNAME,
       timestamp: Date.now(),
       challengeCode: CHALLENGE_CODE
     }))
@@ -110,7 +97,7 @@ describe('GithubMgr', () => {
     })
 
     sut
-      .findDidInGists(DID, 'incorrect challenge code')
+      .confirmRequest(FAKE_DID, 'incorrect challenge code')
       .then(resp => {
         fail("shouldn't return")
       })
@@ -120,15 +107,15 @@ describe('GithubMgr', () => {
       })
   })
 
-  test('findDidInGists() Challenge created over 30min ago', done => {
+  test.skip('confirmRequest() Challenge created over 30min ago', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
-      username: GITHUB_USERNAME,
+      username: USERNAME,
       timestamp: Date.now() - 31 * 60 * 1000,
       challengeCode: CHALLENGE_CODE
     }))
     sut
-      .findDidInGists(DID, CHALLENGE_CODE)
+      .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
         fail("shouldn't return")
       })
@@ -140,31 +127,28 @@ describe('GithubMgr', () => {
       })
   })
 
-  test('findDidInGists() happy case', done => {
+  test.skip('confirmRequest() did found', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
-      username: GITHUB_USERNAME,
+      username: USERNAME,
       timestamp: Date.now(),
       challengeCode: CHALLENGE_CODE
     }))
-    sut.client = jest.fn(() => {
+    sut.client.get = jest.fn(() => {
       return Promise.resolve({
         data: [
-          {
-            files: {
-              'textGist1.txt': {
-                raw_url: GIST
-              }
-            }
-          }
+          { full_text: 'my did is ' + FAKE_DID, id_str: '1078648593987395584' }
         ]
       })
     })
+
     sut
-      .findDidInGists(DID, CHALLENGE_CODE)
+      .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
-        // console.log(resp)
-        expect(resp.verification_url).toEqual(GIST)
+        expect(resp).toEqual({
+          verification_url: FAKE_TWEET,
+          username: USERNAME
+        })
         done()
       })
       .catch(err => {

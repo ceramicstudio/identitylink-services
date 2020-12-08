@@ -1,7 +1,7 @@
-class TwitterRequestHandler {
-  constructor(twitterMgr, claimMgr, analytics) {
-    this.name = 'TwitterRequestHandler'
-    this.twitterMgr = twitterMgr
+class DiscordRequestHandler {
+  constructor(discordMgr, claimMgr, analytics) {
+    this.name = 'DiscordRequestHandler'
+    this.discordMgr = discordMgr
     this.claimMgr = claimMgr
     this.analytics = analytics
   }
@@ -22,32 +22,41 @@ class TwitterRequestHandler {
     //   !domains.test(event.headers.Origin)
     // ) {
     //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackRequestTwitter(body.did, 401)
+    //   this.analytics.trackRequestDiscord(body.did, 401)
     //   return
     // }
 
     if (!body.did) {
       cb({ code: 403, message: 'no did' })
-      this.analytics.trackRequestTwitter(body.did, 403)
+      this.analytics.trackRequestDiscord(body.did, 403)
       return
     }
     if (!body.username) {
-      cb({ code: 400, message: 'no twitter handle' })
-      this.analytics.trackRequestTwitter(body.did, 400)
+      cb({ code: 400, message: 'no discord handle' })
+      this.analytics.trackRequestDiscord(body.did, 400)
+      return
+    }
+    if (!body.userId) {
+      cb({ code: 400, message: 'no user ID' })
+      this.analytics.trackRequestDiscord(body.did, 400)
       return
     }
 
     let challengeCode = ''
     try {
-      challengeCode = await this.twitterMgr.saveRequest(body.username, body.did)
+      challengeCode = await this.discordMgr.saveRequest(
+        body.username,
+        body.did,
+        body.userId
+      )
     } catch (e) {
       cb({ code: 500, message: 'error while trying save to Redis' })
-      this.analytics.trackRequestTwitter(body.did, 500)
+      this.analytics.trackRequestDiscord(body.did, 500)
       return
     }
 
     cb(null, { challengeCode })
-    // this.analytics.trackRequestTwitter(body.did, 200)
+    // this.analytics.trackRequestDiscord(body.did, 200)
   }
 }
-module.exports = TwitterRequestHandler
+module.exports = DiscordRequestHandler

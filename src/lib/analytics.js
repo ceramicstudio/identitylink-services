@@ -38,9 +38,9 @@ class Analytics {
     this._track(data)
   }
 
-  trackVerifyTwitter(did, status) {
+  trackRequestGithub(did, status) {
     let data = {}
-    data.event = 'verify_service_twitter'
+    data.event = 'request_service_github'
     data.properties = { did_hash: hash(did), status }
     this._track(data)
   }
@@ -52,9 +52,30 @@ class Analytics {
     this._track(data)
   }
 
-  trackRequestGithub(did, status) {
+  trackRequestTwitter(did, status) {
     let data = {}
-    data.event = 'request_service_github'
+    data.event = 'request_service_twitter'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
+
+  trackVerifyTwitter(did, status) {
+    let data = {}
+    data.event = 'verify_service_twitter'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
+
+  trackRequestDiscord(did, status) {
+    let data = {}
+    data.event = 'request_service_discord'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
+
+  trackVerifyDiscord(did, status) {
+    let data = {}
+    data.event = 'verify_service_discord'
     data.properties = { did_hash: hash(did), status }
     this._track(data)
   }
