@@ -1,25 +1,21 @@
 import { randomString } from '@stablelib/random'
 const { RedisStore } = require('./store')
 
-class DiscordMgr {
+class StoreMgr {
   constructor() {
-    this.store = null
+    this.store = new RedisStore({
+      url: provess.env.REDIS_URL,
+      password: provess.env.REDIS_PASSWORD
+    })
   }
 
-  isSecretsSet() {
-    return !!this.store
-  }
+  async saveRequest({ username, did, userId }) {
+    if (!did) throw new Error('no did')
+    if (!username) throw new Error('no discord handle')
+    if (!userId) throw new Error('no user ID')
 
-  setSecrets(secrets) {
-    if (secrets.REDIS_URL)
-      this.store = new RedisStore({
-        url: secrets.REDIS_URL,
-        password: secrets.REDIS_PASSWORD
-      })
-  }
+    let challengeCode = randomString(32)
 
-  async saveRequest(username, did, userId) {
-    const challengeCode = randomString(32)
     const data = {
       did,
       username,
@@ -39,4 +35,4 @@ class DiscordMgr {
   }
 }
 
-module.exports = DiscordMgr
+module.exports = StoreMgr
