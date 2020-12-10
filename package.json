@@ -1,6 +1,7 @@
 {
   "name": "3box-verifications-v2",
   "version": "1.0.0",
+  "private": "true",
   "main": "index.js",
   "repository": "git@github.com:pi0neerpat/3box-verifications-v2.git",
   "author": "Patrick <blockchainbuddha@gmail.com>",

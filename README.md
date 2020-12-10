@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to 3box-verifications-v2 server 👋</h1>
+<h1 align="center">Welcome to 3box-verifications-v2 Monorepo 👋</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -17,32 +17,21 @@
 
 > A decentralized identifier (DID) verification service for 3Box. Available methods include Twitter, Discord, and Github.
 
+## Whats included
+
+1. **Server** to run the verification service - `packages/server`
+2. **Test utility** and example implementation - `packages/test-examples`
+3. **Discord bot** w/ docker container - `packages/bot`
+
 ## Install
 
-```sh
+```bash
 yarn install
-```
-
-## Test
-
-Run jest
-
-```bash
-yarn test
-```
-
-You can also test against real-world data. You will need a recent (<30m) Tweet & Gist containing a `did`. See `/test-examples` for a real-world data test suite and other useful scripts.
-
-```bash
-sls offline --host 0.0.0.0
 ```
 
 ## Deploy
 
-```bash
-# Load your AWS credentials first
-sls deploy
-```
+See the README for each package for more information
 
 ## Author
 
