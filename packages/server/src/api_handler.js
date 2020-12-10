@@ -68,9 +68,6 @@ const doHandler = (handler, event, context, callback) => {
 
 // Allow some env vars to overwrite KMS
 const envConfig = {}
-if (process.env.IPFS_PATH) envConfig['IPFS_PATH'] = process.env.IPFS_PATH
-if (process.env.AWS_BUCKET_NAME)
-  envConfig['AWS_BUCKET_NAME'] = process.env.AWS_BUCKET_NAME
 
 const preHandler = (handler, event, context, callback) => {
   if (
@@ -79,35 +76,19 @@ const preHandler = (handler, event, context, callback) => {
     !githubMgr.isSecretsSet() ||
     !discordMgr.isSecretsSet()
   ) {
-    // TODO: Uncomment for 3Box team deployment
-    // const kms = new AWS.KMS()
-    // kms
-    //   .decrypt({ CiphertextBlob: Buffer.from(process.env.SECRETS, 'base64') })
-    //   .promise()
-    //   .then(data => {
-    //     const decrypted = String(data.Plaintext)
-    //     const config = Object.assign(JSON.parse(decrypted), envConfig)
-    //     twitterMgr.setSecrets(config)
-    //     githubMgr.setSecrets(config)
-    //     return claimMgr.setSecrets(config)
-    //     analytics.setSecrets(config)
-    //   })
-    //   .then(res => {
-    //     doHandler(handler, event, context, callback)
-    //   })
     const secretsFromEnv = {
-      GITHUB_USERNAME: process.env.GITHUB_USERNAME,
-      GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
+      VERIFICATION_ISSUER_DOMAIN: process.env.VERIFICATION_ISSUER_DOMAIN,
       KEYPAIR_PRIVATE_KEY: process.env.KEYPAIR_PRIVATE_KEY,
       KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY,
       REDIS_URL: process.env.REDIS_URL,
       REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
+      GITHUB_USERNAME: process.env.GITHUB_USERNAME,
+      GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
       TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
       TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
       TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN,
       TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-      DISCORD_TOKEN: process.env.DISCORD_TOKEN
+      SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY
     }
     const config = { ...secretsFromEnv, ...envConfig }
     analytics.setSecrets(config)
