@@ -1,4 +1,3 @@
-// import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
 import { DID } from 'dids'
 import KeyResolver from '@ceramicnetwork/key-did-resolver'
 

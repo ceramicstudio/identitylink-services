@@ -1,7 +1,3 @@
-import AWS from 'aws-sdk'
-import MockAWS from 'aws-sdk-mock'
-MockAWS.setSDKInstance(AWS)
-
 const apiHandler = require('../api_handler')
 
 describe('apiHandler', () => {
@@ -15,14 +11,7 @@ describe('apiHandler', () => {
       GITHUB_USERNAME: 'TEST',
       GITHUB_PERSONAL_ACCESS_TOKEN: 'FAKE'
     }
-    MockAWS.mock(
-      'KMS',
-      'decrypt',
-      Promise.resolve({ Plaintext: JSON.stringify(secrets) })
-    )
     process.env.SECRETS = secrets
-    process.env.IPFS_PATH = '/ipfs'
-    process.env.AWS_BUCKET_NAME = 'bucket'
   })
 
   test('diddoc', done => {

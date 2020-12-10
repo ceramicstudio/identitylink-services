@@ -33,7 +33,7 @@ Back in this package, copy `.template.env` to `.env` and add the `TOKEN` you jus
 ### Run locally
 
 ```bash
-node src/bot.js
+yarn start
 ```
 
 ### Add the bot to your server
