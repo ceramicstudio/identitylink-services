@@ -1,0 +1,15 @@
+{
+  "name": "3box-discord-bot-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:pi0neerpat/3box-discord-bot-test.git",
+  "author": "Patrick <blockchainbuddha@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0"
+  }
+}
