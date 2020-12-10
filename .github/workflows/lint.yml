@@ -2,14 +2,21 @@ name: Lint
 on:
   pull_request:
     types: [opened, synchronize]
+
+defaults:
+  run:
+    working-directory: packages/server
+
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./packages/server
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: "12.x"
       - run: npm install
       - name: npm run lint
         run: npm run lint
