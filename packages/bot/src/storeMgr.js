@@ -1,11 +1,11 @@
-import { randomString } from '@stablelib/random'
-const { RedisStore } = require('./store')
+const { randomString } = require('@stablelib/random')
+const redis = require('redis')
 
 class StoreMgr {
   constructor() {
-    this.store = new RedisStore({
-      url: provess.env.REDIS_URL,
-      password: provess.env.REDIS_PASSWORD
+    this.store = redis.createClient({
+      url: process.env.REDIS_URL,
+      password: process.env.REDIS_PASSWORD
     })
   }
 
@@ -24,8 +24,8 @@ class StoreMgr {
       userId
     }
     try {
-      await this.store.write(did, data)
-      // console.log('Saved: ' + data)
+      await this.store.set(did, JSON.stringify(data))
+      // console.log('Saved: ' + JSON.stringify(data))
     } catch (e) {
       console.log(e)
       throw new Error(`issue writing to the database for ${did}. ${e}`)
