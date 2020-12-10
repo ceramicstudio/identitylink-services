@@ -1,4 +1,3 @@
 module.exports = {
-  testEnvironment: 'node',
-  modulePathIgnorePatterns: ['test-example']
+  testEnvironment: 'node'
 }

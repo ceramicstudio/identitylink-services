@@ -1,4 +1,3 @@
-// import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
 import { DID } from 'dids'
 import KeyResolver from '@ceramicnetwork/key-did-resolver'
 
@@ -17,6 +16,7 @@ class ClaimMgr {
   async setSecrets(secrets) {
     this.signerPrivate = secrets.KEYPAIR_PRIVATE_KEY
     this.signerPublic = secrets.KEYPAIR_PUBLIC_KEY
+    this.issuerDomain = secrets.VERIFICATION_ISSUER_DOMAIN
     this.resolver = {
       registry: {
         ...KeyResolver.getResolver()
@@ -51,8 +51,7 @@ class ClaimMgr {
           }
         },
         {
-          issuer:
-            'did:web:r27sfer037.execute-api.us-west-2.amazonaws.com/develop',
+          issuer: `did:web:${this.issuerDomain}`,
           signer
         }
       )

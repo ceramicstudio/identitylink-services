@@ -22,21 +22,6 @@ describe('DiscordMgr', () => {
     expect(sut.store).not.toBeUndefined()
   })
 
-  test('saveRequest() happy case', done => {
-    sut.store.write = jest.fn()
-    sut.store.quit = jest.fn()
-    sut
-      .saveRequest(USERNAME, FAKE_DID)
-      .then(resp => {
-        expect(/[a-zA-Z0-9]{32}/.test(resp)).toBe(true)
-        done()
-      })
-      .catch(err => {
-        fail(err)
-        done()
-      })
-  })
-
   test('confirmRequest() no did', done => {
     sut
       .confirmRequest(null, CHALLENGE_CODE)

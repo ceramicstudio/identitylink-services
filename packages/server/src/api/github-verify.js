@@ -15,17 +15,6 @@ class GithubVerifyHandler {
       return
     }
 
-    // TODO: Uncomment for production (if still necessary)
-    // let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
-    // if (
-    //   !domains.test(event.headers.origin) &&
-    //   !domains.test(event.headers.Origin)
-    // ) {
-    //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackVerifyGithub(did, 401)
-    //   return
-    // }
-
     if (!body.jws) {
       cb({ code: 400, message: 'no jws' })
       this.analytics.trackVerifyGithub(body.jws, 400)

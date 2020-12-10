@@ -6,10 +6,17 @@
   "author": "Patrick <blockchainbuddha@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node src/bot.js",
+    "test": "jest --testPathPattern=src/ --detectOpenHandles --setupFiles dotenv/config"
   },
   "dependencies": {
+    "@stablelib/random": "^1.0.0",
     "discord.js": "^12.5.1",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "jest": "^26.6.3"
   }
 }

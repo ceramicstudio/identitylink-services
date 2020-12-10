@@ -18,26 +18,6 @@ class DiscordMgr {
       })
   }
 
-  async saveRequest(username, did, userId) {
-    const challengeCode = randomString(32)
-    const data = {
-      did,
-      username,
-      timestamp: Date.now(),
-      challengeCode,
-      userId
-    }
-    try {
-      await this.store.write(did, data)
-      // console.log('Saved: ' + data)
-    } catch (e) {
-      console.log(e)
-      throw new Error(`issue writing to the database for ${did}. ${e}`)
-    }
-    // await this.store.quit()
-    return challengeCode
-  }
-
   async confirmRequest(did, challengeCode) {
     if (!did) throw new Error('no did provided')
     if (!challengeCode) throw new Error('no challengeCode provided')

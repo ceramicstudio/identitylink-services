@@ -15,17 +15,6 @@ class TwitterRequestHandler {
       return
     }
 
-    // TODO: Uncomment for production (if still necessary)
-    // let domains = /https:\/\/(\w+\.)?(3box.io|foam.tools)/i
-    // if (
-    //   !domains.test(event.headers.origin) &&
-    //   !domains.test(event.headers.Origin)
-    // ) {
-    //   cb({ code: 401, message: 'unauthorized' })
-    //   this.analytics.trackRequestTwitter(body.did, 401)
-    //   return
-    // }
-
     if (!body.did) {
       cb({ code: 403, message: 'no did' })
       this.analytics.trackRequestTwitter(body.did, 403)

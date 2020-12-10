@@ -23,6 +23,15 @@
 yarn install
 ```
 
+Copy `.template.env` to `.env` and update the variables. You'll need the following:
+
+- `VERIFICATION_ISSUER_DOMAIN` - The issuer domain for the claim. For example, if you enter `verifications.3box.io`, the claim issuer will be `did:web:verifications.3box.io`.
+- Public/private keys for your `did-jwt` signer
+- Twitter developer tokens
+- Github API token
+- Redis database URL
+- (optional) Segment token
+
 ## Test
 
 Run jest
@@ -40,9 +49,16 @@ sls offline --host 0.0.0.0
 ## Deploy
 
 ```bash
-# Load your AWS credentials first
+# Load your AWS credentials
+
 sls deploy
 ```
+
+## Notes
+
+#### Different flow for Discord
+
+The Discord service differs from the flows for Twitter and Github. There is no `request-discord` endpoint for the service. Instead, the bot performs the same steps by creating the challenge code, and saving the user's details + challenge to the database. After the `request` step, the bot is no longer needed, and no more connections with Discord are made. In other words we prove ownership of the user's Discord account in the `request` step, rather than in the `verify` step.
 
 ## Author
 

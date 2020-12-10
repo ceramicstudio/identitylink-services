@@ -13,38 +13,13 @@ provider:
   runtime: nodejs10.x
   stage: develop
   region: us-west-2
-  # iamRoleStatements:
-  #   - Effect: Allow
-  #     Action:
-  #       - KMS:Decrypt
-  #     Resource: ${self:custom.kmsSecrets.keyArn}
-  #   - Effect: Allow
-  #     Action:
-  #       - s3:*
-  #     Resource: 'arn:aws:s3:::*'
-  #   - Effect: Allow
-  #     Action:
-  #       - ses:SendEmail
-  #     Resource: 'arn:aws:ses:*'
-  #   - Effect: Allow
-  #     Action:
-  #       - ec2:CreateNetworkInterface
-  #       - ec2:DescribeNetworkInterfaces
-  #       - ec2:DeleteNetworkInterface
-  #     Resource: 'arn:aws:ec2:*'
 
-  environment:
-    # SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
-    # AWS_BUCKET_NAME: ${self:custom.awsBucketName.${self:provider.stage}}
+  # environment:
+  # SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
+  # AWS_BUCKET_NAME: ${self:custom.awsBucketName.${self:provider.stage}}
 
 # Enable auto-packing of external modules
 custom:
-  # awsBucketName:
-  #   develop: ipfs-dev.3box.io
-  #   master: ipfs.3box.io
-  # serverless-kms-secrets:
-  #   secretsFile: kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml
-  # kmsSecrets: ${file(kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
   contentCompression: 1024
   webpack:
     webpackConfig: 'webpack.config.js' # Name of webpack configuration file
@@ -92,14 +67,6 @@ functions:
           method: post
           cors: true
           path: /api/v0/confirm-twitter
-  request-discord:
-    handler: src/api_handler.request_discord
-    timeout: 30
-    events:
-      - http:
-          method: post
-          cors: true
-          path: /api/v0/request-discord
   verify-discord:
     handler: src/api_handler.verify_discord
     timeout: 30
