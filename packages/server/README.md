@@ -23,6 +23,15 @@
 yarn install
 ```
 
+Copy `.template.env` to `.env` and update the variables. You'll need the following:
+
+- `VERIFICATION_ISSUER_DOMAIN` - The issuer domain for the claim. For example, if you enter `verifications.3box.io`, the claim issuer will be `did:web:verifications.3box.io`.
+- Public/private keys for your `did-jwt` signer
+- Twitter developer tokens
+- Github API token
+- Redis database URL
+- (optional) Segment token
+
 ## Test
 
 Run jest
