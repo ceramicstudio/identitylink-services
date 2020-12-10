@@ -30,10 +30,10 @@ Copy the `TOKEN` which we will need for our node app.
 
 Back in this package, copy `.template.env` to `.env` and add the `TOKEN` you just copied.
 
-### Run the bot locally
+### Run locally
 
 ```bash
-node bot.js
+node src/bot.js
 ```
 
 ### Add the bot to your server
@@ -43,6 +43,14 @@ In the Discord Application, in "General Information", copy the `CLIENT ID`. Inse
 ```
 https://discord.com/oauth2/authorize?client_id=<clientID>&scope=bot
 ```
+
+### Going to Production - Heroku
+
+1. Create a new Heroku app for this repo. Update the build configs to point to the `/packages/bot`.
+
+2. Once deployed, head to the "Resources" tab, turn off the `web` Dyno, and turn on the `worker` Dyno.
+
+3. Update the environment variables in "Settings" tab to reflect what you see in the `.env` here.
 
 ### Going to Production - Docker
 

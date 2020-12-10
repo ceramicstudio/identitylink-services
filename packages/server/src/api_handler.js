@@ -5,7 +5,6 @@ const GithubRequestHandler = require('./api/github-request')
 const GithubVerifyHandler = require('./api/github-verify')
 const TwitterRequestHandler = require('./api/twitter-request')
 const TwitterVerifyHandler = require('./api/twitter-verify')
-const DiscordRequestHandler = require('./api/discord-request')
 const DiscordVerifyHandler = require('./api/discord-verify')
 const DidDocumentHandler = require('./api/diddoc')
 
@@ -153,15 +152,6 @@ module.exports.verify_twitter = (event, context, callback) => {
 /// /////////////////////
 // Discord
 /// ////////////////////
-let discordRequestHandler = new DiscordRequestHandler(
-  discordMgr,
-  claimMgr,
-  analytics
-)
-module.exports.request_discord = (event, context, callback) => {
-  preHandler(discordRequestHandler, event, context, callback)
-}
-
 let discordVerifyHandler = new DiscordVerifyHandler(
   discordMgr,
   claimMgr,

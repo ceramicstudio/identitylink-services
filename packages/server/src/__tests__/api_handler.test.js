@@ -65,14 +65,6 @@ describe('apiHandler', () => {
     })
   })
 
-  test('request discord', done => {
-    apiHandler.request_discord({}, {}, (err, res) => {
-      expect(err).toBeNull()
-      expect(res).not.toBeNull()
-      done()
-    })
-  })
-
   test('verify discord', done => {
     apiHandler.verify_discord({}, {}, (err, res) => {
       expect(err).toBeNull()

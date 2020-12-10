@@ -49,9 +49,16 @@ sls offline --host 0.0.0.0
 ## Deploy
 
 ```bash
-# Load your AWS credentials first
+# Load your AWS credentials
+
 sls deploy
 ```
+
+## Notes
+
+#### Different flow for Discord
+
+The Discord service differs from the flows for Twitter and Github. There is no `request-discord` endpoint for the service. Instead, the bot performs the same steps by creating the challenge code, and saving the user's details + challenge to the database. After the `request` step, the bot is no longer needed, and no more connections with Discord are made. In other words we prove ownership of the user's Discord account in the `request` step, rather than in the `verify` step.
 
 ## Author
 
