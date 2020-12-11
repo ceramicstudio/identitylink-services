@@ -1,11 +1,11 @@
 version: "3"
 services:
   discord-bot:
-    image: pi0neerpat/3box-discord-bo
+    image: pi0neerpat/3box-discord-bot
     environment:
-      - DISCORD_TOKEN=
-      - INVOCATION_STRING=!verify
-      - REDIS_URL=
-      - REDIS_PASSWORD=
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - REDIS_URL=${REDIS_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - INVOCATION_STRING=${INVOCATION_STRING}
     ports:
       - "8080:8080"

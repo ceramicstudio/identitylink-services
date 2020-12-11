@@ -54,17 +54,24 @@ https://discord.com/oauth2/authorize?client_id=<clientID>&scope=bot
 
 ### Going to Production - Docker
 
-If you're making changes to the bot, you'll need to run these commands to generate the new Docker image.
+If you've made changes to the bot, you'll need to generate a new Docker image.
 
-```
+```bash
+# Build
 docker build -t <your username>/3box-discord-bot .
+
+# Test it out
+docker run -p 8080:8080 -d <your username>/3box-discord-bot
 ```
 
-```
-docker run -p 3000:8080 -d pi0neerpat/3box-discord-bot
-```
+When you're ready to host the container, clone this repo on your server and navigate to this package. Be sure to update your `.env` file on the new machine.
 
-TODO
+```bash
+# Load the .env file
+source .env
+
+docker-compose up
+```
 
 ## Author
 
