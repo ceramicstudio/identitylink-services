@@ -79,7 +79,6 @@ const preHandler = (handler, event, context, callback) => {
       KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY,
       REDIS_URL: process.env.REDIS_URL,
       REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-      GITHUB_USERNAME: process.env.GITHUB_USERNAME,
       GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
       TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY,
       TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
