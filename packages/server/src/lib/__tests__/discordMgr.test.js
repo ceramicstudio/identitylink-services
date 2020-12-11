@@ -2,9 +2,10 @@ const DiscordMgr = require('../discordMgr')
 
 describe('DiscordMgr', () => {
   let sut
-  let USERNAME = '381135787330109441'
+  let USERNAME = 'pi0neerpat'
   const CHALLENGE_CODE = '123'
   const FAKE_DID = 'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
+  const USER_ID = '1337'
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
@@ -45,46 +46,32 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('confirmRequest() did not found', done => {
+  test('confirmRequest() database entry not found', done => {
     sut.store.quit = jest.fn()
-    sut.store.read = jest.fn(() => ({
-      username: USERNAME,
-      timestamp: Date.now(),
-      challengeCode: CHALLENGE_CODE
-    }))
-    sut.client.get = jest.fn(() => {
-      return Promise.resolve({ data: [] })
-    })
+    sut.store.read = jest.fn(() => ({}))
     sut
       .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
-        expect(resp).toEqual({
-          verification_url: '',
-          username: USERNAME
-        })
-        done()
+        fail(`shouldn't return`)
       })
       .catch(err => {
-        fail(err)
+        expect(err.message).toEqual(`No database entry for ${FAKE_DID}`)
         done()
       })
   })
 
-  test.skip('confirmRequest() incorrect challenge code', done => {
+  test('confirmRequest() incorrect challenge code', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: USERNAME,
       timestamp: Date.now(),
-      challengeCode: CHALLENGE_CODE
+      challengeCode: CHALLENGE_CODE,
+      userId: USER_ID
     }))
-    sut.client = jest.fn(() => {
-      return Promise.resolve({ data: [] })
-    })
-
     sut
-      .confirmRequest(FAKE_DID, 'incorrect challenge code')
+      .confirmRequest(FAKE_DID, 'incorect challenge code')
       .then(resp => {
-        fail("shouldn't return")
+        fail(`shouldn't return`)
       })
       .catch(err => {
         expect(err.message).toEqual('Challenge Code is incorrect')
@@ -92,12 +79,13 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('confirmRequest() Challenge created over 30min ago', done => {
+  test('confirmRequest() Challenge created over 30min ago', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: USERNAME,
       timestamp: Date.now() - 31 * 60 * 1000,
-      challengeCode: CHALLENGE_CODE
+      challengeCode: CHALLENGE_CODE,
+      userId: USER_ID
     }))
     sut
       .confirmRequest(FAKE_DID, CHALLENGE_CODE)
@@ -112,28 +100,20 @@ describe('DiscordMgr', () => {
       })
   })
 
-  test.skip('confirmRequest() did found', done => {
+  test('confirmRequest() happy case', done => {
     sut.store.quit = jest.fn()
     sut.store.read = jest.fn(() => ({
       username: USERNAME,
       timestamp: Date.now(),
-      challengeCode: CHALLENGE_CODE
+      challengeCode: CHALLENGE_CODE,
+      userId: USER_ID
     }))
-    sut.client.get = jest.fn(() => {
-      return Promise.resolve({
-        data: [
-          { full_text: 'my did is ' + FAKE_DID, id_str: '1078648593987395584' }
-        ]
-      })
-    })
-
     sut
       .confirmRequest(FAKE_DID, CHALLENGE_CODE)
       .then(resp => {
-        expect(resp).toEqual({
-          verification_url: FAKE_TWEET,
-          username: USERNAME
-        })
+        const { username, userId } = resp
+        expect(username).toEqual(USERNAME)
+        expect(userId).toEqual(USER_ID)
         done()
       })
       .catch(err => {

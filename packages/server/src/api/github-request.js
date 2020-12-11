@@ -1,5 +1,5 @@
 class GithubRequestHandler {
-  constructor(githubMgr, claimMgr, store, analytics) {
+  constructor(githubMgr, claimMgr, analytics) {
     this.name = 'GithubRequestHandler'
     this.githubMgr = githubMgr
     this.claimMgr = claimMgr
@@ -31,12 +31,12 @@ class GithubRequestHandler {
       challengeCode = await this.githubMgr.saveRequest(body.username, body.did)
     } catch (e) {
       cb({ code: 500, message: 'error while trying save to Redis' })
-      // this.analytics.trackRequestGithub(body.did, 500)
+      this.analytics.trackRequestGithub(body.did, 500)
       return
     }
 
     cb(null, { challengeCode })
-    // this.analytics.trackRequestGithub(body.did, 200)
+    this.analytics.trackRequestGithub(body.did, 200)
   }
 }
 module.exports = GithubRequestHandler
