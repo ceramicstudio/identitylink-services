@@ -1,4 +1,3 @@
-import { randomString } from '@stablelib/random'
 const { RedisStore } = require('./store')
 
 class DiscordMgr {
