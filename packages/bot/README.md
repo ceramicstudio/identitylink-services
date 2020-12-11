@@ -48,7 +48,7 @@ https://discord.com/oauth2/authorize?client_id=<clientID>&scope=bot
 
 1. Create a new Heroku app for this repo. Update the build configs to point to the `/packages/bot`.
 
-2. Once deployed, head to the "Resources" tab, turn off the `web` Dyno, and turn on the `worker` Dyno.
+2. Once deployed, head to the "Resources" tab, turn off the `web` Dyno, and turn on the `worker` Dyno. This Dyno is defined in the repo root `Procfile`.
 
 3. Update the environment variables in "Settings" tab to reflect what you see in the `.env` here.
 
