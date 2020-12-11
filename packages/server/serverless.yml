@@ -4,7 +4,6 @@ service:
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
   - serverless-webpack
-  - serverless-kms-secrets
   - serverless-dotenv-plugin
   - serverless-offline
 
