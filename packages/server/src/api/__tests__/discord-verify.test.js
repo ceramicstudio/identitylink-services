@@ -26,7 +26,6 @@ describe('DiscordVerifyHandler', () => {
   test('no jws', done => {
     sut.handle(
       {
-        headers: { origin: 'https://subdomain.3box.io' },
         body: JSON.stringify({ other: 'other' })
       },
       {},
@@ -44,11 +43,14 @@ describe('DiscordVerifyHandler', () => {
       userId: '123456789',
       username: 'dude'
     })
+    claimMgrMock.verifyJWS.mockReturnValue({
+      payload: { challengeCode: '123' },
+      did: 'did:123'
+    })
     claimMgrMock.issue.mockReturnValue('somejwttoken')
 
     sut.handle(
       {
-        headers: { origin: 'https://subdomain.3box.io' },
         body: JSON.stringify({ jws: 'abc123' })
       },
       {},

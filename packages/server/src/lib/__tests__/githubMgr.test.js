@@ -20,7 +20,6 @@ describe('GithubMgr', () => {
   test('setSecrets', () => {
     expect(sut.isSecretsSet()).toEqual(false)
     sut.setSecrets({
-      GITHUB_USERNAME
       // Uncomment to test with your real token
       // GITHUB_PERSONAL_ACCESS_TOKEN: 'FAKE'
     })

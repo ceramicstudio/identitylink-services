@@ -6,18 +6,16 @@ const { RedisStore } = require('./store')
 
 class GithubMgr {
   constructor() {
-    this.username = null
     this.personal_access_token = null
     this.client = null
     this.store = {}
   }
 
   isSecretsSet() {
-    return this.username !== null || this.personal_access_token !== null
+    return this.personal_access_token !== null
   }
 
   setSecrets(secrets) {
-    this.username = secrets.GITHUB_USERNAME
     this.personal_access_token = secrets.GITHUB_PERSONAL_ACCESS_TOKEN
     this.client = request
     if (secrets.GITHUB_PERSONAL_ACCESS_TOKEN)

@@ -36,7 +36,7 @@ class TwitterRequestHandler {
     }
 
     cb(null, { challengeCode })
-    // this.analytics.trackRequestTwitter(body.did, 200)
+    this.analytics.trackRequestTwitter(body.did, 200)
   }
 }
 module.exports = TwitterRequestHandler
