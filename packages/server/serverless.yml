@@ -9,10 +9,9 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: develop
   region: us-west-2
-
   # environment:
   # SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
   # AWS_BUCKET_NAME: ${self:custom.awsBucketName.${self:provider.stage}}
@@ -23,7 +22,7 @@ custom:
   webpack:
     webpackConfig: 'webpack.config.js' # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
-    packager: 'npm' # Packager that will be used to package your external modules
+    packager: 'yarn' # Packager that will be used to package your external modules
 
 functions:
   diddoc:
