@@ -62,15 +62,18 @@ docker build -t <your username>/3box-discord-bot .
 
 # Test it out
 docker run -p 8080:8080 -d <your username>/3box-discord-bot
+
+# Publish it when ready!
 ```
 
-When you're ready to host the container, clone this repo on your server and navigate to this package. Be sure to update your `.env` file on the new machine.
+When you're ready to host the container, clone this repo on your server and navigate to this package. If you published your own version, the update the image name in `docker-compose.yml`. Be sure to update your `.env` file on the new machine as well.
 
 ```bash
 # Load the .env file
 source .env
 
-docker-compose up
+# Start in "detached" mode
+docker-compose up -d
 ```
 
 ## Author
