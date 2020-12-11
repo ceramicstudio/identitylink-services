@@ -1,6 +1,6 @@
 import { request } from '@octokit/request'
 import { randomString } from '@stablelib/random'
-const fetch = require('node-fetch')
+import fetch from 'node-fetch'
 
 const { RedisStore } = require('./store')
 
@@ -83,14 +83,21 @@ class GithubMgr {
       username,
       since: thirtyMinutesAgo.toISOString()
     })
-    let verification_url = ''
+    let verification_url
     const gists = result.data
-    if (!gists.length) return { verification_url, username }
+    if (!gists.length) return { verification_url: '', username }
     const fileName = Object.keys(gists[0].files)[0]
     const rawUrl = gists[0].files[fileName].raw_url
-    const res = await fetch(rawUrl)
-    const text = await res.text()
-    if (text.includes(did)) verification_url = rawUrl
+    let res
+    try {
+      res = await fetch(rawUrl)
+    } catch (e) {
+      throw new Error(
+        `Couldn't get raw gist. ${e}`
+      )
+    }
+    const  text = await res.text()
+    if (text && text.includes(did)) verification_url = rawUrl
     // Return the raw URL of the gist containing the did
     return { verification_url, username }
   }
