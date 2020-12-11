@@ -60,6 +60,10 @@ If you're making changes to the bot, you'll need to run these commands to genera
 docker build -t <your username>/3box-discord-bot .
 ```
 
+```
+docker run -p 3000:8080 -d pi0neerpat/3box-discord-bot
+```
+
 TODO
 
 ## Author
