@@ -1,8 +1,8 @@
 {
-  "name": "3box-discord-bot-test",
+  "name": "3box-discord-bot",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:pi0neerpat/3box-discord-bot-test.git",
+  "main": "src/bot.js",
+  "repository": "git@github.com:pi0neerpat/3box-verifications-v2.git",
   "author": "Patrick <blockchainbuddha@gmail.com>",
   "license": "MIT",
   "scripts": {

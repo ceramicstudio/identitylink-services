@@ -54,6 +54,12 @@ https://discord.com/oauth2/authorize?client_id=<clientID>&scope=bot
 
 ### Going to Production - Docker
 
+If you're making changes to the bot, you'll need to run these commands to generate the new Docker image.
+
+```
+docker build -t <your username>/3box-discord-bot .
+```
+
 TODO
 
 ## Author
