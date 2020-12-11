@@ -26,7 +26,6 @@ describe('TwitterVerifyHandler', () => {
   test('no jws', done => {
     sut.handle(
       {
-        headers: { origin: 'https://subdomain.3box.io' },
         body: JSON.stringify({ other: 'other' })
       },
       {},
@@ -48,7 +47,6 @@ describe('TwitterVerifyHandler', () => {
 
     sut.handle(
       {
-        headers: { origin: 'https://3box.io' },
         body: JSON.stringify({ jws: 'abc123' })
       },
       {},
@@ -70,7 +68,6 @@ describe('TwitterVerifyHandler', () => {
 
     sut.handle(
       {
-        headers: { origin: 'https://subdomain.3box.io' },
         body: JSON.stringify({ jws: 'abc123' })
       },
       {},
