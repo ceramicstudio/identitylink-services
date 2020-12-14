@@ -1,8 +1,8 @@
 {
-  "name": "3box-discord-bot",
+  "name": "identitylink-services-discord-bot",
   "version": "1.0.0",
   "main": "src/bot.js",
-  "repository": "git@github.com:pi0neerpat/3box-verifications-v2.git",
+  "repository": "git@github.com:ceramicstudio/identitylink-services.git",
   "author": "Patrick <blockchainbuddha@gmail.com>",
   "license": "MIT",
   "scripts": {
