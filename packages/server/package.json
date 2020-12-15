@@ -16,6 +16,8 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/pi0neerpat/3box-verifications-v2",
   "dependencies": {
+    "@ceramicnetwork/3id-did-resolver": "^0.5.4",
+    "@ceramicnetwork/http-client": "^0.8.7",
     "@ceramicnetwork/key-did-resolver": "^0.2.0",
     "@octokit/request": "^5.4.10",
     "@stablelib/random": "^1.0.0",

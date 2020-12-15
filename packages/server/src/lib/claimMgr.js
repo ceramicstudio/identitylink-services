@@ -1,5 +1,7 @@
 import { DID } from 'dids'
 import KeyResolver from '@ceramicnetwork/key-did-resolver'
+import CeramicClient from '@ceramicnetwork/http-client'
+import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
 
 const didJWT = require('did-jwt')
 
@@ -7,20 +9,31 @@ class ClaimMgr {
   constructor() {
     this.signerPrivate = null
     this.signerPublic = null
+    this.issuerDomain = null
+    this.ceramicClientUrl = null
   }
 
   isSecretsSet() {
-    return this.signerPrivate !== null && this.signerPublic !== null
+    return (
+      this.signerPrivate !== null &&
+      this.signerPublic !== null &&
+      this.issuerDomain !== null &&
+      this.ceramicClientUrl !== null
+    )
   }
 
   async setSecrets(secrets) {
     this.signerPrivate = secrets.KEYPAIR_PRIVATE_KEY
     this.signerPublic = secrets.KEYPAIR_PUBLIC_KEY
     this.issuerDomain = secrets.VERIFICATION_ISSUER_DOMAIN
+    this.ceramicClientUrl = secrets.CERAMIC_CLIENT_URL
+
+    const ceramic = new CeramicClient(this.ceramicClientUrl)
+
     this.resolver = {
       registry: {
-        ...KeyResolver.getResolver()
-        // ...ThreeIdResolver.getResolver(),
+        ...KeyResolver.getResolver(),
+        ...ThreeIdResolver.getResolver(ceramic)
       }
     }
   }
