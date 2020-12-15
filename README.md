@@ -1,10 +1,7 @@
-<h1 align="center">Welcome to 3box-verifications-v2 Monorepo 👋</h1>
+<h1 align="center">Welcome to identitylink-services 👋</h1>
 <p>
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
-  </a>
-  <a href="https://twitter.com/pi0neerpat" target="_blank">
-    <img alt="Twitter: pi0neerpat" src="https://img.shields.io/twitter/follow/pi0neerpat.svg?style=social" />
   </a>
 </p>
 
@@ -14,13 +11,13 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-> A decentralized identifier (DID) verification service for 3Box. Available methods include Twitter, Discord, and Github.
+> A decentralized identifier (DID) verification service for Ceramic. Available methods include Twitter, Discord, and Github.
 
 ## Whats included
 
-1. **Server** to run the verification service - `packages/server`
-2. **Test utility** and example implementation - `packages/test-examples`
-3. **Discord bot** w/ docker container - `packages/bot`
+- **Server** to run the verification service - `packages/server`
+- **Discord bot** w/ docker container - `packages/bot`
+- **Test utility** and example implementation - `packages/utils`
 
 ## Install
 

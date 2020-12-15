@@ -1,9 +1,9 @@
 {
-  "name": "3box-verifications-v2",
+  "name": "identitylink-services",
   "version": "1.0.0",
   "private": "true",
-  "repository": "git@github.com:pi0neerpat/3box-verifications-v2.git",
-  "author": "Patrick <blockchainbuddha@gmail.com>",
+  "repository": "git@github.com:ceramicstudio/identitylink-services.git",
+  "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",
   "license": "MIT",
   "workspaces": [
     "packages/*"

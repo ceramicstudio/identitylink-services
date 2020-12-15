@@ -1,4 +1,3 @@
-import { randomString } from '@stablelib/random'
 const { RedisStore } = require('./store')
 
 class DiscordMgr {
@@ -30,8 +29,9 @@ class DiscordMgr {
         `Error fetching from the database for user ${did}. Error: ${e}`
       )
     }
-    console.log('Fetched: ' + JSON.stringify(details))
-    if (!details) throw new Error(`No database entry for ${did}.`)
+    // console.log('Fetched: ' + JSON.stringify(details))
+    if (!details || !details.username)
+      throw new Error(`No database entry for ${did}`)
 
     // await this.store.quit()
     const {

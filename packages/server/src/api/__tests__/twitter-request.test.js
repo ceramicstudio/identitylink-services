@@ -26,7 +26,6 @@ describe('TwitterRequestHandler', () => {
   test('no did', done => {
     sut.handle(
       {
-        headers: { origin: 'https://subdomain.3box.io' },
         body: JSON.stringify({ other: 'other' })
       },
       {},
@@ -42,7 +41,6 @@ describe('TwitterRequestHandler', () => {
   test('no twitter handle', done => {
     sut.handle(
       {
-        headers: { origin: 'https://3box.io' },
         body: JSON.stringify({ did: 'did:https:test' })
       },
       {},

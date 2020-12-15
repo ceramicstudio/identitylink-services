@@ -70,7 +70,6 @@ describe('GithubVerifyHandler', () => {
 
     sut.handle(
       {
-        headers: { origin: 'https://subdomain.3box.io' },
         body: JSON.stringify({ jws: 'abc123' })
       },
       {},

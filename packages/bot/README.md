@@ -1,10 +1,7 @@
-<h1 align="center">Welcome to 3box-verifications-v2 Discord Bot 👋</h1>
+<h1 align="center">Welcome to identitylink-services-discord-bot 👋</h1>
 <p>
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
-  </a>
-  <a href="https://twitter.com/pi0neerpat" target="_blank">
-    <img alt="Twitter: pi0neerpat" src="https://img.shields.io/twitter/follow/pi0neerpat.svg?style=social" />
   </a>
 </p>
 
