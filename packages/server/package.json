@@ -12,6 +12,8 @@
   "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@ceramicnetwork/3id-did-resolver": "^0.5.4",
+    "@ceramicnetwork/http-client": "^0.8.7",
     "@ceramicnetwork/key-did-resolver": "^0.2.0",
     "@octokit/request": "^5.4.10",
     "@stablelib/random": "^1.0.0",

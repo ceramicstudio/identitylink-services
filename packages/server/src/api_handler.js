@@ -77,6 +77,7 @@ const preHandler = (handler, event, context, callback) => {
       VERIFICATION_ISSUER_DOMAIN: process.env.VERIFICATION_ISSUER_DOMAIN,
       KEYPAIR_PRIVATE_KEY: process.env.KEYPAIR_PRIVATE_KEY,
       KEYPAIR_PUBLIC_KEY: process.env.KEYPAIR_PUBLIC_KEY,
+      CERAMIC_CLIENT_URL: process.env.CERAMIC_CLIENT_URL,
       REDIS_URL: process.env.REDIS_URL,
       REDIS_PASSWORD: process.env.REDIS_PASSWORD,
       GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,

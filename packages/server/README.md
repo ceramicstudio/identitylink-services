@@ -24,6 +24,7 @@ Copy `.template.env` to `.env` and update the variables. You'll need the followi
 
 - `VERIFICATION_ISSUER_DOMAIN` - The issuer domain for the claim. For example, if you enter `verifications.3box.io`, the claim issuer will be `did:web:verifications.3box.io`.
 - Private key for your `did-jwt` signer
+- Ceramic client url to resolve `@ceramicnetwork/3id-did-resolver`
 - Twitter developer tokens (you need all 4 items)
 - Github account username & API token. "Account Settings" > "Developer settings" > "Personal access tokens"
 - Redis database URL & password
