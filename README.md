@@ -33,16 +33,12 @@ See the README for each package for more information
 
 ## Author
 
-👤 **Patrick Gallagher**
-
-- Website: https://patrickgallagher.dev
-  - Twitter: [@pi0neerpat](https://twitter.com/pi0neerpat)
-  - GitHub: [@pi0neerpat](https://github.com/pi0neerpat)
+**Patrick Gallagher** (Web: https://patrickgallagher.dev, Twitter: [@pi0neerpat](https://twitter.com/pi0neerpat), GitHub: [@pi0neerpat](https://github.com/pi0neerpat))
 
 ## Show your support
 
 Give a ⭐️ if this project helped you!
 
----
+## License
 
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+This project is dual-licensed under MIT and Apache 2.
