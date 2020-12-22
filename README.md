@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to identitylink-services 👋</h1>
+<h1 align="left">identitylink-services</h1>
 <p>
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
@@ -11,13 +11,15 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-> A decentralized identifier (DID) verification service for Ceramic. Available methods include Twitter, Discord, and Github.
+> Services for issuing verifiable credentials that link a decentralized identifier (DID) to various social accounts including Twitter, Github, and Discord. Additional account types can be added in the future.
 
-## Whats included
+## What's included
 
-- **Server** to run the verification service - `packages/server`
-- **Discord bot** w/ docker container - `packages/bot`
-- **Test utility** and example implementation - `packages/utils`
+| Component    | Package  | Description |
+| ----------- | ----------- | --------- |
+| Server | `packages/server` | Serverless functions for verifying accounts and issuing verifiable credentials to a DID |
+| Bot | `packages/bot` | Discord bot with a docker container |
+| Utils | `packages/utils` | Test utility and example implementation |
 
 ## Install
 
