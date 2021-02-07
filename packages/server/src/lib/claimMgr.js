@@ -97,7 +97,7 @@ class ClaimMgr {
       resolver: this.resolver.registry,
     })
     const { kid, payload } = await did.verifyJWS(jws)
-    return { kid, payload, did: kid.split('#')[0] }
+    return { kid, payload, did: kid.split(/[#?]/)[0] }
   }
 }
 
