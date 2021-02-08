@@ -1,7 +1,17 @@
-const { generateKeyPairFromSeed } = require("@stablelib/ed25519");
-const { randomBytes } = require("@stablelib/random");
+const { generateKeyPairFromSeed } = require("@stablelib/ed25519")
+const { randomBytes } = require("@stablelib/random")
 
-const { secretKey, publicKey } = generateKeyPairFromSeed(randomBytes(32));
+const b16 = (u8) => (
+  Buffer.from(u8).toString('hex')
+)
 
-console.log(secret);
-console.log(public);
+const seed = process.env.IDLINK_SEED || b16(randomBytes(32))
+
+console.info(seed)
+
+const { secretKey, publicKey } = generateKeyPairFromSeed(
+  Uint8Array.from(Buffer.from(seed, 'hex'))
+)
+
+console.log(b16(secretKey))
+console.log(b16(publicKey))

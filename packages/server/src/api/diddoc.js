@@ -15,13 +15,13 @@ class DidDocumentHandler {
           id: 'did:web:verifications.3boxlabs.com#owner',
           type: 'Secp256k1VerificationKey2018',
           owner: 'did:web:verifications.3boxlabs.com',
-          publicKeyHex: publicKeyHex
+          publicKeyHex: publicKeyHex,
         }
       ],
       authentication: [
         {
           type: 'Secp256k1SignatureAuthentication2018',
-          publicKey: 'did:web:verifications.3boxlabs.com#owner'
+          publicKey: 'did:web:verifications.3boxlabs.com#owner',
         }
       ]
     }

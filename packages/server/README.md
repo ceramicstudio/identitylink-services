@@ -12,7 +12,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-> A decentralized identifier (DID) verification service for Ceramic. Available methods include Twitter, Discord, and Github.
+> A serverless identifier (DID) verification service for Ceramic. Available methods include Twitter, Discord, and Github.
 
 ## Install
 
@@ -23,12 +23,13 @@ yarn install
 Copy `.template.env` to `.env` and update the variables. You'll need the following:
 
 - `VERIFICATION_ISSUER_DOMAIN` - The issuer domain for the claim. For example, if you enter `verifications.3box.io`, the claim issuer will be `did:web:verifications.3box.io`.
-- Private key for your `did-jwt` signer
+- Public/Private key for your `did-jwt` signer which can be [generated appropriately](https://github.com/ceramicstudio/identitylink-services/blob/master/packages/utils/scripts/generateKeyPair.js).
 - Ceramic client url to resolve `@ceramicnetwork/3id-did-resolver`
-- Twitter developer tokens (you need all 4 items)
-- Github account username & API token. "Account Settings" > "Developer settings" > "Personal access tokens"
+- *(optional)* Twitter developer tokens (you need all 4 items to use this)
+- *(optional)* Github account username & API token
+  - "Account Settings" > "Developer settings" > "Personal access tokens"
 - Redis database URL & password
-- (optional) Segment token
+- *(optional)* Segment token
 
 ## Test
 
@@ -40,15 +41,25 @@ yarn test
 
 You can also test against real-world data. You will need a recent (<30m) Tweet & Gist containing a `did`. See `packages/utils` for a real-world data test suite and other useful scripts.
 
-```bash
-sls offline --host 0.0.0.0
-```
+* `cd packages/utils/`
+* `yarn`
+* `SLS_DEBUG=* sls offline --host 0.0.0.0`
+* `node scripts/generateKey.js`
+* *copy generated DID to a new window:*
+* `DID=did:key:z6Mks6zvoambxCnoEqK3JoriQv2RTrP4XUedb554R79zutR6`
+* `USER=dysbulic`
+* `curl http://localhost:3000/api/v0/request-github -d '{ "did": "'$DID'", "username": "'$USER'" }'`
+* *paste the returned challenge key into the prompt in the first window*
+* *create a gist in the account to be linked containing the IDX DID*
+* *paste the JWS into the terminal*
+* `JWS=eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa3M2enZvYW1ieENub0VxSzNKb3JpUXYyUlRyUDRYVWVkYjU1NFI3OXp1dFI2I3o2TWtzNnp2b2FtYnhDbm9FcUszSm9yaVF2MlJUclA0WFVlZGI1NTRSNzl6dXRSNiJ9.eyJjaGFsbGVuZ2VDb2RlIjoiamxUQjNKb0VkUnBPU1lhWHo5YndCY1hPTzBhUGl0aVYifQ.-aDKR-vlK_YEbZBZ_nHXOHHilU5NUbB7iHZsdV6Yf3HWEIufUTyYKOsPLYSYSdIZjqSpCgZ6i4K7PVeEbxAdDw`
+* `curl http://localhost:3000/api/v0/confirm-github -d '{ "jws": "'$JWS'" }'`
 
 ## Deploy
 
-```bash
-# Load your AWS credentials
+Deployment can be handled using the [`serverless` package](https://www.npmjs.com/package/serverless).
 
+```bash
 sls deploy
 ```
 
@@ -72,4 +83,4 @@ Give a ⭐️ if this project helped you!
 
 ---
 
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)._
