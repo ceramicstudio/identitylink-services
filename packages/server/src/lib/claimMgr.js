@@ -33,7 +33,7 @@ class ClaimMgr {
     this.resolver = {
       registry: {
         ...KeyResolver.getResolver(),
-        ...ThreeIdResolver.getResolver(ceramic),
+        ...ThreeIdResolver.getResolver(ceramic)
       }
     }
   }
@@ -86,6 +86,11 @@ class ClaimMgr {
     return this.signerPublic
   }
 
+  getIssuerDomain() {
+    if (!this.issuerDomain) throw new Error('no keypair created yet')
+    return this.issuerDomain
+  }
+
   async verifyToken(token) {
     if (!token) throw new Error('no token')
     return didJWT.verifyJWT(token, { resolver: this.resolver })
@@ -94,7 +99,7 @@ class ClaimMgr {
   async verifyJWS(jws) {
     if (!jws) throw new Error('no jws')
     const did = new DID({
-      resolver: this.resolver.registry,
+      resolver: this.resolver.registry
     })
     const { kid, payload } = await did.verifyJWS(jws)
     return { kid, payload, did: kid.split(/[#?]/)[0] }
