@@ -6,22 +6,23 @@ class DidDocumentHandler {
 
   async handle(event, context, cb) {
     let publicKeyHex = this.claimMgr.getPublicKeyHex()
+    let issuerDomain = this.claimMgr.getIssuerDomain()
 
     let body = {
       '@context': 'https://w3id.org/did/v1',
-      id: 'did:web:verifications.3boxlabs.com',
+      id: `did:web:${issuerDomain}`,
       publicKey: [
         {
-          id: 'did:web:verifications.3boxlabs.com#owner',
+          id: `did:web:${issuerDomain}#owner`,
           type: 'Secp256k1VerificationKey2018',
-          owner: 'did:web:verifications.3boxlabs.com',
+          owner: `did:web:${issuerDomain}`,
           publicKeyHex: publicKeyHex
         }
       ],
       authentication: [
         {
           type: 'Secp256k1SignatureAuthentication2018',
-          publicKey: 'did:web:verifications.3boxlabs.com#owner'
+          publicKey: `did:web:${issuerDomain}#owner`
         }
       ]
     }
