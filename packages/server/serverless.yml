@@ -9,12 +9,20 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   stage: develop
-  region: us-west-2
-  # environment:
-  # SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
-  # AWS_BUCKET_NAME: ${self:custom.awsBucketName.${self:provider.stage}}
+  region: us-east-2
+  environment:
+    REDIS_HOST:
+      "Fn::GetAtt": [ElasticCacheCluster, RedisEndpoint.Address]
+    VERIFICATION_ISSUER_DOMAIN: ${self:custom.secrets.VERIFICATION_ISSUER_DOMAIN}
+    KEYPAIR_PUBLIC_KEY: ${self:custom.secrets.KEYPAIR_PUBLIC_KEY}
+    KEYPAIR_PRIVATE_KEY: ${self:custom.secrets.KEYPAIR_PRIVATE_KEY}
+    GITHUB_PERSONAL_ACCESS_TOKEN: ${self:custom.secrets.GITHUB_PERSONAL_ACCESS_TOKEN}
+    TWITTER_CONSUMER_KEY: ${self:custom.secrets.TWITTER_CONSUMER_KEY}
+    TWITTER_CONSUMER_SECRET: ${self:custom.secrets.TWITTER_CONSUMER_SECRET}
+    TWITTER_ACCESS_TOKEN: ${self:custom.secrets.TWITTER_ACCESS_TOKEN}
+    TWITTER_ACCESS_TOKEN_SECRET: ${self:custom.secrets.TWITTER_ACCESS_TOKEN_SECRET}
 
 # Enable auto-packing of external modules
 custom:
@@ -23,11 +31,19 @@ custom:
     webpackConfig: 'webpack.config.js' # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
     packager: 'yarn' # Packager that will be used to package your external modules
+  config:
+    CACHE_INSTANCE_SIZE: cache.t2.micro
+  secrets: ${ssm:/aws/reference/secretsmanager/identitylink~true}
 
 functions:
   diddoc:
     handler: src/api_handler.diddoc
     timeout: 30
+    vpc:
+      securityGroupId:
+        - "Fn::GetAtt": ServerlessSecurityGroup.GroupId
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: get
@@ -36,6 +52,11 @@ functions:
   request-github:
     handler: src/api_handler.request_github
     timeout: 30
+    vpc:
+      securityGroupId:
+        - "Fn::GetAtt": ServerlessSecurityGroup.GroupId
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: post
@@ -44,6 +65,11 @@ functions:
   verify-github:
     handler: src/api_handler.verify_github
     timeout: 30
+    vpc:
+      securityGroupId:
+        - "Fn::GetAtt": ServerlessSecurityGroup.GroupId
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: post
@@ -52,6 +78,11 @@ functions:
   request-twitter:
     handler: src/api_handler.request_twitter
     timeout: 30
+    vpc:
+      securityGroupId:
+        - "Fn::GetAtt": ServerlessSecurityGroup.GroupId
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: post
@@ -60,6 +91,11 @@ functions:
   verify-twitter:
     handler: src/api_handler.verify_twitter
     timeout: 30
+    vpc:
+      securityGroupId:
+        - "Fn::GetAtt": ServerlessSecurityGroup.GroupId
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: post
@@ -68,8 +104,16 @@ functions:
   verify-discord:
     handler: src/api_handler.verify_discord
     timeout: 30
+    vpc:
+      securityGroupId:
+        - "Fn::GetAtt": ServerlessSecurityGroup.GroupId
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: post
           cors: true
           path: /api/v0/confirm-discord
+
+resources:
+  Resources: ${file(cf-resources.yml)}  
