@@ -4,17 +4,21 @@ const GithubVerifyHandler = require('./api/github-verify')
 const TwitterRequestHandler = require('./api/twitter-request')
 const TwitterVerifyHandler = require('./api/twitter-verify')
 const DiscordVerifyHandler = require('./api/discord-verify')
+const DiscourseRequestHandler = require('./api/discourse-request')
+const DiscourseVerifyHandler = require('./api/discord-verify')
 const DidDocumentHandler = require('./api/diddoc')
 
 const GithubMgr = require('./lib/githubMgr')
 const TwitterMgr = require('./lib/twitterMgr')
 const DiscordMgr = require('./lib/discordMgr')
+const DiscourseMgr = require('./lib/discourseMgr')
 const ClaimMgr = require('./lib/claimMgr')
 const Analytics = require('./lib/analytics')
 
 let githubMgr = new GithubMgr()
 let twitterMgr = new TwitterMgr()
 let discordMgr = new DiscordMgr()
+let discourseMgr = new DiscourseMgr()
 let claimMgr = new ClaimMgr()
 const analytics = new Analytics()
 
@@ -93,6 +97,7 @@ const preHandler = (handler, event, context, callback) => {
     githubMgr.setSecrets(config)
     twitterMgr.setSecrets(config)
     discordMgr.setSecrets(config)
+    discourseMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
   } else {
     doHandler(handler, event, context, callback)
@@ -157,4 +162,26 @@ let discordVerifyHandler = new DiscordVerifyHandler(
 )
 module.exports.verify_discord = (event, context, callback) => {
   preHandler(discordVerifyHandler, event, context, callback)
+}
+
+/// /////////////////////
+// Discourse
+/// ////////////////////
+let discourseRequestHandler = new DiscourseRequestHandler(
+  discourseMgr,
+  claimMgr,
+  analytics
+)
+
+module.exports.request_discourse = (event, context, callback) => {
+  preHandler(discourseRequestHandler, event, context, callback)
+}
+
+let discourseVerifyHandler = new DiscourseVerifyHandler(
+  discourseMgr,
+  claimMgr,
+  analytics
+)
+module.exports.verify_discourse = (event, context, callback) => {
+  preHandler(discourseVerifyHandler, event, context, callback)
 }

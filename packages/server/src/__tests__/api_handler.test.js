@@ -60,4 +60,20 @@ describe('apiHandler', () => {
       done()
     })
   })
+
+  test('request discourse', done => {
+    apiHandler.request_discourse({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('verify discourse', done => {
+    apiHandler.verify_discourse({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
 })
