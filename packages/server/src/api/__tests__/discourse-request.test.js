@@ -89,7 +89,7 @@ describe('DiscourseRequestHandler', () => {
         body: JSON.stringify({ did: 'test', username: 'test123123', threadUrl: 'https://meta.discourse.org/t/here-we-see-a-tiny-ux/180686' })
       },
       {},
-      (err, res) => {
+      (_err, res) => {
         expect(res).not.toBeNull()
         expect(res.challengeCode).not.toBeNull()
         done()

@@ -30,7 +30,7 @@ class DiscourseRequestHandler {
       this.analytics.trackRequestDiscourse(body.did, 400)
       return
     }
-    if (!body.threadUrl.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) || !body.threadUrl.includes('/t/')) {
+    if (!body.threadUrl.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/) || !body.threadUrl.includes('/t/')) {
       cb({ code: 400, message: 'invalid discourse thread url' })
       this.analytics.trackRequestDiscourse(body.did, 400)
       return
