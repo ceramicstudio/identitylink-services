@@ -12,8 +12,7 @@ class DiscordMgr {
   setSecrets(secrets) {
     if (secrets.REDIS_URL)
       this.store = new RedisStore({
-        url: secrets.REDIS_URL,
-        password: secrets.REDIS_PASSWORD
+        host: secrets.REDIS_URL
       })
   }
 

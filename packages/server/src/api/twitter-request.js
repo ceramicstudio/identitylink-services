@@ -30,7 +30,8 @@ class TwitterRequestHandler {
     try {
       challengeCode = await this.twitterMgr.saveRequest(body.username, body.did)
     } catch (e) {
-      cb({ code: 500, message: 'error while trying save to Redis' })
+      console.error(e)
+      cb({ code: 500, message: `Error while trying save to Redis`})
       this.analytics.trackRequestTwitter(body.did, 500)
       return
     }

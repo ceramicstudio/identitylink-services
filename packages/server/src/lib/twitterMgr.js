@@ -2,6 +2,8 @@ import { randomString } from '@stablelib/random'
 const Twit = require('twit')
 const { RedisStore } = require('./store')
 
+const challengeKey = (did) => `${did}:twitter`
+
 class TwitterMgr {
   constructor() {
     this.consumer_key = null
@@ -36,8 +38,7 @@ class TwitterMgr {
     })
     if (secrets.REDIS_URL)
       this.store = new RedisStore({
-        url: secrets.REDIS_URL,
-        password: secrets.REDIS_PASSWORD
+        host: secrets.REDIS_URL
       })
   }
 
@@ -50,7 +51,7 @@ class TwitterMgr {
       challengeCode
     }
     try {
-      await this.store.write(did, data)
+      await this.store.write(challengeKey(did), data)
       // console.log('Saved: ' + data)
     } catch (e) {
       throw new Error(`issue writing to the database for ${did}. ${e}`)
@@ -59,13 +60,20 @@ class TwitterMgr {
     return challengeCode
   }
 
-  async findDidInTweets(did, challengeCode) {
+  // Returns verification url if sucessful
+  _tweetIncludesDid(tweet, did, username) {
+    if (tweet.full_text.includes(did)){
+      return `https://twitter.com/${username}/status/${tweet.id_str}`
+    }
+  }
+
+  async findDidInTweets(did, challengeCode, tweetUrl) {
     if (!did) throw new Error('no did provided')
     if (!challengeCode) throw new Error('no challengeCode provided')
 
     let details
     try {
-      details = await this.store.read(did)
+      details = await this.store.read(challengeKey(did))
     } catch (e) {
       throw new Error(
         `Error fetching from the database for user ${did}. Error: ${e}`
@@ -86,26 +94,43 @@ class TwitterMgr {
         'The challenge must have been generated within the last 30 minutes'
       )
 
-    let params = {
-      screen_name: username,
-      tweet_mode: 'extended',
-      exclude_replies: true,
-      include_rts: false,
-      count: 5
-    }
-    return this.client
-      .get('statuses/user_timeline', params)
-      .catch(err => {
-        console.log('caught error', err.stack)
-      })
-      .then(res => {
-        let verification_url = ''
-        res.data.forEach(tweet => {
-          if (tweet.full_text.includes(did))
-            verification_url = `https://twitter.com/${username}/status/${tweet.id_str}`
+    if (!tweetUrl) {
+      const params = {
+        screen_name: username,
+        tweet_mode: 'extended',
+        exclude_replies: true,
+        include_rts: false,
+        count: 5
+      }
+      return this.client
+        .get('statuses/user_timeline', params)
+        .catch(err => {
+          console.log('caught error', err.stack)
         })
-        return { verification_url, username }
-      })
+        .then(res => {
+          let verification_url = ''
+          res.data.forEach(tweet => {
+            verification_url = this._tweetIncludesDid(tweet, did, username)
+          })
+          return { verification_url, username }
+        })
+    } else {
+      const tweetId = tweetUrl.split('/').pop()
+      const params = {
+       id: tweetId,
+       tweet_mode: 'extended',
+      }
+      return this.client
+        .get('statuses/show', params)
+        .catch(err => {
+          console.log('caught error', err.stack)
+        })
+        .then(res => {
+          const tweet = res.data
+          const verification_url = this._tweetIncludesDid(tweet, did, username)
+          return { verification_url, username }
+        })
+    }
   }
 }
 
