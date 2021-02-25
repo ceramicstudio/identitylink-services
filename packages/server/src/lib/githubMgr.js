@@ -4,6 +4,8 @@ import fetch from 'node-fetch'
 
 const { RedisStore } = require('./store')
 
+const challengeKey = (did) => `${did}:github`
+
 class GithubMgr {
   constructor() {
     this.personal_access_token = null
@@ -16,6 +18,7 @@ class GithubMgr {
   }
 
   setSecrets(secrets) {
+    this.secrets = secrets
     this.personal_access_token = secrets.GITHUB_PERSONAL_ACCESS_TOKEN
     this.client = request
     if (secrets.GITHUB_PERSONAL_ACCESS_TOKEN)
@@ -26,8 +29,7 @@ class GithubMgr {
       })
     if (secrets.REDIS_URL)
       this.store = new RedisStore({
-        url: secrets.REDIS_URL,
-        password: secrets.REDIS_PASSWORD
+        host: secrets.REDIS_URL
       })
   }
 
@@ -40,7 +42,7 @@ class GithubMgr {
       challengeCode
     }
     try {
-      await this.store.write(did, data)
+      await this.store.write(challengeKey(did), data)
       // console.log('Saved: ' + data)
     } catch (e) {
       throw new Error(`issue writing to the database for ${did}. ${e}`)
@@ -49,13 +51,13 @@ class GithubMgr {
     return challengeCode
   }
 
-  async findDidInGists(did, challengeCode) {
+  async findDidInGists(did, challengeCode, gistUrl) {
     if (!did) throw new Error('no did provided')
     if (!challengeCode) throw new Error('no challengeCode provided')
 
     let details
     try {
-      details = await this.store.read(did)
+      details = await this.store.read(challengeKey(did))
     } catch (e) {
       throw new Error(
         `Error fetching from the database for user ${did}. Error: ${e}`
@@ -79,15 +81,24 @@ class GithubMgr {
     const thirtyMinutesAgo = new Date(
       new Date().setMinutes(new Date().getMinutes() - 30)
     )
-    const result = await this.client('GET /users/:username/gists', {
-      username,
-      since: thirtyMinutesAgo.toISOString()
-    })
-    let verification_url
-    const gists = result.data
-    if (!gists.length) return { verification_url: '', username }
-    const fileName = Object.keys(gists[0].files)[0]
-    const rawUrl = gists[0].files[fileName].raw_url
+
+    let rawUrl, verification_url
+    if (!gistUrl) {
+      console.log('not this')
+      const result = await this.client('GET /users/:username/gists', {
+        username,
+        since: thirtyMinutesAgo.toISOString()
+      })
+      const gists = result.data
+      if (!gists.length) return { verification_url: '', username }
+      const fileName = Object.keys(gists[0].files)[0]
+      rawUrl = gists[0].files[fileName].raw_url
+    } else {
+      rawUrl = gistUrl
+    }
+
+    console.log(rawUrl)
+
     let res
     try {
       res = await fetch(rawUrl)

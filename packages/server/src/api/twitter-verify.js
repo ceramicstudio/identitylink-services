@@ -23,6 +23,7 @@ class TwitterVerifyHandler {
 
     let did = ''
     let challengeCode = ''
+    const tweetUrl = body.verificationUrl
 
     try {
       const unwrappped = await this.claimMgr.verifyJWS(body.jws)
@@ -38,7 +39,8 @@ class TwitterVerifyHandler {
     try {
       const tweetDetails = await this.twitterMgr.findDidInTweets(
         did,
-        challengeCode
+        challengeCode, 
+        tweetUrl
       )
       verification_url = tweetDetails.verification_url
       username = tweetDetails.username

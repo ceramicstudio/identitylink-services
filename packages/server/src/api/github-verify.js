@@ -23,6 +23,7 @@ class GithubVerifyHandler {
 
     let did = ''
     let challengeCode = ''
+    const gistUrl = body.verificationUrl
 
     try {
       const unwrappped = await this.claimMgr.verifyJWS(body.jws)
@@ -39,7 +40,8 @@ class GithubVerifyHandler {
     try {
       ({ verification_url, username } = await this.githubMgr.findDidInGists(
         did,
-        challengeCode
+        challengeCode,
+        gistUrl
       ))
     } catch (e) {
       cb({ code: 500, message: 'error while trying to find a Gist. ' + e })
