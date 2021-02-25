@@ -271,6 +271,85 @@ When this request is recieved the service does the following:
 }
 ```
 
+## Request Discourse Verification
+
+When this request is made the service stores the `did`, `username`, `threadUrl`, and a *`timestamp`* in it's database of requested discourse verifications.
+
+**Endpoint:** `POST /api/v0/request-discourse`
+
+**Body:**
+
+```jsx
+{
+  did: <user-DID>,
+  threadUrl: <discourse-thread-url>,
+  username: <discourse-username>
+}
+```
+
+**Response:**
+
+```jsx
+{
+  status: 'success',
+  data: {
+    challenge: <challenge-code>
+  }
+}
+```
+
+## Confirm Discourse Verification
+
+When this request is recieved the service does the following:
+
+1. Validate that the JWS has a correct signature (is signed by the DID in the `kid` property of the JWS)
+2. Retrieve the stored request from the database using the DID part of the `kid` if present, otherwise respond with an error
+3. Verify that the *`timestamp`* is from less than 30 minutes ago
+4. Verify that the JWS has content equal to the `challenge-code`, otherwise return error
+5. Verify that the stored discourse username has a post which contains the DID under the given threadUrl
+6. Create a Verifiable Credential with the content described below, sign it with the service key (web-did), and send this as the response
+
+**Endpoint:** `POST /api/v0/confirm-discourse`
+
+**Body:**
+
+```jsx
+{
+	jws: <jws-string>
+}
+```
+
+**Response:**
+
+```jsx
+{
+  status: 'success',
+  data: {
+    attestation: <did-jwt-vc-string>
+  }
+}
+```
+
+**Verifiable Credential content:**
+
+```jsx
+{
+  sub: <user-DID>,
+  nbf: 1562950282, // Time jwt was issued
+  vc: {
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: ['VerifiableCredential'],
+    credentialSubject: {
+      account: {
+        type: 'Discourse',
+        username: <discourse-username>,
+        url: <url-to-thread-containing-DID>
+      }
+    }
+  }
+}
+```
+
 # User flows
 
 These user flows describe high level user interactions needed to facilitate the verifications. They are mainly meant to illustrate the rough flow so that individual steps that happen in the background can be more easily understood, which is useful if you just want to write a simple test that validates that the services work. The actual user facing implementation can have more optimized UX (e.g. automatically populating a tweet).
@@ -305,6 +384,16 @@ These user flows describe high level user interactions needed to facilitate the 
 3. User clicks verify and they now get the Verifiable credential back from the service
    1. A JWS containing the *challenge code* is created using the js-did library
    2. The JWS is sent to the *confirm twitter* endpoint and the Verifiable Credential is returned
+
+## Discourse verification
+
+1. User inputs their discourse username and thread url and click verify
+   1. A request with users DID, thread url and discourse username is made to the *request discourse* endpoint
+   2. The returned *challenge code* is temporarily stored
+2. User is presented with a text snippet that they copy and use to post in the given thread of the thread url
+3. User clicks verify and they now get the Verifiable credential back from the service
+   1. A JWS containing the *challenge code* is created using the js-did library
+   2. The JWS is sent to the *confirm discourse* endpoint and the Verifiable Credential is returned
 
 # Implementation details
 
