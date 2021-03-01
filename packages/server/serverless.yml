@@ -12,6 +12,8 @@ provider:
   runtime: nodejs14.x
   stage: develop
   region: us-east-2
+  stackTags:
+    IdentityLink: ${opt:stage, ''}
   environment:
     REDIS_URL:
       "Fn::GetAtt": [ElasticCacheCluster, RedisEndpoint.Address]
