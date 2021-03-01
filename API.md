@@ -387,10 +387,10 @@ These user flows describe high level user interactions needed to facilitate the 
 
 ## Discourse verification
 
-1. User inputs their discourse username and thread url and click verify
+1. User inputs their discourse username and thread (topic) url that will contain their post which will include the DID and click verify
    1. A request with users DID, thread url and discourse username is made to the *request discourse* endpoint
    2. The returned *challenge code* is temporarily stored
-2. User is presented with a text snippet that they copy and use to post in the given thread of the thread url
+2. User is presented with a text snippet that they copy and use to post in the thread they provided in the first step
 3. User clicks verify and they now get the Verifiable credential back from the service
    1. A JWS containing the *challenge code* is created using the js-did library
    2. The JWS is sent to the *confirm discourse* endpoint and the Verifiable Credential is returned
