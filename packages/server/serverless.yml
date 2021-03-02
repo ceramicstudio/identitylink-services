@@ -77,6 +77,22 @@ functions:
           method: post
           cors: true
           path: /api/v0/confirm-github
+  request-discourse:
+    handler: src/api_handler.request_discourse
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/request-discourse
+  verify-discourse:
+    handler: src/api_handler.verify_discourse
+    timeout: 30
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/confirm-discourse
   request-twitter:
     handler: src/api_handler.request_twitter
     timeout: 30
