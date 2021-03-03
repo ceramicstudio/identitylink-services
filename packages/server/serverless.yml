@@ -80,6 +80,11 @@ functions:
   request-discourse:
     handler: src/api_handler.request_discourse
     timeout: 30
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup, GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: post
@@ -88,6 +93,11 @@ functions:
   verify-discourse:
     handler: src/api_handler.verify_discourse
     timeout: 30
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup, GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
     events:
       - http:
           method: post

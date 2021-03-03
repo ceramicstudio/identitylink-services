@@ -3,6 +3,8 @@ import fetch from 'node-fetch'
 
 const { RedisStore } = require('./store')
 
+const challengeKey = (did) => `${did}:discourse`
+
 class DiscourseMgr {
   constructor() {
     this.client = null
@@ -15,8 +17,7 @@ class DiscourseMgr {
     // Create redis store
     if (secrets.REDIS_URL) {
       this.store = new RedisStore({
-        url: secrets.REDIS_URL,
-        password: secrets.REDIS_PASSWORD
+        host: secrets.REDIS_URL
       })
     }
   }
@@ -33,7 +34,7 @@ class DiscourseMgr {
 
     // Save data object into redis
     try {
-      await this.store.write(did, data)
+      await this.store.write(challengeKey(did), data)
     } catch (e) {
       throw new Error(`issue writing to the database for ${did}. ${e}`)
     }
@@ -50,7 +51,7 @@ class DiscourseMgr {
     // Check if redis has data for did
     let details
     try {
-      details = await this.store.read(did)
+      details = await this.store.read(challengeKey(did))
     } catch (e) {
       throw new Error(`Error fetching from the database for user ${did}. Error: ${e}`)
     }
