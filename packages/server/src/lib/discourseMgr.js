@@ -70,7 +70,7 @@ class DiscourseMgr {
     }
 
     // Check if threadUrl ends with slash and then add `.json`
-    const finalThreadUrl = (threadUrl.substr(-1) === '/' ? threadUrl.slice(0, -1) : threadUrl) + '.json'
+    const finalThreadUrl = (threadUrl.substr(-1) === '/' ? threadUrl.slice(0, -1) : threadUrl) + '.json?print=true'
 
     // Check if did is found inside threadUrl
     try {
