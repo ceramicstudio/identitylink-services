@@ -5,7 +5,7 @@ const TwitterRequestHandler = require('./api/twitter-request')
 const TwitterVerifyHandler = require('./api/twitter-verify')
 const DiscordVerifyHandler = require('./api/discord-verify')
 const DiscourseRequestHandler = require('./api/discourse-request')
-const DiscourseVerifyHandler = require('./api/discord-verify')
+const DiscourseVerifyHandler = require('./api/discourse-verify')
 const DidDocumentHandler = require('./api/diddoc')
 
 const GithubMgr = require('./lib/githubMgr')
