@@ -93,6 +93,20 @@ class Analytics {
     data.properties = { did_hash: hash(did), status }
     this._track(data)
   }
+
+  trackRequestInstagram(did, status) {
+    let data = {}
+    data.event = 'request_service_instagram'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
+
+  trackVerifyInstagram(did, status) {
+    let data = {}
+    data.event = 'verify_service_instagram'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
 }
 
 module.exports = Analytics
