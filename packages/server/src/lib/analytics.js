@@ -80,6 +80,20 @@ class Analytics {
     this._track(data)
   }
 
+  trackRequestTelegram(did, status) {
+    let data = {}
+    data.event = 'request_service_telegram'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
+
+  trackVerifyTelegram(did, status) {
+    let data = {}
+    data.event = 'verify_service_telegram'
+    data.properties = { did_hash: hash(did), status }
+    this._track(data)
+  }
+
   trackRequestDiscourse(did, status) {
     let data = {}
     data.event = 'request_service_discourse'
