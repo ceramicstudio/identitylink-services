@@ -271,6 +271,58 @@ When this request is recieved the service does the following:
 }
 ```
 
+## Confirm Telegram Verification
+
+When this request is recieved the service does the following:
+
+1. Validate that the JWS has a correct signature (is signed by the DID in the `kid` property of the JWS)
+2. Retrieve the stored request from the database using the DID part of the `kid` if present, otherwise respond with an error
+3. Verify that the *`timestamp`* is from less than 30 minutes ago
+4. Verify that the JWS has content equal to the `challenge-code`, otherwise return error
+5. Verify that `verified` is true, otherwise return error
+6. Create a Verifiable Credential with the content described below, sign it with the service key (web-did), and send this as the response
+
+**Endpoint:** `POST /api/v0/confirm-telegram`
+
+**Body:**
+
+```jsx
+{
+	jws: <jws-string>
+}
+```
+
+**Response:**
+
+```jsx
+{
+  status: 'success',
+  data: {
+    attestation: <did-jwt-vc-string>
+  }
+}
+```
+
+**Verifiable Credential content:**
+
+```jsx
+{
+  sub: <user-DID>,
+  nbf: 1562950282, // Time jwt was issued
+  vc: {
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: ['VerifiableCredential'],
+    credentialSubject: {
+      account: {
+        type: 'Telegram',
+				username: <Telegram-username>,
+				userId: <the-users-id-on-telegram>
+      }
+    }
+  }
+}
+```
+
 ## Request Discourse Verification
 
 When this request is made the service stores the `did`, `username`, `threadUrl`, and a *`timestamp`* in it's database of requested discourse verifications.
