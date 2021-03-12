@@ -173,17 +173,9 @@ functions:
         - Ref: PrivateSubnetA
     events:
       - http:
-          method: get
+          method: post
           cors: true
           path: /api/v0/confirm-instagram
-          request:
-            parameters:
-              querystrings:
-                code: true
-                state: true
-                error: true
-                error_reason: true
-                error_description: true
 
 resources:
   Resources: ${file(cf-resources.yml)}  

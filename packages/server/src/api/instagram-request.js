@@ -7,9 +7,11 @@ class InstagramRequestHandler {
   }
 
   async handle(event, context, cb) {
-
-    let did = event.queryStringParameters.did;
-    let username = event.queryStringParameters.username;
+    let did, username
+    if (event.queryStringParameters) {
+      did = event.queryStringParameters.did
+      username = event.queryStringParameters.username
+    }
 
     if (!did) {
       cb({ code: 403, message: 'no did' })
@@ -27,7 +29,7 @@ class InstagramRequestHandler {
       challengeCode = await this.instagramMgr.saveRequest(username, did)
     } catch (e) {
       console.error(e)
-      cb({ code: 500, message: `Error while trying save to Redis`})
+      cb({ code: 500, message: `Error while trying save to Redis` })
       this.analytics.trackRequestInstagram(did, 500)
       return
     }
@@ -35,11 +37,11 @@ class InstagramRequestHandler {
     const response = {
       statusCode: 307,
       headers: {
-        Location: this.instagramMgr.generateRedirectionUrl(did,challengeCode),
+        Location: this.instagramMgr.generateRedirectionUrl(did, challengeCode)
       },
-      body: '',
-    };
-  
+      body: ''
+    }
+
     cb(null, response)
     this.analytics.trackRequestInstagram(did, 307)
   }

@@ -61,6 +61,7 @@ class InstagramMgr {
   async validateProfileFromAccount(did, challengeCode, code) {
     if (!did) throw new Error('no did provided')
     if (!challengeCode) throw new Error('no challengeCode provided')
+    if (!code) throw new Error('no authorization code provided')
 
     let details
     try {
@@ -71,9 +72,8 @@ class InstagramMgr {
       )
     }
     // console.log('Fetched: ' + JSON.stringify(details))
-    if (!details) throw new Error(`No database entry for ${did}.`)
-
-    console.log(details)
+    if (!details || !details.username)
+      throw new Error(`No database entry for ${did}.`)
 
     // await this.store.quit()
     const { username, timestamp, challengeCode: _challengeCode } = details
@@ -101,17 +101,15 @@ class InstagramMgr {
         'https://api.instagram.com/oauth/access_token',
         {
           method: 'post',
-          body: params,
+          body: params
         }
       )
       const data = await response.json()
-      console.log(data)
 
       const me = await this.client(
         `https://graph.instagram.com/me?fields=id,username,account_type&access_token=${data.access_token}`
       )
       const meData = await me.json()
-      console.log(meData)
 
       if (username !== meData.username) {
         throw new Error(
@@ -121,7 +119,7 @@ class InstagramMgr {
 
       return meData
     } catch (e) {
-      throw new Error('Could not validate user from Instagram')
+      throw new Error(`Could not validate user from Instagram. ${e}`)
     }
   }
 }

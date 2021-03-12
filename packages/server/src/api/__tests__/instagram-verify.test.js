@@ -18,20 +18,16 @@ describe('InstagramVerifyHandler', () => {
     expect(sut).not.toBeUndefined()
   })
 
-  test('error', done => {
+  test('no jws', done => {
     sut.handle(
       {
-        queryStringParameters: {
-          error: 'access_denied',
-          error_reason: 'user_denied',
-          error_description: 'The+user+denied+your+request'
-        }
+        body: JSON.stringify({ code: '123' })
       },
       {},
       (err, res) => {
         expect(err).not.toBeNull()
         expect(err.code).toEqual(400)
-        expect(err.message).toEqual('error')
+        expect(err.message).toEqual('no jws')
         done()
       }
     )
@@ -40,43 +36,36 @@ describe('InstagramVerifyHandler', () => {
   test('no code', done => {
     sut.handle(
       {
-        queryStringParameters: { state: 'did:123,challenge' }
+        body: JSON.stringify({ jws: 'abc123' })
       },
       {},
       (err, res) => {
         expect(err).not.toBeNull()
         expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no code in query param.')
+        expect(err.message).toEqual('no code')
         done()
       }
     )
   })
 
-  test('no did', done => {
+  test('happy path', done => {
+    instagramMgrMock.validateProfileFromAccount.mockReturnValue({
+      id: '123',
+      username: 'onetwothree'
+    })
+    claimMgrMock.verifyJWS.mockReturnValue({
+      payload: { challengeCode: '123' },
+      did: 'did:123'
+    })
+    claimMgrMock.issue.mockReturnValue('somejwttoken')
     sut.handle(
       {
-        queryStringParameters: { code: '123', state: ',challenge' }
+        body: JSON.stringify({ code: 'Azerty123', jws: 'abc123' })
       },
       {},
       (err, res) => {
-        expect(err).not.toBeNull()
-        expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no did in query param.')
-        done()
-      }
-    )
-  })
-
-  test('no challengeCode', done => {
-    sut.handle(
-      {
-        queryStringParameters: { code: '123', state: 'did:123,' }
-      },
-      {},
-      (err, res) => {
-        expect(err).not.toBeNull()
-        expect(err.code).toEqual(400)
-        expect(err.message).toEqual('no challengeCode in query param.')
+        expect(err).toBeNull()
+        expect(res).toEqual({ attestation: 'somejwttoken' })
         done()
       }
     )

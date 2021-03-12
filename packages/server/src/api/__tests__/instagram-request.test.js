@@ -2,7 +2,7 @@ const InstagramRequestHandler = require('../instagram-request')
 
 describe('InstagramRequestHandler', () => {
   let sut
-  let instagramMgrMock = { validateProfileFromAccount: jest.fn() }
+  let instagramMgrMock = { generateRedirectionUrl: jest.fn() }
   let claimMgrMock = { issue: jest.fn() }
   let analyticsMock = { trackRequestInstagram: jest.fn() }
 
@@ -24,7 +24,7 @@ describe('InstagramRequestHandler', () => {
       {},
       (err, res) => {
         expect(err).not.toBeNull()
-        expect(err.code).toEqual(400)
+        expect(err.code).toEqual(403)
         expect(err.message).toEqual('no did')
         done()
       }
@@ -47,20 +47,17 @@ describe('InstagramRequestHandler', () => {
   })
 
   test('happy path', done => {
-    // instagramMgrMock.findDidInGists.mockReturnValue('http://some.valid.url')
-    // claimMgrMock.issueInstagram.mockReturnValue('somejwttoken')
-    //
-    // sut.handle(
-    //   {
-    //     headers: { origin: 'https://subdomain.3box.io' },
-    //     body: JSON.stringify({ did: 'did:https:test', instagram_handle: 'test' })
-    //   },
-    //   {},
-    //   (err, res) => {
-    //     expect(err).toBeNull()
-    //     expect(res).toEqual({ verification: 'somejwttoken' })
-    done()
-    //   }
-    // )
+    sut.handle(
+      {
+        queryStringParameters: { username: 'wallkanda', did: 'did:123' }
+      },
+      {},
+      (_err, res) => {
+        expect(res).not.toBeNull()
+        // expect(res.status).toEqual(307)
+        // expect(res.headers.get('Location')).not.toBeNull()
+        done()
+      }
+    )
   })
 })

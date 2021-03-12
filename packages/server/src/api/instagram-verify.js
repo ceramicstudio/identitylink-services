@@ -7,38 +7,47 @@ class InstagramVerifyHandler {
   }
 
   async handle(event, context, cb) {
-    let error = event.queryStringParameters.error
-    let errorReason = event.queryStringParameters.error_reason
-    let errorDescription = event.queryStringParameters.error_description
-
-    if (error) {
-      cb({
-        code: 400,
-        message: `user cancelled login flow (${error}: ${errorReason} , ${errorDescription} .`
-      })
+    let body
+    try {
+      body = JSON.parse(event.body)
+    } catch (e) {
+      cb({ code: 400, message: 'no json body: ' + e.toString() })
       return
     }
 
-    let code = event.queryStringParameters.code
-    let [did, challengeCode] = event.queryStringParameters.state.split(',')
+    if (!body.jws) {
+      cb({ code: 400, message: 'no jws' })
+      this.analytics.trackVerifyInstagram(body.jws, 400)
+      return
+    }
+    if (!body.code) {
+      cb({ code: 400, message: 'no code' })
+      this.analytics.trackVerifyInstagram(body.jws, 400)
+      return
+    }
 
-    if (!code) {
-      cb({ code: 400, message: 'no code in query param.' })
-      return
-    }
-    if (!did) {
-      cb({ code: 400, message: 'no did in query param.' })
-      return
-    }
-    if (!challengeCode) {
-      cb({ code: 400, message: 'no challengeCode in query param.' })
+    let did = ''
+    let challengeCode = ''
+    const code = body.code
+
+    try {
+      const unwrappped = await this.claimMgr.verifyJWS(body.jws)
+      challengeCode = unwrappped.payload.challengeCode
+      did = unwrappped.did
+    } catch (e) {
+      cb({ code: 500, message: 'error while trying to verify the JWS' })
+      this.analytics.trackVerifyInstagram(body.jws, 500)
       return
     }
 
     let userId
     let username = ''
     try {
-      const me = this.instagramMgr.validateProfileFromAccount(did, challengeCode, code)
+      const me = await this.instagramMgr.validateProfileFromAccount(
+        did,
+        challengeCode,
+        code
+      )
       username = me.username
       userId = me.id
     } catch (e) {

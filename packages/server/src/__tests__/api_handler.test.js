@@ -76,4 +76,20 @@ describe('apiHandler', () => {
       done()
     })
   })
+
+  test('request instagram', done => {
+    apiHandler.request_instagram({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
+
+  test('verify instagram', done => {
+    apiHandler.verify_instagram({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
+  })
 })
