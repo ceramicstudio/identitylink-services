@@ -75,7 +75,7 @@ class InstagramMgr {
     }
     // console.log('Fetched: ' + JSON.stringify(details))
     if (!details || !details.username)
-      throw new Error(`No database entry for ${did}.`)
+      throw new Error(`No database entry for ${did}`)
 
     // await this.store.quit()
     const { username, timestamp, challengeCode: _challengeCode } = details

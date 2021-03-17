@@ -46,12 +46,9 @@ describe('InstagramMgr', () => {
   })
 
   test('generateRedirectionUrl()', done => {
-    const result = sut.generateRedirectionUrl(
-      1337,
-      'did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
-    )
+    const result = sut.generateRedirectionUrl(1337)
     expect(result).toEqual(
-      'https://api.instagram.com/oauth/authorize/?client_id=123&redirect_uri=https://example.com/auth/&scope=user_profile&response_type=code&state=1337,did:key:z6MkkyAkqY9bPr8gyQGuJTwQvzk8nsfywHCH4jyM1CgTq4KA'
+      'https://api.instagram.com/oauth/authorize/?client_id=123&redirect_uri=https://example.com/auth/&scope=user_profile&response_type=code&state=1337'
     )
     done()
   })
@@ -206,7 +203,9 @@ describe('InstagramMgr', () => {
         fail("shouldn't return")
       })
       .catch(err => {
-        expect(err.message).toEqual('Could not validate user from Instagram. Error: Verification made for the wrong username (wallkanda != thisisnottheexpectedusername)')
+        expect(err.message).toEqual(
+          'Could not validate user from Instagram. Error: Verification made for the wrong username (wallkanda != thisisnottheexpectedusername)'
+        )
         done()
       })
   })
