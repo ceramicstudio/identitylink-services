@@ -350,6 +350,98 @@ When this request is recieved the service does the following:
 }
 ```
 
+
+## Request Instagram Verification
+
+When this request is made the service stores the `did`, `username`, and a *`timestamp`* in it's database of requested instagram verifications.
+
+Note: due to the OAuth Authorization code flow, the service can provide a convenient HTTP redirection 307 to user by setting the env variable `INSTAGRAM_HTTP_REDIRECT=true`
+
+**Endpoint:** `GET /api/v0/request-instagram`
+
+**Query params:**
+
+```jsx
+  - did: <user-DID>
+  - username: <instagram-username>
+```
+
+Example `/api/v0/request-instagram?username=<instagram-username>&did=<user-DID>`
+
+**Response:**
+
+With `INSTAGRAM_HTTP_REDIRECT=true`, a redirection to [Instagram Authorization Window](https://developers.facebook.com/docs/instagram-basic-display-api/overview/#authorization-window).
+
+Otherwise:
+
+```jsx
+{
+    "status": "success",
+    "data": {
+        "statusCode": 307,
+        "headers": {
+            "Location": "https://api.instagram.com/oauth/authorize/?client_id=<INSTAGRAM_CLIENT_ID>&redirect_uri=<INSTAGRAM_REDIRECT_URI>&scope=user_profile&response_type=code&state=<challenge-code>"
+        },
+        "body": ""
+    }
+}
+```
+
+## Confirm Instagram Verification
+
+When this request is received the service does the following:
+
+1. Validate that the JWS has a correct signature (is signed by the DID in the `kid` property of the JWS)
+2. Retrieve the stored request from the database using the DID part of the `kid` if present, otherwise respond with an error
+3. Verify that the JWS has content equal to the `challenge-code`, otherwise return error
+4. Verify that the *`timestamp`* is from less than 30 minutes ago
+5. Call Instagram OAuth API to convert Authorization code to Oauth access token
+6. Get Instagram User profile from the Graph API (`/me`) with the previous access token and
+7. Verify that the username from Instagram authenticated response is equal to the stored one.
+8. Create a Verifiable Credential with the content described below, sign it with the service key (web-did), and send this as the response
+
+**Endpoint:** `POST /api/v0/confirm-instagram`
+
+**Body:**
+
+```jsx
+{
+  code: <code-query-param-string>
+  jws: <jws-string>
+}
+```
+
+**Response:**
+
+```jsx
+{
+  status: 'success',
+  data: {
+    attestation: <did-jwt-vc-string>
+  }
+}
+```
+
+**Verifiable Credential content:**
+
+```jsx
+{
+  sub: <user-DID>,
+  nbf: 1562950282, // Time jwt was issued
+  vc: {
+    '@context': ['https://www.w3.org/2018/credentials/v1'],
+    type: ['VerifiableCredential'],
+    credentialSubject: {
+      account: {
+        type: 'Instagram',
+        username: <instagram-username>,
+        userId: <instagram-userid>
+      }
+    }
+  }
+}
+```
+
 # User flows
 
 These user flows describe high level user interactions needed to facilitate the verifications. They are mainly meant to illustrate the rough flow so that individual steps that happen in the background can be more easily understood, which is useful if you just want to write a simple test that validates that the services work. The actual user facing implementation can have more optimized UX (e.g. automatically populating a tweet).
@@ -394,6 +486,18 @@ These user flows describe high level user interactions needed to facilitate the 
 3. User clicks verify and they now get the Verifiable credential back from the service
    1. A JWS containing the *challenge code* is created using the js-did library
    2. The JWS is sent to the *confirm discourse* endpoint and the Verifiable Credential is returned
+
+## Instagram verification
+
+1. User inputs their instagram username and clicks verify
+   1. A request with users DID, instagram username is made to the *request instagram* endpoint
+   2. The returned *challenge code* is temporarily stored
+2. User is redirected to [Instagram Authorization window](https://developers.facebook.com/docs/instagram-basic-display-api/overview/#authorization-window) on Instagram's website to login (if not already logged-in) and approve the request of information access.
+This can be done by an HTTP redirect if `INSTAGRAM_HTTP_REDIRECT` env var is set or by the verification website.
+3. Instagram Auth API redirects to the `INSTAGRAM_REDIRECT_URI` specified in .env and the Instagram Client App settings. The redirection is done with an OAuth2 authorization `code` in query param and `state` containing the *challenge code*.
+4. User clicks verify and they now get the Verifiable credential back from the service
+   1. A JWS containing the *challenge code* is created using the js-did library
+   2. The JWS and the OAuth2 authorization code are sent to the *confirm isntagram* endpoint and the Verifiable Credential is returned
 
 # Implementation details
 

@@ -12,7 +12,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-> A decentralized identifier (DID) verification service for Ceramic. Available methods include Twitter, Discord, and Github.
+> A decentralized identifier (DID) verification service for Ceramic. Available methods include Twitter, Discord, Instagram and Github.
 
 ## Install
 
@@ -27,6 +27,7 @@ Copy `.template.env` to `.env` and update the variables. You'll need the followi
 - Ceramic client url to resolve `@ceramicnetwork/3id-did-resolver`
 - Twitter developer tokens (you need all 4 items)
 - Github account username & API token. "Account Settings" > "Developer settings" > "Personal access tokens"
+- Instagram app id & secret from [Facebook Apps](https://developers.facebook.com/apps/) and a registered redirect URI
 - Redis database URL & password
 - (optional) Segment token
 
