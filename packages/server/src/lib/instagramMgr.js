@@ -11,6 +11,7 @@ class InstagramMgr {
     this.client_id = null
     this.client_secret = null
     this.redirect_uri = null
+    this.http_redirect = null
     this.store = {}
   }
 
@@ -28,6 +29,7 @@ class InstagramMgr {
     this.client_id = secrets.INSTAGRAM_CLIENT_ID
     this.client_secret = secrets.INSTAGRAM_CLIENT_SECRET
     this.redirect_uri = secrets.INSTAGRAM_REDIRECT_URI
+    this.http_redirect = secrets.INSTAGRAM_HTTP_REDIRECT
 
     if (secrets.REDIS_URL)
       this.store = new RedisStore({
@@ -54,8 +56,8 @@ class InstagramMgr {
   }
 
   // Returns verification url if sucessful
-  generateRedirectionUrl(did, challengeCode) {
-    return `https://api.instagram.com/oauth/authorize/?client_id=${this.client_id}&redirect_uri=${this.redirect_uri}&scope=user_profile&response_type=code&state=${did},${challengeCode}`
+  generateRedirectionUrl(challengeCode) {
+    return `https://api.instagram.com/oauth/authorize/?client_id=${this.client_id}&redirect_uri=${this.redirect_uri}&scope=user_profile&response_type=code&state=${challengeCode}`
   }
 
   async validateProfileFromAccount(did, challengeCode, code) {

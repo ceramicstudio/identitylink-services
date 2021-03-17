@@ -32,6 +32,13 @@ const doHandler = (handler, event, context, callback) => {
     let body = JSON.stringify({})
     if (handler.name === 'DidDocumentHandler') {
       body = JSON.stringify(resp)
+      // Enable GET redirection for Instagram Oauth2 Authorization code flow
+    } else if (
+      handler.name === 'InstagramRequestHandler' &&
+      process.env.INSTAGRAM_HTTP_REDIRECT
+    ) {
+      callback(null, resp)
+      return
     } else {
       body = JSON.stringify({
         status: 'success',
@@ -79,7 +86,8 @@ const preHandler = (handler, event, context, callback) => {
     !twitterMgr.isSecretsSet() ||
     !claimMgr.isSecretsSet() ||
     !githubMgr.isSecretsSet() ||
-    !discordMgr.isSecretsSet()
+    !discordMgr.isSecretsSet() ||
+    !instagramMgr.isSecretsSet()
   ) {
     const secretsFromEnv = {
       VERIFICATION_ISSUER_DOMAIN: process.env.VERIFICATION_ISSUER_DOMAIN,

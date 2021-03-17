@@ -37,13 +37,13 @@ class InstagramRequestHandler {
     const response = {
       statusCode: 307,
       headers: {
-        Location: this.instagramMgr.generateRedirectionUrl(did, challengeCode)
+        Location: this.instagramMgr.generateRedirectionUrl(challengeCode)
       },
       body: ''
     }
 
-    cb(null, response)
     this.analytics.trackRequestInstagram(did, 307)
+    cb(null, response)
   }
 }
 module.exports = InstagramRequestHandler
