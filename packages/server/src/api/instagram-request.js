@@ -11,6 +11,10 @@ class InstagramRequestHandler {
     if (event.queryStringParameters) {
       did = event.queryStringParameters.did
       username = event.queryStringParameters.username
+    } else {
+      cb({ code: 400, message: 'no did nor username' })
+      this.analytics.trackRequestInstagram(did, 400)
+      return
     }
 
     if (!did) {

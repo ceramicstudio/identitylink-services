@@ -28,6 +28,7 @@ provider:
     INSTAGRAM_CLIENT_ID: ${self:custom.secrets.INSTAGRAM_CLIENT_ID}
     INSTAGRAM_CLIENT_SECRET: ${self:custom.secrets.INSTAGRAM_CLIENT_SECRET}
     INSTAGRAM_REDIRECT_URI: ${self:custom.secrets.INSTAGRAM_REDIRECT_URI}
+    INSTAGRAM_HTTP_REDIRECT: ${self:custom.secrets.INSTAGRAM_HTTP_REDIRECT}
 
 # Enable auto-packing of external modules
 custom:

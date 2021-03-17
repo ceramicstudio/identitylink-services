@@ -2,7 +2,10 @@ const InstagramRequestHandler = require('../instagram-request')
 
 describe('InstagramRequestHandler', () => {
   let sut
-  let instagramMgrMock = { generateRedirectionUrl: jest.fn() }
+  let instagramMgrMock = {
+    generateRedirectionUrl: jest.fn(),
+    saveRequest: jest.fn()
+  }
   let claimMgrMock = { issue: jest.fn() }
   let analyticsMock = { trackRequestInstagram: jest.fn() }
 
@@ -16,6 +19,15 @@ describe('InstagramRequestHandler', () => {
 
   test('empty constructor', () => {
     expect(sut).not.toBeUndefined()
+  })
+
+  test('no did nor username', done => {
+    sut.handle({}, {}, (err, res) => {
+      expect(err).not.toBeNull()
+      expect(err.code).toEqual(400)
+      expect(err.message).toEqual('no did nor username')
+      done()
+    })
   })
 
   test('no did', done => {
@@ -47,6 +59,9 @@ describe('InstagramRequestHandler', () => {
   })
 
   test('happy path', done => {
+    instagramMgrMock.generateRedirectionUrl.mockReturnValue(
+      'http://some.valid.url'
+    )
     sut.handle(
       {
         queryStringParameters: { username: 'wallkanda', did: 'did:123' }
@@ -54,10 +69,26 @@ describe('InstagramRequestHandler', () => {
       {},
       (_err, res) => {
         expect(res).not.toBeNull()
-        // expect(res.status).toEqual(307)
-        // expect(res.headers.get('Location')).not.toBeNull()
+        // console.log(res)
+        expect(res.statusCode).toEqual(307)
+        expect(res.headers.Location).not.toBeNull()
         done()
       }
     )
   })
+
+  // test('happy path with HTTP redirect', done => {
+  //   sut.handle(
+  //     {
+  //       queryStringParameters: { username: 'wallkanda', did: 'did:123' }
+  //     },
+  //     {},
+  //     (_err, res) => {
+  //       expect(res).not.toBeNull()
+  //       expect(res.status).toEqual(307)
+  //       expect(res.headers.get('Location')).not.toBeNull()
+  //       done()
+  //     }
+  //   )
+  // })
 })
