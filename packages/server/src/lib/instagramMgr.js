@@ -98,7 +98,6 @@ class InstagramMgr {
     params.append('code', code)
 
     try {
-      // TODO improve response handling
       const response = await this.client(
         'https://api.instagram.com/oauth/access_token',
         {
