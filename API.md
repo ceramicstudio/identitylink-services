@@ -315,8 +315,8 @@ When this request is recieved the service does the following:
     credentialSubject: {
       account: {
         type: 'Telegram',
-				username: <Telegram-username>,
-				userId: <the-users-id-on-telegram>
+        username: <Telegram-username>,
+        userId: <the-users-id-on-telegram>
       }
     }
   }
