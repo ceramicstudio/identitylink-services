@@ -13,7 +13,7 @@ provider:
   stage: develop
   region: us-east-2
   stackTags:
-    IdentityLink: ${opt:stage, ''}
+    IdentityLink: ${opt:stage, 'dev'}
   environment:
     REDIS_URL:
       "Fn::GetAtt": [ElasticCacheCluster, RedisEndpoint.Address]
@@ -35,7 +35,7 @@ custom:
     packager: 'yarn' # Packager that will be used to package your external modules
   config:
     CACHE_INSTANCE_SIZE: cache.t2.micro
-  secrets: ${ssm:/aws/reference/secretsmanager/identitylink~true}
+  secrets: ${ssm:/aws/reference/secretsmanager/identitylink-${opt:stage, 'dev'}~true}
 
 functions:
   diddoc:
