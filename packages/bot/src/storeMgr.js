@@ -25,7 +25,6 @@ class StoreMgr {
     }
     try {
       await this.store.set(did, JSON.stringify(data))
-      // console.log('Saved: ' + JSON.stringify(data))
     } catch (e) {
       console.log(e)
       throw new Error(`issue writing to the database for ${did}. ${e}`)

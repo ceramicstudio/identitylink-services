@@ -84,7 +84,6 @@ class GithubMgr {
 
     let rawUrl, verification_url
     if (!gistUrl) {
-      console.log('not this')
       const result = await this.client('GET /users/:username/gists', {
         username,
         since: thirtyMinutesAgo.toISOString()
@@ -97,7 +96,7 @@ class GithubMgr {
       rawUrl = gistUrl
     }
 
-    console.log(rawUrl)
+    if (!rawUrl) throw new Error('Recent gist for verification not available')
 
     let res
     try {
