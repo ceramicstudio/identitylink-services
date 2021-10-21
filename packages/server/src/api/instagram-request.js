@@ -8,12 +8,11 @@ class InstagramRequestHandler {
 
   async handle(event, context, cb) {
     let did, username
-    if (event.queryStringParameters) {
+    if (event && event.queryStringParameters) {
       did = event.queryStringParameters.did
       username = event.queryStringParameters.username
     } else {
       cb({ code: 400, message: 'no did nor username' })
-      this.analytics.trackRequestInstagram(did, 400)
       return
     }
 

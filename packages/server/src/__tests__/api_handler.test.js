@@ -80,17 +80,12 @@ describe('apiHandler', () => {
     })
   })
 
-  // FIXME fix the "Error: input is invalid type"
-  test.skip('request instagram', done => {
-    apiHandler.request_instagram(
-      { queryStringParameters: {} },
-      {},
-      (err, res) => {
-        expect(err).toBeNull()
-        expect(res).not.toBeNull()
-        done()
-      }
-    )
+  test('request instagram', done => {
+    apiHandler.request_instagram({}, {}, (err, res) => {
+      expect(err).toBeNull()
+      expect(res).not.toBeNull()
+      done()
+    })
   })
 
   test('verify instagram', done => {
