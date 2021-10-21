@@ -15,4 +15,7 @@ curl http://localhost:3000/api/v0/confirm-discord -d '{ "jws": "eyJhbGciOiJFZERT
 
 curl https://r27sfer037.execute-api.us-west-2.amazonaws.com/develop/api/v0/confirm-discord -d '{ "jws": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa2dOYVVpdGtER1hrY2ZoNG1LNDZta3FQZG5Cd0RaM2p2bUdlRnR5V3V2c21vI3o2TWtnTmFVaXRrREdYa2NmaDRtSzQ2bWtxUGRuQndEWjNqdm1HZUZ0eVd1dnNtbyJ9.eyJjaGFsbGVuZ2VDb2RlIjoiR01DcHQwUHNiOUM3ak1pekdrMHF5SmpvVmhqeHhQbEIifQ.IJFVVwZlO0ClNcwDNmc-tYxxZQoJHnZeWZ7QtX8RPR1MoB6e2P89fyqNutAVKAmNIILm6xvTFnrj1SjJKuc6BA" }'
 
+curl http://localhost:3000/api/v0/confirm-telegram -d '{ "jws": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa2dOYVVpdGtER1hrY2ZoNG1LNDZta3FQZG5Cd0RaM2p2bUdlRnR5V3V2c21vI3o2TWtnTmFVaXRrREdYa2NmaDRtSzQ2bWtxUGRuQndEWjNqdm1HZUZ0eVd1dnNtbyJ9.eyJjaGFsbGVuZ2VDb2RlIjoiR01DcHQwUHNiOUM3ak1pekdrMHF5SmpvVmhqeHhQbEIifQ.IJFVVwZlO0ClNcwDNmc-tYxxZQoJHnZeWZ7QtX8RPR1MoB6e2P89fyqNutAVKAmNIILm6xvTFnrj1SjJKuc6BA" }'
+
+curl https://r27sfer037.execute-api.us-west-2.amazonaws.com/develop/api/v0/confirm-telegram -d '{ "jws": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa2dOYVVpdGtER1hrY2ZoNG1LNDZta3FQZG5Cd0RaM2p2bUdlRnR5V3V2c21vI3o2TWtnTmFVaXRrREdYa2NmaDRtSzQ2bWtxUGRuQndEWjNqdm1HZUZ0eVd1dnNtbyJ9.eyJjaGFsbGVuZ2VDb2RlIjoiR01DcHQwUHNiOUM3ak1pekdrMHF5SmpvVmhqeHhQbEIifQ.IJFVVwZlO0ClNcwDNmc-tYxxZQoJHnZeWZ7QtX8RPR1MoB6e2P89fyqNutAVKAmNIILm6xvTFnrj1SjJKuc6BA" }'
 ```

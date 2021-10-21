@@ -164,6 +164,19 @@ functions:
           method: post
           cors: true
           path: /api/v0/confirm-discord
+  verify-telegram:
+    handler: src/api_handler.verify_telegram
+    timeout: 30
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup, GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/confirm-telegram
   verify-instagram:
     handler: src/api_handler.verify_instagram
     timeout: 30

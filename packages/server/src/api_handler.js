@@ -4,6 +4,7 @@ const GithubVerifyHandler = require('./api/github-verify')
 const TwitterRequestHandler = require('./api/twitter-request')
 const TwitterVerifyHandler = require('./api/twitter-verify')
 const DiscordVerifyHandler = require('./api/discord-verify')
+const TelegramVerifyHandler = require('./api/telegram-verify')
 const DiscourseRequestHandler = require('./api/discourse-request')
 const DiscourseVerifyHandler = require('./api/discourse-verify')
 const InstagramRequestHandler = require('./api/instagram-request')
@@ -13,6 +14,7 @@ const DidDocumentHandler = require('./api/diddoc')
 const GithubMgr = require('./lib/githubMgr')
 const TwitterMgr = require('./lib/twitterMgr')
 const DiscordMgr = require('./lib/discordMgr')
+const TelegramMgr = require('./lib/telegramMgr')
 const DiscourseMgr = require('./lib/discourseMgr')
 const InstagramMgr = require('./lib/instagramMgr')
 const ClaimMgr = require('./lib/claimMgr')
@@ -21,6 +23,7 @@ const Analytics = require('./lib/analytics')
 let githubMgr = new GithubMgr()
 let twitterMgr = new TwitterMgr()
 let discordMgr = new DiscordMgr()
+let telegramMgr = new TelegramMgr()
 let discourseMgr = new DiscourseMgr()
 let instagramMgr = new InstagramMgr()
 let claimMgr = new ClaimMgr()
@@ -87,6 +90,7 @@ const preHandler = (handler, event, context, callback) => {
     !claimMgr.isSecretsSet() ||
     !githubMgr.isSecretsSet() ||
     !discordMgr.isSecretsSet() ||
+    !telegramMgr.isSecretsSet() ||
     !instagramMgr.isSecretsSet()
   ) {
     const secretsFromEnv = {
@@ -112,6 +116,7 @@ const preHandler = (handler, event, context, callback) => {
     githubMgr.setSecrets(config)
     twitterMgr.setSecrets(config)
     discordMgr.setSecrets(config)
+    telegramMgr.setSecrets(config)
     discourseMgr.setSecrets(config)
     instagramMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
@@ -178,6 +183,18 @@ let discordVerifyHandler = new DiscordVerifyHandler(
 )
 module.exports.verify_discord = (event, context, callback) => {
   preHandler(discordVerifyHandler, event, context, callback)
+}
+
+/// /////////////////////
+// Telegram
+/// ////////////////////
+let telegramVerifyHandler = new TelegramVerifyHandler(
+  telegramMgr,
+  claimMgr,
+  analytics
+)
+module.exports.verify_telegram = (event, context, callback) => {
+  preHandler(telegramVerifyHandler, event, context, callback)
 }
 
 /// /////////////////////

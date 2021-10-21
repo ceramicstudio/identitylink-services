@@ -15,6 +15,7 @@
     "@ceramicnetwork/3id-did-resolver": "^0.5.1",
     "@ceramicnetwork/ceramic-http-client": "^0.7.3",
     "@ceramicnetwork/key-did-resolver": "^0.2.0",
+    "@stablelib/hex": "^1.0.0",
     "did-jwt": "^4.7.0",
     "dids": "1.1.0",
     "elliptic": "^6.5.3",
