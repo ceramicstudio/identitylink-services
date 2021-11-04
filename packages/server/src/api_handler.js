@@ -7,6 +7,8 @@ const DiscordVerifyHandler = require('./api/discord-verify')
 const TelegramVerifyHandler = require('./api/telegram-verify')
 const DiscourseRequestHandler = require('./api/discourse-request')
 const DiscourseVerifyHandler = require('./api/discourse-verify')
+const InstagramRequestHandler = require('./api/instagram-request')
+const InstagramVerifyHandler = require('./api/instagram-verify')
 const DidDocumentHandler = require('./api/diddoc')
 
 const GithubMgr = require('./lib/githubMgr')
@@ -14,6 +16,7 @@ const TwitterMgr = require('./lib/twitterMgr')
 const DiscordMgr = require('./lib/discordMgr')
 const TelegramMgr = require('./lib/telegramMgr')
 const DiscourseMgr = require('./lib/discourseMgr')
+const InstagramMgr = require('./lib/instagramMgr')
 const ClaimMgr = require('./lib/claimMgr')
 const Analytics = require('./lib/analytics')
 
@@ -22,6 +25,7 @@ let twitterMgr = new TwitterMgr()
 let discordMgr = new DiscordMgr()
 let telegramMgr = new TelegramMgr()
 let discourseMgr = new DiscourseMgr()
+let instagramMgr = new InstagramMgr()
 let claimMgr = new ClaimMgr()
 const analytics = new Analytics()
 
@@ -31,6 +35,13 @@ const doHandler = (handler, event, context, callback) => {
     let body = JSON.stringify({})
     if (handler.name === 'DidDocumentHandler') {
       body = JSON.stringify(resp)
+      // Enable GET redirection for Instagram Oauth2 Authorization code flow
+    } else if (
+      handler.name === 'InstagramRequestHandler' &&
+      process.env.INSTAGRAM_HTTP_REDIRECT
+    ) {
+      callback(null, resp)
+      return
     } else {
       body = JSON.stringify({
         status: 'success',
@@ -79,7 +90,8 @@ const preHandler = (handler, event, context, callback) => {
     !claimMgr.isSecretsSet() ||
     !githubMgr.isSecretsSet() ||
     !discordMgr.isSecretsSet() ||
-    !telegramMgr.isSecretsSet()
+    !telegramMgr.isSecretsSet() ||
+    !instagramMgr.isSecretsSet()
   ) {
     const secretsFromEnv = {
       VERIFICATION_ISSUER_DOMAIN: process.env.VERIFICATION_ISSUER_DOMAIN,
@@ -93,6 +105,9 @@ const preHandler = (handler, event, context, callback) => {
       TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
       TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN,
       TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+      INSTAGRAM_CLIENT_ID: process.env.INSTAGRAM_CLIENT_ID,
+      INSTAGRAM_CLIENT_SECRET: process.env.INSTAGRAM_CLIENT_SECRET,
+      INSTAGRAM_REDIRECT_URI: process.env.INSTAGRAM_REDIRECT_URI,
       SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY
     }
     const config = { ...secretsFromEnv, ...envConfig }
@@ -103,6 +118,7 @@ const preHandler = (handler, event, context, callback) => {
     discordMgr.setSecrets(config)
     telegramMgr.setSecrets(config)
     discourseMgr.setSecrets(config)
+    instagramMgr.setSecrets(config)
     doHandler(handler, event, context, callback)
   } else {
     doHandler(handler, event, context, callback)
@@ -201,4 +217,26 @@ let discourseVerifyHandler = new DiscourseVerifyHandler(
 )
 module.exports.verify_discourse = (event, context, callback) => {
   preHandler(discourseVerifyHandler, event, context, callback)
+}
+
+/// /////////////////////
+// Instagram
+/// ////////////////////
+let instagramRequestHandler = new InstagramRequestHandler(
+  instagramMgr,
+  claimMgr,
+  analytics
+)
+
+module.exports.request_instagram = (event, context, callback) => {
+  preHandler(instagramRequestHandler, event, context, callback)
+}
+
+let instagramVerifyHandler = new InstagramVerifyHandler(
+  instagramMgr,
+  claimMgr,
+  analytics
+)
+module.exports.verify_instagram = (event, context, callback) => {
+  preHandler(instagramVerifyHandler, event, context, callback)
 }

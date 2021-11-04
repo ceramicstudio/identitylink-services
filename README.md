@@ -11,7 +11,7 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-> Services for issuing verifiable credentials that link a decentralized identifier (DID) to various social accounts including Twitter, Github, and Discord. Additional account types can be added in the future.
+> Services for issuing verifiable credentials that link a decentralized identifier (DID) to various social accounts including Twitter, Github, Instagram and Discord. Additional account types can be added in the future.
 
 ## What's included
 

@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "eslint ./src ",
     "test": "jest --testPathPattern=src/ --detectOpenHandles --setupFiles dotenv/config",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "redis:docker": "docker run -d -h redis -e REDIS_PASSWORD=redis -v redis-data:/data -p 6379:6379 --name redis redis /bin/sh -c 'redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}'",
+    "start": "sls offline --host 0.0.0.0 --port 3080 --trace-warnings"
   },
   "repository": "git@github.com:ceramicstudio/identitylink-services.git",
   "author": "Patrick Gallagher <blockchainbuddha@gmail.com>",

@@ -25,6 +25,10 @@ provider:
     TWITTER_CONSUMER_SECRET: ${self:custom.secrets.TWITTER_CONSUMER_SECRET}
     TWITTER_ACCESS_TOKEN: ${self:custom.secrets.TWITTER_ACCESS_TOKEN}
     TWITTER_ACCESS_TOKEN_SECRET: ${self:custom.secrets.TWITTER_ACCESS_TOKEN_SECRET}
+    INSTAGRAM_CLIENT_ID: ${self:custom.secrets.INSTAGRAM_CLIENT_ID}
+    INSTAGRAM_CLIENT_SECRET: ${self:custom.secrets.INSTAGRAM_CLIENT_SECRET}
+    INSTAGRAM_REDIRECT_URI: ${self:custom.secrets.INSTAGRAM_REDIRECT_URI}
+    INSTAGRAM_HTTP_REDIRECT: ${self:custom.secrets.INSTAGRAM_HTTP_REDIRECT}
 
 # Enable auto-packing of external modules
 custom:
@@ -116,6 +120,24 @@ functions:
           method: post
           cors: true
           path: /api/v0/request-twitter
+  request-instagram:
+    handler: src/api_handler.request_instagram
+    timeout: 30
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup, GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+    events:
+      - http:
+          method: get
+          cors: true
+          path: /api/v0/request-instagram
+          request:
+            parameters:
+              querystrings:
+                did: true
+                username: true
   verify-twitter:
     handler: src/api_handler.verify_twitter
     timeout: 30
@@ -155,6 +177,19 @@ functions:
           method: post
           cors: true
           path: /api/v0/confirm-telegram
+  verify-instagram:
+    handler: src/api_handler.verify_instagram
+    timeout: 30
+    vpc:
+      securityGroupIds:
+        - Fn::GetAtt: [ ServerlessSecurityGroup, GroupId ]
+      subnetIds:
+        - Ref: PrivateSubnetA
+    events:
+      - http:
+          method: post
+          cors: true
+          path: /api/v0/confirm-instagram
 
 resources:
   Resources: ${file(cf-resources.yml)}  
