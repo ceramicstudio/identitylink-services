@@ -13,7 +13,7 @@ provider:
   stage: develop
   region: us-east-2
   stackTags:
-    IdentityLink: ${opt:stage, ''}
+    IdentityLink: ${opt:stage, 'dev'}
   environment:
     REDIS_URL:
       "Fn::GetAtt": [ElasticCacheCluster, RedisEndpoint.Address]
@@ -25,6 +25,7 @@ provider:
     TWITTER_CONSUMER_SECRET: ${self:custom.secrets.TWITTER_CONSUMER_SECRET}
     TWITTER_ACCESS_TOKEN: ${self:custom.secrets.TWITTER_ACCESS_TOKEN}
     TWITTER_ACCESS_TOKEN_SECRET: ${self:custom.secrets.TWITTER_ACCESS_TOKEN_SECRET}
+    CERAMIC_CLIENT_URL: ${self:custom.secrets.CERAMIC_CLIENT_URL}
 
 # Enable auto-packing of external modules
 custom:
@@ -35,7 +36,7 @@ custom:
     packager: 'yarn' # Packager that will be used to package your external modules
   config:
     CACHE_INSTANCE_SIZE: cache.t2.micro
-  secrets: ${ssm:/aws/reference/secretsmanager/identitylink~true}
+  secrets: ${ssm:/aws/reference/secretsmanager/identitylink-${opt:stage, 'dev'}~true}
 
 functions:
   diddoc:

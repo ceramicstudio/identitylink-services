@@ -30,6 +30,7 @@ class GithubVerifyHandler {
       challengeCode = unwrappped.payload.challengeCode
       did = unwrappped.did
     } catch (e) {
+      console.log(e)
       cb({ code: 500, message: 'error while trying to verify the JWS' })
       this.analytics.trackVerifyGithub(body.jws, 500)
       return

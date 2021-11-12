@@ -5,6 +5,3 @@ const { secretKey, publicKey } = generateKeyPairFromSeed(randomBytes(32));
 
 console.log(encode(secretKey,true));
 console.log(encode(publicKey,true));
-
-//console.log((secretKey));
-//console.log((publicKey));
